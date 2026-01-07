@@ -1,0 +1,9 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Shop from "../components/Shop";
+import appData from "../data/app-config.json";
+---
+
+<Layout title="Nathikas - Gomitas y Chamoy">
+    <Shop client:load data={appData} />
+</Layout>

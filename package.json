@@ -1,0 +1,32 @@
+{
+    "name": "nathikas",
+    "type": "module",
+    "version": "0.0.1",
+    "scripts": {
+        "dev": "astro dev",
+        "start": "astro dev",
+        "build": "astro build",
+        "preview": "astro preview",
+        "astro": "astro"
+    },
+    "dependencies": {
+        "@astrojs/react": "^4.1.0",
+        "@tailwindcss/vite": "^4.0.0-beta.9",
+        "astro": "^5.1.1",
+        "framer-motion": "^12.24.10",
+        "leaflet": "^1.9.4",
+        "lucide-react": "^0.469.0",
+        "react": "18.3.1",
+        "react-dom": "18.3.1",
+        "react-leaflet": "^4.2.1",
+        "react-tsparticles": "^2.12.2",
+        "tailwindcss": "^4.0.0-beta.9",
+        "tsparticles-slim": "^2.12.0",
+        "zustand": "^5.0.2"
+    },
+    "devDependencies": {
+        "@types/leaflet": "^1.9.21",
+        "@types/react": "^18.3.3",
+        "@types/react-dom": "^18.3.0"
+    }
+}

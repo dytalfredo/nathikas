@@ -1,0 +1,9 @@
+---
+import Layout from "../layouts/Layout.astro";
+import OrderFlow from "../components/OrderFlow";
+import appData from "../data/app-config.json";
+---
+
+<Layout title="Nathikas - Realizar Pedido">
+    <OrderFlow client:load data={appData} />
+</Layout>

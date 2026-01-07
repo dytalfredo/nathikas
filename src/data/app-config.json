@@ -1,0 +1,195 @@
+{
+    "company": {
+        "name": "Nathikas",
+        "logo": "/images/logo.png",
+        "description": "¡Sabor mexicano que explota! Gomitas enchiladas y chamoy auténtico.",
+        "videoCTA": {
+            "title": "Cómpralas ya, antes que se acaben",
+            "videoUrl": "/videos/promo-bg.mp4"
+        }
+    },
+    "ritualSteps": [
+        {
+            "id": 1,
+            "title": "Selecciona",
+            "description": "Elige tus gomitas favoritas o uno de nuestros kits explosivos.",
+            "icon": "MousePointerClick"
+        },
+        {
+            "id": 2,
+            "title": "Personaliza",
+            "description": "Añade extra chamoy o tajín si te sientes valiente.",
+            "icon": "Edit3"
+        },
+        {
+            "id": 3,
+            "title": "Disfruta",
+            "description": "Recibe tu pedido y vive la explosión de sabor.",
+            "icon": "PartyPopper"
+        }
+    ],
+    "testimonials": [
+        {
+            "id": 1,
+            "name": "María G.",
+            "text": "¡Las mejores gomitas que he probado! El chamoy es de otro mundo.",
+            "image": "https://randomuser.me/api/portraits/women/1.jpg"
+        },
+        {
+            "id": 2,
+            "name": "Carlos R.",
+            "text": "El Kit Fuego es perfecto para compartir en fiestas. ¡Recomendado!",
+            "image": "https://randomuser.me/api/portraits/men/2.jpg"
+        },
+        {
+            "id": 3,
+            "name": "Ana P.",
+            "text": "Llegaron súper rápido y el sabor es 100% auténtico.",
+            "image": "https://randomuser.me/api/portraits/women/3.jpg"
+        }
+    ],
+    "theme": {
+        "colors": {
+            "primary": "#D91A2A",
+            "secondary": "#F2A900",
+            "background": "#FDF6E3",
+            "text": "#3E2723"
+        },
+        "fonts": {
+            "heading": "'Chicle', cursive",
+            "body": "'Nunito', sans-serif"
+        }
+    },
+    "benefits": [
+        {
+            "id": 1,
+            "title": "100% Sabor Mexicano",
+            "description": "Auténtico chamoy y especias importadas directamente de México para una experiencia genuina.",
+            "icon": "🌵"
+        },
+        {
+            "id": 2,
+            "title": "Ingredientes Premium",
+            "description": "Utilizamos solo las mejores gomitas y frutas frescas, seleccionadas a mano para ti.",
+            "icon": "💎"
+        },
+        {
+            "id": 3,
+            "title": "Picante Perfecto",
+            "description": "El equilibrio ideal entre dulce, ácido y picante. ¡No podrás comer solo una!",
+            "icon": "🔥"
+        }
+    ],
+    "faq": [
+        {
+            "question": "¿Cuándo debo comer mis Gomitas?",
+            "answer": "¡En cualquier momento! Son perfectas para fiestas, reuniones, viendo una película o simplemente cuando tienes ese antojo picosito."
+        },
+        {
+            "question": "¿Dónde se hacen las Gomitas?",
+            "answer": "Nuestras gomitas se preparan artesanalmente en nuestra cocina especializada, siguiendo estrictos estándares de higiene y calidad."
+        },
+        {
+            "question": "¿Cómo me envían las Gomitas?",
+            "answer": "Utilizamos servicios de entrega locales rápidos y seguros para asegurar que lleguen frescas a tu puerta."
+        },
+        {
+            "question": "¿Cuál es su política de devolución?",
+            "answer": "Si no estás satisfecho con la calidad, contáctanos dentro de las 24 horas y haremos lo posible por solucionarlo."
+        },
+        {
+            "question": "¿Son seguras las Gomitas?",
+            "answer": "¡Totalmente! Usamos ingredientes comestibles de alta calidad. Si tienes alergias, por favor revisa los ingredientes."
+        },
+        {
+            "question": "¿Cuántas debo comer a la vez?",
+            "answer": "¡Las que tu paladar aguante! Pero cuidado, ¡son adictivas!"
+        },
+        {
+            "question": "¿Son para ambos hombres y mujeres?",
+            "answer": "¡Sí, el sabor no tiene género! Cualquiera puede disfrutarlas."
+        },
+        {
+            "question": "¿Quién no debería comerlas?",
+            "answer": "Personas con alta sensibilidad al picante o condiciones gástricas específicas deberían consumirlas con moderación."
+        },
+        {
+            "question": "¿Puedo disfrutarlas solo?",
+            "answer": "¡Claro! Aunque compartir es bueno, no te juzgamos si te acabas la bolsa tú solo."
+        }
+    ],
+    "products": [
+        {
+            "id": "kit-fuego",
+            "name": "Kit Fuego",
+            "description": "El pack definitivo para los amantes del picante. Incluye gomitas variadas y nuestra salsa especial.",
+            "price": 15.00,
+            "image": "/images/ref1.jpg",
+            "category": "kits"
+        },
+        {
+            "id": "chamoy-litro",
+            "name": "Chamoy 1 Litro",
+            "description": "Un litro de puro sabor mexicano. Ideal para compartir o para los muy viciosos.",
+            "price": 12.00,
+            "image": "/images/ref2.jpg",
+            "category": "salsas"
+        },
+        {
+            "id": "chamoy-medio",
+            "name": "Chamoy 1/2 Litro",
+            "description": "La medida perfecta para tus antojos personales.",
+            "price": 7.00,
+            "image": "/images/ref3.jpg",
+            "category": "salsas"
+        }
+    ],
+    "promotions": [
+        {
+            "id": "promo-1",
+            "title": "2x1 en Gomitas",
+            "description": "¡Lleva 2 paquetes de gomitas enchiladas y paga solo 1! Solo por hoy.",
+            "image": "/images/ref4.jpg"
+        }
+    ],
+    "shipping": {
+        "methods": [
+            {
+                "id": "mrw",
+                "name": "MRW",
+                "cost": 5.00
+            },
+            {
+                "id": "zoom",
+                "name": "ZOOM",
+                "cost": 5.00
+            }
+        ],
+        "locations": [
+            "Caracas",
+            "Maracay",
+            "Valencia",
+            "Barquisimeto",
+            "Maracaibo",
+            "Puerto La Cruz"
+        ]
+    },
+    "payment": {
+        "methods": [
+            {
+                "id": "pago-movil",
+                "name": "Pago Móvil"
+            },
+            {
+                "id": "zelle",
+                "name": "Zelle"
+            }
+        ],
+        "pagoMovil": {
+            "bank": "0102 - Banco de Venezuela",
+            "phone": "0414-1234567",
+            "id": "12345678"
+        },
+        "qrImage": "/images/qr-placeholder.png"
+    }
+}
