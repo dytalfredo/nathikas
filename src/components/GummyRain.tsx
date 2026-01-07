@@ -3,7 +3,13 @@ import Particles from "react-tsparticles";
 import { loadSlim } from "tsparticles-slim";
 import type { Container, Engine } from "tsparticles-engine";
 
-export default function GummyRain() {
+interface Props {
+    id?: string;
+    zIndex?: string;
+    count?: number;
+}
+
+export default function GummyRain({ id = "tsparticles", zIndex = "z-0", count = 15 }: Props) {
     const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
@@ -24,8 +30,8 @@ export default function GummyRain() {
 
     return (
         <ParticlesComponent
-            id="tsparticles"
-            className="absolute inset-0 z-0 pointer-events-none"
+            id={id}
+            className={`absolute inset-0 ${zIndex} pointer-events-none`}
             init={particlesInit}
             loaded={particlesLoaded}
             options={{
@@ -33,7 +39,7 @@ export default function GummyRain() {
                 fpsLimit: 60,
                 particles: {
                     number: {
-                        value: 15, // Not too many to distract
+                        value: count, // Not too many to distract
                         density: {
                             enable: true,
                             area: 800,

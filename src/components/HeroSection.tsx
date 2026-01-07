@@ -9,8 +9,9 @@ export default function HeroSection({ scrollToStore }: { scrollToStore: () => vo
         <section
             className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-[url('/images/fondo1m.png')] md:bg-[url('/images/fondo1.png')] bg-cover bg-center"
         >
-            {/* Gummy Rain Particles */}
-            <GummyRain />
+            {/* Gummy Rain Particles (Layered) */}
+            <GummyRain id="tsparticles-back" zIndex="z-0" count={10} />
+            <GummyRain id="tsparticles-front" zIndex="z-[60]" count={10} />
 
             {/* Background Decorations */}
 
