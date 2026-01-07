@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, MapPin, Truck, CreditCard, Minus, Plus, Trash2, ArrowLeft, ArrowRight, Loader2 } from 'lucide-react';
+import { ShoppingCart, MapPin, Truck, CreditCard, Minus, Plus, Trash2, ArrowLeft, ArrowRight, Loader2, HelpCircle } from 'lucide-react';
 import { useCartStore } from '../store/cartStore';
 import type { Product } from '../store/cartStore';
 import { venezuelaData } from '../data/venezuela';
 import { getAgenciesForCity } from '../data/agencies';
+import { driver } from "driver.js";
+import "driver.js/dist/driver.css";
 
 const LeafletMap = lazy(() => import('./LeafletMap'));
 
@@ -40,8 +42,36 @@ export default function OrderFlow({ data }: Props) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [step]);
 
+    const startTour = () => {
+        const driverObj = driver({
+            showProgress: true,
+            animate: true,
+            steps: [
+                { element: '#step-products', popover: { title: 'Paso 1: Elige tu Antojo', description: 'Explora nuestra selección de gomitas y agrega las que más te gusten a tu carrito.' } },
+                ...(items.length > 0 ? [{ element: '#cart-summary', popover: { title: 'Resumen del Pedido', description: 'Aquí puedes ver el detalle de lo que llevas y el total a pagar.' } }] : []),
+                { element: '#step-shipping', popover: { title: 'Paso 2: Envío', description: 'Ingresa tus datos, selecciona tu ciudad y elige si prefieres MRW, Zoom o retiro personal.' } },
+                { element: '#map-container', popover: { title: 'Ubicación', description: 'Usa el mapa para confirmar tu ubicación exacta o buscar la agencia más cercana.' } },
+                { element: '#step-payment', popover: { title: 'Paso 3: Pago y Confirmación', description: 'Realiza el pago móvil y confirma tu pedido. ¡Te redirigiremos a WhatsApp para finalizar!' } },
+            ],
+            nextBtnText: 'Siguiente',
+            prevBtnText: 'Anterior',
+            doneBtnText: '¡Entendido!',
+        });
+        driverObj.drive();
+    };
+
+    useEffect(() => {
+        if (isMounted) {
+            // Short delay to ensure sections are rendered
+            const timer = setTimeout(() => {
+                startTour();
+            }, 800);
+            return () => clearTimeout(timer);
+        }
+    }, [isMounted]);
+
     return (
-        <div className="min-h-screen bg-[#FDF6E3] font-sans text-[#3E2723] pb-20">
+        <div className="min-h-screen bg-[#FDF6E3] font-sans text-[#3E2723] pb-20 relative">
             {/* Header */}
             <header className="sticky top-0 z-50 bg-[#FDF6E3]/95 backdrop-blur-sm shadow-sm border-b-4 border-[#F2A900] px-4 py-3 flex items-center justify-between">
                 <a href="/" className="flex items-center gap-2">
@@ -51,13 +81,15 @@ export default function OrderFlow({ data }: Props) {
                 <div className="flex items-center gap-2">
                     <img src="/images/logo.png" alt="Nathikas Logo" className="h-8 w-auto" />
                 </div>
-                <div className="w-16"></div> {/* Spacer for center alignment */}
+                <button onClick={startTour} className="w-10 h-10 flex items-center justify-center text-[#D91A2A] hover:bg-[#FDF6E3] hover:shadow-md rounded-full transition-all" title="Ver Tutorial">
+                    <HelpCircle size={24} />
+                </button>
             </header>
 
             <main className="container mx-auto max-w-lg px-4 pt-6">
 
                 {/* Step 1: Elige tu Antojo */}
-                <section className="mb-12">
+                <section className="mb-12" id="step-products">
                     <div className="flex items-center gap-3 mb-6">
                         <div className="bg-[#F2A900] text-[#3E2723] w-10 h-10 rounded-full flex items-center justify-center font-bold text-xl font-heading shadow-md border-2 border-white">1</div>
                         <h2 className="text-2xl font-bold font-heading text-[#D91A2A]">ELIGE TU ANTOJO</h2>
@@ -126,6 +158,7 @@ export default function OrderFlow({ data }: Props) {
                             animate={{ opacity: 1, height: 'auto' }}
                             exit={{ opacity: 0, height: 0 }}
                             className="bg-white rounded-2xl shadow-xl border-4 border-[#F2A900] p-6 mb-12 overflow-hidden"
+                            id="cart-summary"
                         >
                             <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
                                 <ShoppingCart className="text-[#D91A2A]" size={20} />
@@ -164,7 +197,7 @@ export default function OrderFlow({ data }: Props) {
                 </AnimatePresence>
 
                 {/* Step 2: ¿A Dónde lo Enviamos? */}
-                <section className={`mb-12 transition-opacity duration-500 ${items.length === 0 ? 'opacity-50 pointer-events-none grayscale' : 'opacity-100'}`}>
+                <section className={`mb-12 transition-opacity duration-500 ${items.length === 0 ? 'opacity-50 pointer-events-none grayscale' : 'opacity-100'}`} id="step-shipping">
                     <div className="flex items-center gap-3 mb-6">
                         <div className="bg-[#F2A900] text-[#3E2723] w-10 h-10 rounded-full flex items-center justify-center font-bold text-xl font-heading shadow-md border-2 border-white">2</div>
                         <h2 className="text-2xl font-bold font-heading text-[#D91A2A]">¿A DÓNDE LO ENVIAMOS?</h2>
@@ -260,7 +293,7 @@ export default function OrderFlow({ data }: Props) {
 
 
                         {/* Map or Image */}
-                        <div className="w-full h-64 rounded-xl overflow-hidden shadow-md border-2 border-[#E0E0E0] hover:border-[#F2A900] transition-colors relative z-0">
+                        <div className="w-full h-64 rounded-xl overflow-hidden shadow-md border-2 border-[#E0E0E0] hover:border-[#F2A900] transition-colors relative z-0" id="map-container">
                             {isMounted ? (
                                 <Suspense fallback={<div className="bg-gray-200 w-full h-full flex items-center justify-center animate-pulse"><Loader2 className="animate-spin text-[#D91A2A]" /></div>}>
                                     <LeafletMap />
@@ -278,7 +311,7 @@ export default function OrderFlow({ data }: Props) {
                 </section>
 
                 {/* Step 3: Pago Móvil */}
-                <section className={`mb-12 transition-opacity duration-500 ${items.length === 0 ? 'opacity-50 pointer-events-none grayscale' : 'opacity-100'}`}>
+                <section className={`mb-12 transition-opacity duration-500 ${items.length === 0 ? 'opacity-50 pointer-events-none grayscale' : 'opacity-100'}`} id="step-payment">
                     <div className="flex items-center gap-3 mb-6">
                         <div className="bg-[#F2A900] text-[#3E2723] w-10 h-10 rounded-full flex items-center justify-center font-bold text-xl font-heading shadow-md border-2 border-white">3</div>
                         <h2 className="text-2xl font-bold font-heading text-[#D91A2A]">PAGO Y RECIBO</h2>

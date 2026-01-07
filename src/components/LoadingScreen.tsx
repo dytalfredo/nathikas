@@ -7,10 +7,18 @@ export default function LoadingScreen() {
     const [progress, setProgress] = useState(0);
 
     const handleEnter = () => {
+        sessionStorage.setItem('hasSeenLoadingScreen', 'true');
         setIsVisible(false);
     };
 
     useEffect(() => {
+        // Check if seen on client mount
+        const hasSeen = sessionStorage.getItem('hasSeenLoadingScreen');
+        if (hasSeen) {
+            setIsVisible(false);
+            return;
+        }
+
         if (isVisible) {
             document.body.style.overflow = 'hidden';
 
@@ -23,14 +31,12 @@ export default function LoadingScreen() {
                     }
                     return prev + 1;
                 });
-            }, 30); // 30ms * 100 = 3000ms = 3s
+            }, 50); // 5 seconds total
 
             return () => {
                 clearInterval(interval);
-                document.body.style.overflow = 'auto'; // Ensure scroll restoration on unmount
+                document.body.style.overflow = 'auto';
             };
-        } else {
-            document.body.style.overflow = 'auto';
         }
     }, [isVisible]);
 
@@ -53,7 +59,7 @@ export default function LoadingScreen() {
                                 backgroundImage: "url('/images/AnimacionLoginSprite.png')",
                                 backgroundSize: "512px 64px",
                                 backgroundRepeat: "no-repeat",
-                                animationDuration: "3s",
+                                animationDuration: "5s",
                                 transform: "scale(4)",
                             }}
                         ></div>

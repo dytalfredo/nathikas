@@ -19,7 +19,7 @@ export default function Shop({ data }: Props) {
     const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
     return (
-        <div className="min-h-screen bg-[#FDF6E3]">
+        <div className="min-h-screen bg-[#FDF6E3] relative">
             {/* 1. Hero Section - CTA navigates to /shop directly now */}
             <HeroSection scrollToStore={() => window.location.href = '/shop'} />
 
