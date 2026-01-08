@@ -1,0 +1,8 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import AdminManager from "../../components/admin/AdminManager";
+---
+
+<Layout title="Nathikas Admin" showLoading={false}>
+    <AdminManager client:only="react" />
+</Layout>

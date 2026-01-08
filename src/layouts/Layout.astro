@@ -1,13 +1,15 @@
 ---
 import "../styles/global.css";
 import LoadingScreen from "../components/LoadingScreen";
+import { pwaInfo } from "virtual:pwa-info";
 
 interface Props {
     title: string;
     showLoading?: boolean;
+    enablePWA?: boolean;
 }
 
-const { title, showLoading = true } = Astro.props;
+const { title, showLoading = true, enablePWA = false } = Astro.props;
 ---
 
 <!doctype html>
@@ -19,7 +21,9 @@ const { title, showLoading = true } = Astro.props;
             content="Nathikas - Sabor mexicano que explota"
         />
         <meta name="viewport" content="width=device-width" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <meta name="theme-color" content="#FDF6E3" />
+        <link rel="icon" type="image/png" href="/images/logo.png" />
+        <link rel="apple-touch-icon" href="/images/logo.png" />
         <meta name="generator" content={Astro.generator} />
         <title>{title}</title>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -28,9 +32,14 @@ const { title, showLoading = true } = Astro.props;
             href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Chicle&display=swap"
             rel="stylesheet"
         />
+        {
+            enablePWA && pwaInfo && (
+                <Fragment set:html={pwaInfo.webManifest.linkTag} />
+            )
+        }
     </head>
     <body class="bg-[#FDF6E3] text-[#3E2723] min-h-screen relative">
-        {showLoading && <LoadingScreen client:load />}
+        {showLoading && <LoadingScreen client:only="react" />}
         <slot />
     </body>
 </html>

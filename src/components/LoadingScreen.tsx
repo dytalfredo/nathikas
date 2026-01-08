@@ -47,6 +47,7 @@ export default function LoadingScreen() {
                     initial={{ opacity: 1 }}
                     exit={{ opacity: 0, y: -20, transition: { duration: 0.8, ease: "easeInOut" } }}
                     className="fixed inset-0 z-[9999] bg-[#FDF6E3] flex flex-col items-center justify-center p-4 overflow-hidden gap-8"
+                    suppressHydrationWarning
                 >
                     {/* Background Pattern */}
                     <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'url("/recursos/papel-picado-bottom.png")', backgroundSize: 'cover' }}></div>

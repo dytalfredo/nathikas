@@ -7,6 +7,10 @@ import { venezuelaData } from '../data/venezuela';
 import { getAgenciesForCity } from '../data/agencies';
 import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
+import { db } from '../lib/firebase';
+import { collection, onSnapshot, addDoc, serverTimestamp, doc, updateDoc, writeBatch } from 'firebase/firestore';
+import { loginAnonymously } from '../lib/auth-service';
+import { useAuthStore } from '../store/authStore';
 
 const LeafletMap = lazy(() => import('./LeafletMap'));
 
@@ -23,9 +27,27 @@ export default function OrderFlow({ data }: Props) {
     const [selectedCity, setSelectedCity] = useState('');
     const [shippingMethod, setShippingMethod] = useState('');
     const [selectedAgency, setSelectedAgency] = useState('');
+    const [userName, setUserName] = useState('');
+    const [userPhone, setUserPhone] = useState('');
+    const [userEmail, setUserEmail] = useState('');
+    const [paymentBank, setPaymentBank] = useState('');
+    const [paymentReference, setPaymentReference] = useState('');
+    const [paymentId, setPaymentId] = useState('');
+    const [paymentPhone, setPaymentPhone] = useState('');
+    const [stocks, setStocks] = useState<Record<string, number>>({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         setIsMounted(true);
+        // Listen to live stock
+        const unsub = onSnapshot(collection(db, "products"), (snapshot) => {
+            const stockMap: Record<string, number> = {};
+            snapshot.forEach(doc => {
+                stockMap[doc.id] = doc.data().stock || 0;
+            });
+            setStocks(stockMap);
+        });
+        return () => unsub();
     }, []);
 
     const filteredCities = venezuelaData.find(d => d.estado === selectedState)?.ciudades || [];
@@ -43,21 +65,136 @@ export default function OrderFlow({ data }: Props) {
     }, [step]);
 
     const startTour = () => {
+        const tutorialImg = '<img src="/recursos/recurso4.png" class="tutorial-mascot-anim" style="width: 60px; height: auto; flex-shrink: 0;" />';
+        const wrapDesc = (textValue: string) => `<div style="display: flex; align-items: center; gap: 12px; text-align: left;">${tutorialImg}<span style="font-size: 14px; line-height: 1.4; font-weight: 600;">${textValue}</span></div>`;
+
         const driverObj = driver({
             showProgress: true,
             animate: true,
+            popoverClass: "driverjs-theme",
+            onHighlightStarted: () => {
+                document.body.style.overflow = 'hidden';
+            },
+            onDestroyed: () => {
+                document.body.style.overflow = 'auto';
+            },
             steps: [
-                { element: '#step-products', popover: { title: 'Paso 1: Elige tu Antojo', description: 'Explora nuestra selección de gomitas y agrega las que más te gusten a tu carrito.' } },
-                ...(items.length > 0 ? [{ element: '#cart-summary', popover: { title: 'Resumen del Pedido', description: 'Aquí puedes ver el detalle de lo que llevas y el total a pagar.' } }] : []),
-                { element: '#step-shipping', popover: { title: 'Paso 2: Envío', description: 'Ingresa tus datos, selecciona tu ciudad y elige si prefieres MRW, Zoom o retiro personal.' } },
-                { element: '#map-container', popover: { title: 'Ubicación', description: 'Usa el mapa para confirmar tu ubicación exacta o buscar la agencia más cercana.' } },
-                { element: '#step-payment', popover: { title: 'Paso 3: Pago y Confirmación', description: 'Realiza el pago móvil y confirma tu pedido. ¡Te redirigiremos a WhatsApp para finalizar!' } },
+                { element: '#step-products', popover: { title: 'Paso 1: Elige tu Antojo', description: wrapDesc('Explora nuestra selección de gomitas y agrega las que más te gusten a tu carrito.') } },
+                ...(items.length > 0 ? [{ element: '#cart-summary', popover: { title: 'Resumen del Pedido', description: wrapDesc('Aquí puedes ver el detalle de lo que llevas y el total a pagar.') } }] : []),
+                { element: '#step-shipping', popover: { title: 'Paso 2: Envío', description: wrapDesc('Ingresa tus datos, selecciona tu ciudad y elige si prefieres MRW, Zoom o retiro personal.') } },
+                { element: '#map-container', popover: { title: 'Ubicación', description: wrapDesc('Usa el mapa para confirmar tu ubicación exacta o buscar la agencia más cercana.') } },
+                { element: '#step-payment', popover: { title: 'Paso 3: Pago y Confirmación', description: wrapDesc('Realiza el pago móvil y confirma tu pedido. ¡Te redirigiremos a WhatsApp para finalizar!') } },
             ],
             nextBtnText: 'Siguiente',
             prevBtnText: 'Anterior',
             doneBtnText: '¡Entendido!',
         });
         driverObj.drive();
+    };
+
+    const handleConfirmOrder = () => {
+        // Validation basic
+        if (!userName || !userPhone || items.length === 0) {
+            alert('Por favor completa tus datos de contacto y productos.');
+            return;
+        }
+
+        const businessPhone = "+584141234567"; // Adjust as needed
+
+        let message = `*NUEVO PEDIDO - NATHIKAS*\n\n`;
+        message += `👤 *Cliente:* ${userName}\n`;
+        message += `📞 *WhatsApp:* ${userPhone}\n\n`;
+
+        message += `📦 *PRODUCTOS:*\n`;
+        items.forEach(item => {
+            message += `- ${item.name} (x${item.quantity}) - $${(item.price * item.quantity).toFixed(2)}\n`;
+        });
+        message += `\n💰 *Total:* $${subtotal.toFixed(2)}\n\n`;
+
+        message += `📍 *ENVÍO:*\n`;
+        message += `- Estado: ${selectedState}\n`;
+        message += `- Ciudad: ${selectedCity}\n`;
+        message += `- Método: ${shippingMethod}\n`;
+        if (selectedAgency) {
+            const agency = availableAgencies.find(a => a.id === selectedAgency);
+            message += `- Agencia: ${agency?.name || selectedAgency}\n`;
+        }
+
+        message += `\n💳 *DATOS DE PAGO:*\n`;
+        message += `- Banco: ${paymentBank}\n`;
+        message += `- Ref: ${paymentReference}\n`;
+        message += `- Cédula: ${paymentId}\n`;
+        message += `- Tel Pago: ${paymentPhone}\n`;
+
+        const encodedMessage = encodeURIComponent(message);
+
+        // SAVE TO FIREBASE
+        const saveOrder = async () => {
+            setIsSubmitting(true);
+            try {
+                // 1. Asegurar Autenticación (Anónima)
+                let currentUser = useAuthStore.getState().user;
+                if (!currentUser) {
+                    console.log("Iniciando sesión anónima para el cliente...");
+                    const anonUser = await loginAnonymously();
+                    if (!anonUser) throw new Error("No se pudo crear sesión anónima");
+                    currentUser = { uid: anonUser.uid, email: null, role: null };
+                }
+
+                // 2. Revisar stock de nuevo
+                for (const item of items) {
+                    if ((stocks[item.id] || 0) < item.quantity) {
+                        alert(`Lo sentimos, no hay suficiente stock de ${item.name}.`);
+                        setIsSubmitting(false);
+                        return;
+                    }
+                }
+
+                const batch = writeBatch(db);
+
+                // Deduct stock
+                items.forEach(item => {
+                    const productRef = doc(db, "products", item.id);
+                    batch.update(productRef, {
+                        stock: (stocks[item.id] || 0) - item.quantity
+                    });
+                });
+
+                // Save order
+                await addDoc(collection(db, "orders"), {
+                    customerId: currentUser.uid,
+                    userName,
+                    userPhone,
+                    userEmail,
+                    items: items.map(i => ({ id: i.id, name: i.name, quantity: i.quantity, price: i.price })),
+                    subtotal,
+                    total,
+                    selectedState,
+                    selectedCity,
+                    shippingMethod,
+                    selectedAgency,
+                    paymentBank,
+                    paymentReference,
+                    paymentId,
+                    paymentPhone,
+                    status: 'pendiente',
+                    createdAt: serverTimestamp()
+                });
+
+                await batch.commit();
+
+                // Open WhatsApp
+                window.open(`https://wa.me/${businessPhone}?text=${encodedMessage}`, '_blank');
+                // Clear cart? Maybe after redirect.
+            } catch (err) {
+                console.error("Error saving order:", err);
+                alert("Hubo un problema al procesar tu pedido. Intenta de nuevo.");
+            } finally {
+                setIsSubmitting(false);
+            }
+        };
+
+        saveOrder();
     };
 
     useEffect(() => {
@@ -95,58 +232,70 @@ export default function OrderFlow({ data }: Props) {
                         <h2 className="text-2xl font-bold font-heading text-[#D91A2A]">ELIGE TU ANTOJO</h2>
                     </div>
 
-                    {/* Product Grid with Container Queries */}
-                    <div className="@container">
-                        <div className="grid grid-cols-1 @min-[340px]:grid-cols-2 gap-4">
-                            {data.products.map((product: Product) => {
-                                const inCart = items.find(i => i.id === product.id);
-                                return (
-                                    <motion.div
-                                        key={product.id}
-                                        className={`bg-white rounded-xl shadow-lg overflow-hidden border-2 ${inCart ? 'border-[#F2A900]' : 'border-transparent'}`}
-                                        whileTap={{ scale: 0.98 }}
-                                    >
-                                        <div className="aspect-square relative overflow-hidden bg-gray-100">
-                                            <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
-                                            {inCart && (
-                                                <div className="absolute top-2 right-2 bg-[#F2A900] text-[#3E2723] text-xs font-bold px-2 py-1 rounded-full shadow-sm">
-                                                    x{inCart.quantity}
-                                                </div>
-                                            )}
+                    {/* Extra Compact Product Grid */}
+                    <div className="grid grid-cols-3 gap-2">
+                        {data.products.map((product: Product) => {
+                            const inCart = items.find(i => i.id === product.id);
+                            return (
+                                <motion.div
+                                    key={product.id}
+                                    className={`bg-white rounded-xl shadow-md overflow-hidden border-2 flex flex-col ${inCart ? 'border-[#F2A900]' : 'border-transparent'}`}
+                                    whileTap={{ scale: 0.98 }}
+                                >
+                                    <div className="aspect-square bg-gray-50 flex items-center justify-center p-1 relative">
+                                        <img src={product.image} alt={product.name} className="w-full h-full object-contain" />
+                                        {inCart && (
+                                            <div className="absolute top-0.5 right-0.5 bg-[#D91A2A] text-white text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full shadow-sm">
+                                                {inCart.quantity}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="p-1.5 text-center flex-grow flex flex-col justify-between gap-0.5">
+                                        <div>
+                                            <h3 className="font-bold text-[9px] md:text-xs leading-tight line-clamp-2 h-6 md:h-8 flex items-center justify-center">{product.name}</h3>
+                                            <p className="text-[#D91A2A] font-bold text-xs md:text-sm mt-0.5">${product.price.toFixed(2)}</p>
                                         </div>
-                                        <div className="p-3 text-center">
-                                            <h3 className="font-bold text-sm leading-tight mb-1 h-10 flex items-center justify-center">{product.name}</h3>
-                                            <p className="text-[#D91A2A] font-bold mb-3">${product.price.toFixed(2)}</p>
 
-                                            {inCart ? (
-                                                <div className="flex items-center justify-center gap-2 bg-[#FDF6E3] rounded-full p-1 border border-[#F2A900]">
-                                                    <button
-                                                        onClick={() => updateQuantity(product.id, Math.max(0, inCart.quantity - 1))}
-                                                        className="w-8 h-8 flex items-center justify-center bg-white rounded-full text-[#D91A2A] shadow-sm hover:bg-gray-50"
-                                                    >
-                                                        <Minus size={16} />
-                                                    </button>
-                                                    <span className="font-bold w-4 text-center">{inCart.quantity}</span>
-                                                    <button
-                                                        onClick={() => updateQuantity(product.id, inCart.quantity + 1)}
-                                                        className="w-8 h-8 flex items-center justify-center bg-[#F2A900] rounded-full text-[#3E2723] shadow-sm hover:bg-[#e09b00]"
-                                                    >
-                                                        <Plus size={16} />
-                                                    </button>
-                                                </div>
-                                            ) : (
+                                        {inCart ? (
+                                            <div className="flex items-center justify-center gap-0.5 bg-[#FDF6E3] rounded-full p-0.5 border border-[#F2A900] mt-1 text-black">
                                                 <button
-                                                    onClick={() => addToCart(product, 1)}
-                                                    className="w-full bg-[#D91A2A] text-white py-2 rounded-lg font-bold text-sm shadow-md hover:bg-[#b9151e] transition-colors"
+                                                    onClick={() => updateQuantity(product.id, Math.max(0, inCart.quantity - 1))}
+                                                    className="w-4 h-4 md:w-6 md:h-6 flex items-center justify-center bg-white rounded-full text-[#D91A2A] shadow-sm"
                                                 >
-                                                    AGREGAR
+                                                    <Minus size={8} />
                                                 </button>
-                                            )}
-                                        </div>
-                                    </motion.div>
-                                );
-                            })}
-                        </div>
+                                                <span className="font-bold text-[9px] md:text-xs w-2 text-center">{inCart.quantity}</span>
+                                                <button
+                                                    onClick={() => {
+                                                        if (inCart.quantity < (stocks[product.id] || 0)) {
+                                                            updateQuantity(product.id, inCart.quantity + 1);
+                                                        }
+                                                    }}
+                                                    disabled={inCart.quantity >= (stocks[product.id] || 0)}
+                                                    className={`w-4 h-4 md:w-6 md:h-6 flex items-center justify-center rounded-full shadow-sm transition-colors ${inCart.quantity >= (stocks[product.id] || 0)
+                                                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                                        : 'bg-[#F2A900] text-[#3E2723]'
+                                                        }`}
+                                                >
+                                                    <Plus size={8} />
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <button
+                                                onClick={() => addToCart(product, 1)}
+                                                disabled={(stocks[product.id] || 0) <= 0}
+                                                className={`w-full py-1 rounded-lg font-bold text-[9px] md:text-xs shadow-md mt-1 transition-all ${(stocks[product.id] || 0) <= 0
+                                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                                    : 'bg-[#D91A2A] text-white'
+                                                    }`}
+                                            >
+                                                {(stocks[product.id] || 0) <= 0 ? 'SIN STOCK' : 'AGREGAR'}
+                                            </button>
+                                        )}
+                                    </div>
+                                </motion.div>
+                            );
+                        })}
                     </div>
                 </section>
 
@@ -209,12 +358,36 @@ export default function OrderFlow({ data }: Props) {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-bold mb-1 text-gray-700">Nombre Completo</label>
-                                <input type="text" className="w-full bg-[#FDF6E3] border-2 border-[#E0E0E0] rounded-lg p-3 focus:outline-none focus:border-[#F2A900] transition-colors" placeholder="Ej. Juan Pérez" />
+                                <input
+                                    type="text"
+                                    value={userName}
+                                    onChange={(e) => setUserName(e.target.value)}
+                                    className="w-full bg-[#FDF6E3] border-2 border-[#E0E0E0] rounded-lg p-3 focus:outline-none focus:border-[#F2A900] transition-colors"
+                                    placeholder="Ej. Juan Pérez"
+                                />
                             </div>
                             <div>
                                 <label className="block text-sm font-bold mb-1 text-gray-700">WhatsApp</label>
-                                <input type="tel" className="w-full bg-[#FDF6E3] border-2 border-[#E0E0E0] rounded-lg p-3 focus:outline-none focus:border-[#F2A900] transition-colors" placeholder="+58 412 1234567" />
+                                <input
+                                    type="tel"
+                                    value={userPhone}
+                                    onChange={(e) => setUserPhone(e.target.value)}
+                                    className="w-full bg-[#FDF6E3] border-2 border-[#E0E0E0] rounded-lg p-3 focus:outline-none focus:border-[#F2A900] transition-colors"
+                                    placeholder="+58 412 1234567"
+                                />
                             </div>
+                        </div>
+
+                        {/* Email field */}
+                        <div>
+                            <label className="block text-sm font-bold mb-1 text-gray-700">Correo Electrónico (para notificaciones)</label>
+                            <input
+                                type="email"
+                                value={userEmail}
+                                onChange={(e) => setUserEmail(e.target.value)}
+                                className="w-full bg-[#FDF6E3] border-2 border-[#E0E0E0] rounded-lg p-3 focus:outline-none focus:border-[#F2A900] transition-colors"
+                                placeholder="tu@correo.com"
+                            />
                         </div>
 
                         {/* State and City Selector */}
@@ -347,7 +520,58 @@ export default function OrderFlow({ data }: Props) {
                             </div>
                         </div>
 
+                        {/* Payment Verification Form */}
+                        <div className="space-y-4 mb-6">
+                            <h4 className="font-bold text-sm text-[#D91A2A] border-b border-[#D91A2A]/20 pb-2 flex items-center gap-2">
+                                <CreditCard size={16} />
+                                DATOS DE TU PAGO
+                            </h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-xs font-bold mb-1 text-gray-700 uppercase">Banco Emisor</label>
+                                    <input
+                                        type="text"
+                                        value={paymentBank}
+                                        onChange={(e) => setPaymentBank(e.target.value)}
+                                        className="w-full bg-[#FDF6E3] border-2 border-[#E0E0E0] rounded-lg p-3 text-sm focus:outline-none focus:border-[#F2A900] transition-colors"
+                                        placeholder="Ej. Banesco, Mercantil..."
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold mb-1 text-gray-700 uppercase">Referencia (Últimos 4 o 6 dígitos)</label>
+                                    <input
+                                        type="text"
+                                        value={paymentReference}
+                                        onChange={(e) => setPaymentReference(e.target.value)}
+                                        className="w-full bg-[#FDF6E3] border-2 border-[#E0E0E0] rounded-lg p-3 text-sm focus:outline-none focus:border-[#F2A900] transition-colors"
+                                        placeholder="0000"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold mb-1 text-gray-700 uppercase">Cédula del Titular</label>
+                                    <input
+                                        type="text"
+                                        value={paymentId}
+                                        onChange={(e) => setPaymentId(e.target.value)}
+                                        className="w-full bg-[#FDF6E3] border-2 border-[#E0E0E0] rounded-lg p-3 text-sm focus:outline-none focus:border-[#F2A900] transition-colors"
+                                        placeholder="V-12345678"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold mb-1 text-gray-700 uppercase">Teléfono del Pago</label>
+                                    <input
+                                        type="tel"
+                                        value={paymentPhone}
+                                        onChange={(e) => setPaymentPhone(e.target.value)}
+                                        className="w-full bg-[#FDF6E3] border-2 border-[#E0E0E0] rounded-lg p-3 text-sm focus:outline-none focus:border-[#F2A900] transition-colors"
+                                        placeholder="04121234567"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
                         <button
+                            onClick={handleConfirmOrder}
                             className="w-full bg-[#007A33] text-white py-4 rounded-xl font-bold text-xl shadow-[0_4px_14px_0_rgba(0,122,51,0.39)] hover:bg-[#006028] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
                         >
                             <span>CONFIRMAR PEDIDO</span>
