@@ -1,5 +1,5 @@
-import { onAuthStateChanged, signInWithEmailAndPassword, signOut, signInAnonymously } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { onAuthStateChanged, signInWithEmailAndPassword, signOut, signInAnonymously, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "./firebase";
 import { useAuthStore, type UserRole } from "../store/authStore";
 
@@ -20,7 +20,8 @@ export const initAuth = () => {
                     useAuthStore.getState().setUser({
                         uid: user.uid,
                         email: null,
-                        role: 'vendedor' as UserRole // Le damos un rol base simbólico o null
+                        role: 'vendedor' as UserRole,
+                        isAnonymous: true
                     });
                     return;
                 }
@@ -37,19 +38,25 @@ export const initAuth = () => {
 
                 const userDoc = await getDoc(doc(db, "users", user.uid));
                 if (userDoc.exists()) {
-                    const role = userDoc.data().role as UserRole;
+                    const data = userDoc.data();
+                    const role = data.role as UserRole;
                     console.log("Rol obtenido del perfil:", role);
                     useAuthStore.getState().setUser({
                         uid: user.uid,
                         email: user.email,
-                        role: role
+                        role: role,
+                        name: data.name,
+                        phone: data.phone,
+                        cedula: data.cedula,
+                        isAnonymous: false
                     });
                 } else {
                     console.warn("⚠️ Perfil de Firestore no encontrado para UID:", user.uid);
                     useAuthStore.getState().setUser({
                         uid: user.uid,
                         email: user.email,
-                        role: null
+                        role: null,
+                        isAnonymous: false
                     });
                 }
             } catch (err: any) {
@@ -57,7 +64,8 @@ export const initAuth = () => {
                 useAuthStore.getState().setUser({
                     uid: user.uid,
                     email: user.email,
-                    role: null
+                    role: null,
+                    isAnonymous: false
                 });
             }
         } else {
@@ -73,6 +81,42 @@ export const loginAnonymously = async () => {
     } catch (err) {
         console.error("Error en login anónimo:", err);
         return null;
+    }
+};
+
+export const loginWithGoogle = async () => {
+    if (!auth) return null;
+    try {
+        const provider = new GoogleAuthProvider();
+        const result = await signInWithPopup(auth, provider);
+        return result.user;
+    } catch (err) {
+        console.error("Error en Google Login:", err);
+        return null;
+    }
+};
+
+export const syncUserProfile = async (uid: string, data: { name: string; phone: string; cedula: string; email?: string | null }) => {
+    if (!db) return;
+    try {
+        const userRef = doc(db, "users", uid);
+        const userDoc = await getDoc(userRef);
+
+        const profileData = {
+            ...data,
+            role: userDoc.exists() ? (userDoc.data().role || 'customer') : 'customer',
+            updatedAt: serverTimestamp()
+        };
+
+        if (!userDoc.exists()) {
+            // @ts-ignore
+            profileData.createdAt = serverTimestamp();
+        }
+
+        await setDoc(userRef, profileData, { merge: true });
+        console.log("Perfil de usuario sincronizado correctamente.");
+    } catch (err) {
+        console.error("Error al sincronizar perfil:", err);
     }
 };
 

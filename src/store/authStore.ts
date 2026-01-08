@@ -1,11 +1,15 @@
 import { create } from 'zustand';
 
-export type UserRole = 'administrator' | 'asistente' | 'vendedor' | null;
+export type UserRole = 'administrator' | 'asistente' | 'vendedor' | 'customer' | null;
 
 interface UserProfile {
     uid: string;
     email: string | null;
     role: UserRole;
+    name?: string;
+    phone?: string;
+    cedula?: string;
+    isAnonymous?: boolean;
 }
 
 interface AuthState {

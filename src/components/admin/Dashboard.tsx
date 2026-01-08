@@ -13,24 +13,38 @@ import {
     ShoppingCart,
     Clock,
     CheckCircle2,
-    AlertTriangle
+    AlertTriangle,
+    Settings,
+    TrendingUp
 } from 'lucide-react';
 
 // Sub-components for sections
 import InventoryView from './InventoryView';
 import OrdersView from './OrdersView';
+import ProductionView from './ProductionView';
+import SettingsView from './SettingsView';
+import ReportsView from './ReportsView';
 
 export default function Dashboard() {
     const { user } = useAuthStore();
     const [activeTab, setActiveTab] = useState('orders');
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [autoOpenOrderId, setAutoOpenOrderId] = useState<string | null>(null);
+
+    const navigateToOrder = (orderId: string) => {
+        setAutoOpenOrderId(orderId);
+        setActiveTab('orders');
+    };
 
     if (!user) return null;
 
     const menuItems = [
         { id: 'orders', label: 'Pedidos', icon: ShoppingCart, roles: ['administrator', 'asistente', 'vendedor'] },
+        { id: 'reports', label: 'Reportes', icon: TrendingUp, roles: ['administrator'] },
+        { id: 'production', label: 'Producción', icon: AlertTriangle, roles: ['administrator', 'asistente'] },
         { id: 'inventory', label: 'Inventario', icon: Package, roles: ['administrator', 'asistente', 'vendedor'] },
         { id: 'shipments', label: 'Despachos', icon: Truck, roles: ['administrator', 'asistente'] },
+        { id: 'settings', label: 'Configuraciones', icon: Settings, roles: ['administrator'] },
     ];
 
     const filteredMenu = menuItems.filter(item => item.roles.includes(user.role as string));
@@ -116,8 +130,16 @@ export default function Dashboard() {
                                 transition={{ duration: 0.2 }}
                                 className="max-w-6xl mx-auto"
                             >
-                                {activeTab === 'orders' && <OrdersView />}
+                                {activeTab === 'orders' && (
+                                    <OrdersView
+                                        autoOpenOrderId={autoOpenOrderId}
+                                        onModalClose={() => setAutoOpenOrderId(null)}
+                                    />
+                                )}
+                                {activeTab === 'production' && <ProductionView onNavigateToOrder={navigateToOrder} />}
                                 {activeTab === 'inventory' && <InventoryView />}
+                                {activeTab === 'settings' && <SettingsView />}
+                                {activeTab === 'reports' && <ReportsView />}
                                 {activeTab === 'shipments' && <OrdersView filterByStatus="pagado" title="Gestión de Despachos" />}
                             </motion.div>
                         </AnimatePresence>

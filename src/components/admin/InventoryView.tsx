@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { db } from '../../lib/firebase';
 import { useAuthStore } from '../../store/authStore';
+import { useAlertStore } from '../../store/alertStore';
 import { collection, doc, updateDoc, onSnapshot, setDoc } from 'firebase/firestore';
 import { motion } from 'framer-motion';
 import { Plus, Minus, Save, RotateCcw, Package, AlertTriangle } from 'lucide-react';
@@ -66,7 +67,11 @@ export default function InventoryView() {
             });
         } catch (err) {
             console.error("Error updating stock:", err);
-            alert("Error al actualizar inventario. Verifica tus permisos.");
+            useAlertStore.getState().showAlert(
+                "Error de Inventario",
+                "No se pudo actualizar el stock. Verifica tus permisos de administrador.",
+                "error"
+            );
         } finally {
             setUpdating(null);
         }
@@ -83,10 +88,18 @@ export default function InventoryView() {
                     stock: 0
                 });
             }
-            alert("Inventario inicializado correctamente.");
+            useAlertStore.getState().showAlert(
+                "¡Éxito!",
+                "Inventario inicializado correctamente con los productos configurados.",
+                "success"
+            );
         } catch (err) {
             console.error("Error initializing:", err);
-            alert("Error al inicializar. Revisa la consola y las reglas de Firestore.");
+            useAlertStore.getState().showAlert(
+                "Fallo de Inicialización",
+                "Hubo un error al intentar crear los productos en la base de datos.",
+                "error"
+            );
         } finally {
             setLoading(false);
         }
@@ -142,15 +155,25 @@ export default function InventoryView() {
                             <div className="flex items-center justify-between gap-4">
                                 <button
                                     onClick={() => updateStock(product.id, product.stock - 1)}
-                                    className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-red-500 hover:bg-red-50 transition-colors"
+                                    className="w-12 h-12 shrink-0 bg-white rounded-xl shadow-sm flex items-center justify-center text-red-500 hover:bg-red-50 transition-colors"
                                 >
                                     <Minus />
                                 </button>
 
-                                <div className="text-center flex-1">
-                                    <span className={`text-4xl font-heading ${product.stock <= 5 ? 'text-[#D91A2A]' : 'text-[#3E2723]'}`}>
-                                        {product.stock}
-                                    </span>
+                                <div className="text-center flex-1 min-w-0">
+                                    <input
+                                        type="number"
+                                        value={product.stock}
+                                        onChange={(e) => {
+                                            const val = parseInt(e.target.value);
+                                            if (!isNaN(val) && val >= 0) {
+                                                updateStock(product.id, val);
+                                            } else if (e.target.value === '') {
+                                                updateStock(product.id, 0);
+                                            }
+                                        }}
+                                        className={`w-full bg-transparent text-center font-heading text-4xl focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${product.stock <= 5 ? 'text-[#D91A2A]' : 'text-[#3E2723]'}`}
+                                    />
                                     {product.stock <= 5 && (
                                         <div className="flex items-center justify-center gap-1 text-[10px] text-[#D91A2A] font-bold mt-1">
                                             <AlertTriangle size={12} />
@@ -161,7 +184,7 @@ export default function InventoryView() {
 
                                 <button
                                     onClick={() => updateStock(product.id, product.stock + 1)}
-                                    className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-green-600 hover:bg-green-50 transition-colors"
+                                    className="w-12 h-12 shrink-0 bg-white rounded-xl shadow-sm flex items-center justify-center text-green-600 hover:bg-green-50 transition-colors"
                                 >
                                     <Plus />
                                 </button>

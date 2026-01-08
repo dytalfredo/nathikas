@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import LoadingScreen from "../components/LoadingScreen";
+import CustomAlert from "../components/ui/CustomAlert";
 import { pwaInfo } from "virtual:pwa-info";
 
 interface Props {
@@ -40,6 +41,7 @@ const { title, showLoading = true, enablePWA = false } = Astro.props;
     </head>
     <body class="bg-[#FDF6E3] text-[#3E2723] min-h-screen relative">
         {showLoading && <LoadingScreen client:only="react" />}
+        <CustomAlert client:only="react" />
         <slot />
     </body>
 </html>

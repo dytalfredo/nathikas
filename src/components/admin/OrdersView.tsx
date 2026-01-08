@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { db } from '../../lib/firebase';
 import { useAuthStore } from '../../store/authStore';
-import { collection, query, orderBy, onSnapshot, doc, updateDoc, where, writeBatch, increment, getDoc } from 'firebase/firestore';
+import { useAlertStore } from '../../store/alertStore';
+import { collection, query, orderBy, onSnapshot, doc, updateDoc, where, writeBatch, increment, getDoc, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Clock,
@@ -14,7 +15,8 @@ import {
     Filter,
     X,
     User,
-    Package
+    Package,
+    RotateCcw
 } from 'lucide-react';
 
 interface OrderItem {
@@ -28,6 +30,14 @@ interface Order {
     id: string;
     userName: string;
     userPhone: string;
+    userCedula?: string;
+    userEmail?: string;
+    isGift?: boolean;
+    recipient?: {
+        name: string;
+        phone: string;
+        cedula: string;
+    } | null;
     items: OrderItem[];
     total: number;
     subtotal: number;
@@ -39,13 +49,22 @@ interface Order {
     paymentReference: string;
     paymentId: string;
     paymentPhone: string;
-    userEmail?: string;
+    zelleEmail?: string;
+    zelleSenderName?: string;
     cancelReason?: string;
     status: 'pendiente' | 'pagado' | 'despachado' | 'entregado' | 'cancelado';
+    isBackorder?: boolean;
     createdAt: any;
 }
 
-export default function OrdersView({ filterByStatus, title }: { filterByStatus?: string, title?: string }) {
+interface OrdersViewProps {
+    filterByStatus?: string;
+    title?: string;
+    autoOpenOrderId?: string | null;
+    onModalClose?: () => void;
+}
+
+export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onModalClose }: OrdersViewProps) {
     const { user } = useAuthStore();
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
@@ -89,6 +108,16 @@ export default function OrdersView({ filterByStatus, title }: { filterByStatus?:
         return () => unsub();
     }, [filterByStatus, user?.role]);
 
+    // Auto-open order details if requested
+    useEffect(() => {
+        if (autoOpenOrderId && orders.length > 0) {
+            const order = orders.find(o => o.id === autoOpenOrderId);
+            if (order) {
+                setSelectedOrder(order);
+            }
+        }
+    }, [autoOpenOrderId, orders]);
+
     const updateStatus = async (orderId: string, newStatus: string) => {
         const order = orders.find(o => o.id === orderId) || selectedOrder;
         if (!order) return;
@@ -97,7 +126,11 @@ export default function OrdersView({ filterByStatus, title }: { filterByStatus?:
         if (newStatus === 'cancelado') {
             reason = window.prompt("Escribe el motivo de la cancelación:") || '';
             if (!reason) {
-                alert("Debes indicar un motivo para cancelar.");
+                useAlertStore.getState().showAlert(
+                    "Dato Requerido",
+                    "Debes indicar un motivo para cancelar la orden.",
+                    "warning"
+                );
                 return;
             }
         }
@@ -127,7 +160,11 @@ export default function OrdersView({ filterByStatus, title }: { filterByStatus?:
                     const productSnap = await getDoc(doc(db, "products", item.id));
                     const currentStock = productSnap.data()?.stock || 0;
                     if (currentStock < item.quantity) {
-                        alert(`No hay stock suficiente de ${item.name} para reactivar este pedido.`);
+                        useAlertStore.getState().showAlert(
+                            "Stock Insuficiente",
+                            `No hay stock suficiente de ${item.name} para reactivar este pedido.`,
+                            "error"
+                        );
                         return;
                     }
                 }
@@ -169,11 +206,70 @@ export default function OrdersView({ filterByStatus, title }: { filterByStatus?:
             }
         } catch (err: any) {
             console.error("Error al actualizar estado:", err);
-            alert("Error al actualizar: " + (err.message || "Permisos insuficientes"));
+            useAlertStore.getState().showAlert(
+                "Error de Actualización",
+                "No se pudo cambiar el estado del pedido. Verifica tus permisos: " + (err.message || ""),
+                "error"
+            );
         }
     };
 
-    const StatusBadge = ({ status }: { status: string }) => {
+    const syncProductionNeeds = async (order: Order) => {
+        if (!order.isBackorder) return;
+
+        // Safety check: Don't sync if already dispatched or cancelled
+        if (['despachado', 'entregado', 'cancelado'].includes(order.status)) {
+            useAlertStore.getState().showAlert(
+                "Acción no permitida",
+                "No se puede sincronizar la producción de un pedido que ya ha sido despachado, entregado o cancelado.",
+                "warning"
+            );
+            return;
+        }
+
+        try {
+            // 1. Check if records already exist
+            const q = query(collection(db, "production_needs"), where("orderId", "==", order.id));
+            const snap = await getDocs(q);
+
+            if (!snap.empty) {
+                useAlertStore.getState().showAlert(
+                    "Información",
+                    "Ya existen registros de producción para este pedido. Si no los ves, es posible que ya hayan sido marcados como completados.",
+                    "info"
+                );
+                return;
+            }
+
+            // 2. If not, recreate them
+            // We'll have to rely on the order items. Since we don't know the stock at the EXACT moment of purchase 
+            // for legacy orders, we'll create needs for ALL items if it was a backorder? 
+            // No, better to try to be smart if possible, but the safest for the user's manual sync is to ask or just do it for all items.
+            // Actually, let's just create records for all items in the order as a "Force Sync".
+
+            for (const item of order.items) {
+                await addDoc(collection(db, "production_needs"), {
+                    orderId: order.id,
+                    productId: item.id,
+                    productName: item.name,
+                    quantityNeeded: item.quantity, // En un sync manual, asumimos que se necesita todo o el user lo ajustará
+                    status: 'pendiente',
+                    createdAt: serverTimestamp()
+                });
+            }
+
+            useAlertStore.getState().showAlert(
+                "Sincronización Exitosa",
+                "Se han regenerado los registros de producción para este pedido.",
+                "success"
+            );
+        } catch (err) {
+            console.error("Error syncing production:", err);
+            useAlertStore.getState().showAlert("Error", "No se pudo sincronizar con producción.", "error");
+        }
+    };
+
+    const StatusBadge = ({ status, isBackorder }: { status: string, isBackorder?: boolean }) => {
         const styles = {
             pendiente: 'bg-yellow-100 text-yellow-700 border-yellow-200',
             pagado: 'bg-blue-100 text-blue-700 border-blue-200',
@@ -182,9 +278,16 @@ export default function OrdersView({ filterByStatus, title }: { filterByStatus?:
             cancelado: 'bg-red-100 text-red-700 border-red-200',
         };
         return (
-            <span className={`px-2 py-1 rounded-full text-[10px] font-bold border uppercase ${styles[status as keyof typeof styles]}`}>
-                {status}
-            </span>
+            <div className="flex flex-col items-center gap-1">
+                <span className={`px-2 py-1 rounded-full text-[10px] font-bold border uppercase ${styles[status as keyof typeof styles]}`}>
+                    {status}
+                </span>
+                {isBackorder && (
+                    <span className="px-2 py-0.5 rounded-full text-[8px] font-bold bg-[#D91A2A] text-white border border-red-700 animate-pulse">
+                        EN PRODUCCIÓN
+                    </span>
+                )}
+            </div>
         );
     };
 
@@ -245,7 +348,7 @@ export default function OrdersView({ filterByStatus, title }: { filterByStatus?:
                                     </td>
                                     <td className="p-4 font-bold text-[#D91A2A]">${order.total.toFixed(2)}</td>
                                     <td className="p-4 text-black">
-                                        <StatusBadge status={order.status} />
+                                        <StatusBadge status={order.status} isBackorder={order.isBackorder} />
                                     </td>
                                     <td className="p-4">
                                         <button
@@ -286,7 +389,7 @@ export default function OrdersView({ filterByStatus, title }: { filterByStatus?:
                             </div>
                             <div className="text-right shrink-0">
                                 <p className="font-bold text-[#D91A2A] mb-1">${order.total.toFixed(2)}</p>
-                                <StatusBadge status={order.status} />
+                                <StatusBadge status={order.status} isBackorder={order.isBackorder} />
                             </div>
                         </motion.div>
                     ))
@@ -304,8 +407,27 @@ export default function OrdersView({ filterByStatus, title }: { filterByStatus?:
                             className="bg-[#FDF6E3] w-full max-w-4xl h-[95vh] md:h-auto md:max-h-[90vh] rounded-t-[2.5rem] md:rounded-3xl shadow-2xl overflow-hidden border-t-4 md:border-4 border-[#F2A900] flex flex-col"
                         >
                             <div className="bg-[#D91A2A] p-4 flex items-center justify-between text-white">
-                                <h3 className="font-heading text-2xl">Detalle del Pedido</h3>
-                                <button onClick={() => setSelectedOrder(null)}><X /></button>
+                                <div className="flex flex-col">
+                                    <h3 className="font-heading text-2xl">Detalle del Pedido</h3>
+                                    {selectedOrder.isBackorder && (
+                                        <span className="text-[10px] font-bold bg-white text-[#D91A2A] px-2 py-0.5 rounded-full w-fit">ORDEN EN PRODUCCIÓN</span>
+                                    )}
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    {selectedOrder.isBackorder && ['pendiente', 'pagado'].includes(selectedOrder.status) && (
+                                        <button
+                                            onClick={() => syncProductionNeeds(selectedOrder)}
+                                            className="bg-white/20 hover:bg-white/30 p-2 rounded-lg transition-colors text-xs font-bold flex items-center gap-1"
+                                            title="Sincronizar con Producción"
+                                        >
+                                            <RotateCcw size={14} /> SYNC
+                                        </button>
+                                    )}
+                                    <button onClick={() => {
+                                        setSelectedOrder(null);
+                                        onModalClose?.();
+                                    }}><X /></button>
+                                </div>
                             </div>
 
                             <div className="flex-1 overflow-y-auto p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -323,6 +445,12 @@ export default function OrdersView({ filterByStatus, title }: { filterByStatus?:
                                                 <p className="text-gray-400 text-xs">Teléfono</p>
                                                 <p className="font-bold text-blue-600">{selectedOrder.userPhone}</p>
                                             </div>
+                                            {selectedOrder.userCedula && (
+                                                <div className="col-span-2">
+                                                    <p className="text-gray-400 text-xs">Cédula Cliente</p>
+                                                    <p className="font-bold">{selectedOrder.userCedula}</p>
+                                                </div>
+                                            )}
                                         </div>
                                     </section>
 
@@ -339,27 +467,68 @@ export default function OrdersView({ filterByStatus, title }: { filterByStatus?:
                                         </div>
                                     </section>
 
+                                    {selectedOrder.isGift && selectedOrder.recipient && (
+                                        <section className="bg-pink-50/50 p-4 rounded-2xl border border-pink-100">
+                                            <h4 className="text-xs font-bold text-pink-600 uppercase mb-3 flex items-center gap-2">
+                                                🎁 Datos del Receptor (Regalo)
+                                            </h4>
+                                            <div className="grid grid-cols-2 gap-4 text-sm">
+                                                <div>
+                                                    <p className="text-gray-400 text-xs">Nombre</p>
+                                                    <p className="font-bold">{selectedOrder.recipient.name}</p>
+                                                </div>
+                                                <div>
+                                                    <p className="text-gray-400 text-xs">Teléfono</p>
+                                                    <p className="font-bold text-pink-600">{selectedOrder.recipient.phone}</p>
+                                                </div>
+                                                <div className="col-span-2">
+                                                    <p className="text-gray-400 text-xs">Cédula</p>
+                                                    <p className="font-bold">{selectedOrder.recipient.cedula}</p>
+                                                </div>
+                                            </div>
+                                        </section>
+                                    )}
+
                                     <section className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
                                         <h4 className="font-bold text-sm text-[#D91A2A] mb-3 uppercase flex items-center gap-2">
-                                            <Truck size={16} /> Pago Móvil
+                                            <Truck size={16} /> {selectedOrder.paymentBank === 'Zelle' ? 'Zelle' : 'Pago Móvil'}
                                         </h4>
                                         <div className="grid grid-cols-2 gap-4 text-sm">
-                                            <div>
-                                                <p className="text-gray-400 text-xs">Banco</p>
-                                                <p className="font-bold">{selectedOrder.paymentBank}</p>
-                                            </div>
-                                            <div>
-                                                <p className="text-gray-400 text-xs">Referencia</p>
-                                                <p className="font-bold">{selectedOrder.paymentReference}</p>
-                                            </div>
-                                            <div>
-                                                <p className="text-gray-400 text-xs">ID Pagador</p>
-                                                <p className="font-bold">{selectedOrder.paymentId}</p>
-                                            </div>
-                                            <div>
-                                                <p className="text-gray-400 text-xs">Telf Pago</p>
-                                                <p className="font-bold">{selectedOrder.paymentPhone}</p>
-                                            </div>
+                                            {selectedOrder.paymentBank === 'Zelle' ? (
+                                                <>
+                                                    <div className="col-span-2">
+                                                        <p className="text-gray-400 text-xs">Nombre Titular (Zelle)</p>
+                                                        <p className="font-bold">{selectedOrder.zelleSenderName || '(No registrado)'}</p>
+                                                    </div>
+                                                    <div className="col-span-2">
+                                                        <p className="text-gray-400 text-xs">Correo Zelle</p>
+                                                        <p className="font-bold">{selectedOrder.zelleEmail || '(No registrado)'}</p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-gray-400 text-xs">Cédula</p>
+                                                        <p className="font-bold">{selectedOrder.paymentId}</p>
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <div>
+                                                        <p className="text-gray-400 text-xs">Banco</p>
+                                                        <p className="font-bold">{selectedOrder.paymentBank}</p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-gray-400 text-xs">Referencia</p>
+                                                        <p className="font-bold">{selectedOrder.paymentReference}</p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-gray-400 text-xs">ID Pagador</p>
+                                                        <p className="font-bold">{selectedOrder.paymentId}</p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-gray-400 text-xs">Telf Pago</p>
+                                                        <p className="font-bold">{selectedOrder.paymentPhone}</p>
+                                                    </div>
+                                                </>
+                                            )}
                                             {selectedOrder.userEmail && (
                                                 <div className="col-span-2">
                                                     <p className="text-gray-400 text-xs">Correo</p>
