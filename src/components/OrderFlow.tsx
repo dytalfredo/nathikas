@@ -44,6 +44,7 @@ export default function OrderFlow({ data }: Props) {
     const [paymentReference, setPaymentReference] = useState('');
     const [paymentId, setPaymentId] = useState('');
     const [paymentPhone, setPaymentPhone] = useState('');
+    const [paymentSourceBank, setPaymentSourceBank] = useState('');
 
     // Zelle-specific verification
     const [zelleEmail, setZelleEmail] = useState('');
@@ -224,6 +225,7 @@ export default function OrderFlow({ data }: Props) {
         } else {
             message += `- Ref: ${paymentReference}\n`;
             message += `- Cédula: ${paymentId}\n`;
+            message += `- Banco: ${paymentSourceBank}\n`;
             message += `- Tel Pago: ${paymentPhone}\n`;
         }
 
@@ -281,6 +283,7 @@ export default function OrderFlow({ data }: Props) {
                     shippingMethod,
                     selectedAgency,
                     paymentBank,
+                    paymentSourceBank,
                     paymentReference,
                     paymentId,
                     paymentPhone,
@@ -404,6 +407,7 @@ export default function OrderFlow({ data }: Props) {
         setPaymentReference('');
         setPaymentId('');
         setPaymentPhone('');
+        setPaymentSourceBank('');
         setZelleEmail('');
         setZelleSenderName('');
     };
@@ -957,8 +961,8 @@ export default function OrderFlow({ data }: Props) {
                                                     <label className="block text-xs font-bold mb-1 text-gray-700 uppercase">Banco Emisor</label>
                                                     <input
                                                         type="text"
-                                                        value={paymentBank === 'Pago Móvil' ? '' : paymentBank} // This is used as placeholder if not Pago Movil
-                                                        onChange={(e) => setPaymentBank(e.target.value)}
+                                                        value={paymentSourceBank}
+                                                        onChange={(e) => setPaymentSourceBank(e.target.value)}
                                                         className="w-full bg-[#FDF6E3] border-2 border-[#E0E0E0] rounded-lg p-3 text-sm focus:outline-none focus:border-[#F2A900] transition-colors"
                                                         placeholder="Ej. Banesco, Mercantil..."
                                                     />

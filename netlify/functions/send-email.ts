@@ -9,9 +9,20 @@ export const handler: Handler = async (event) => {
     }
 
     try {
-        const { to, userName, orderId, status, reason } = JSON.parse(event.body || '{}');
+        if (!process.env.RESEND_API_KEY) {
+            console.error('RESEND_API_KEY is missing');
+            return {
+                statusCode: 500,
+                body: JSON.stringify({ error: 'RESEND_API_KEY is not configured in environment variables' }),
+            };
+        }
+
+        const body = JSON.parse(event.body || '{}');
+        console.log('Received email request for status:', body.status, 'to:', body.to);
+        const { to, userName, orderId, status, reason } = body;
 
         if (!to || !orderId || !status) {
+            console.warn('Missing fields in email request:', { to, orderId, status });
             return {
                 statusCode: 400,
                 body: JSON.stringify({ error: 'Missing required fields: to, orderId, status' }),
@@ -22,7 +33,6 @@ export const handler: Handler = async (event) => {
         let html = '';
 
         const shortId = orderId.slice(0, 8);
-        // Nota: Deberías usar la URL real de producción aquí para el logo
         const logoUrl = 'https://nathikas.netlify.app/images/logo.png';
 
         if (status === 'pagado') {
@@ -80,9 +90,11 @@ export const handler: Handler = async (event) => {
         }
 
         if (!html) {
+            console.warn('Unknown status for email notification:', status);
             return { statusCode: 400, body: 'Invalid status for email' };
         }
 
+        console.log('Sending email via Resend to:', to);
         const { data, error } = await resend.emails.send({
             from: 'Nathikas <ventas@nathikas.com>',
             to: [to],
@@ -91,19 +103,20 @@ export const handler: Handler = async (event) => {
         });
 
         if (error) {
-            console.error('Resend Error:', error);
+            console.error('Resend API Error:', error);
             return {
                 statusCode: 500,
                 body: JSON.stringify({ error: error.message }),
             };
         }
 
+        console.log('Email sent successfully! ID:', data?.id);
         return {
             statusCode: 200,
             body: JSON.stringify({ message: 'Email sent successfully', id: data?.id }),
         };
     } catch (err: any) {
-        console.error('Function Error:', err);
+        console.error('Netlify Function Internal Error:', err);
         return {
             statusCode: 500,
             body: JSON.stringify({ error: err.message }),
