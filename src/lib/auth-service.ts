@@ -25,6 +25,16 @@ export const initAuth = () => {
                     return;
                 }
 
+                if (!db) {
+                    console.warn("Firestore 'db' no inicializado para obtener rol.");
+                    useAuthStore.getState().setUser({
+                        uid: user.uid,
+                        email: user.email,
+                        role: null
+                    });
+                    return;
+                }
+
                 const userDoc = await getDoc(doc(db, "users", user.uid));
                 if (userDoc.exists()) {
                     const role = userDoc.data().role as UserRole;

@@ -40,6 +40,11 @@ export default function OrderFlow({ data }: Props) {
     useEffect(() => {
         setIsMounted(true);
         // Listen to live stock
+        if (!db) {
+            console.warn("Firestore 'db' is not initialized. Stock updates disabled.");
+            return;
+        }
+
         const unsub = onSnapshot(collection(db, "products"), (snapshot) => {
             const stockMap: Record<string, number> = {};
             snapshot.forEach(doc => {

@@ -26,6 +26,13 @@ export default function InventoryView() {
             return;
         }
 
+        if (!db) {
+            console.warn("Firestore 'db' no disponible.");
+            setProducts(appData.products.map(p => ({ ...p, stock: 0 })));
+            setLoading(false);
+            return;
+        }
+
         // Sync with Firestore
         const unsub = onSnapshot(collection(db, "products"),
             (snapshot) => {

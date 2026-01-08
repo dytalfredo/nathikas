@@ -59,6 +59,12 @@ export default function OrdersView({ filterByStatus, title }: { filterByStatus?:
             return;
         }
 
+        if (!db) {
+            console.warn("Firestore 'db' no disponible para cargar pedidos.");
+            setLoading(false);
+            return;
+        }
+
         let q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
 
         if (filterByStatus) {
