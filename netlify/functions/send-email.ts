@@ -1,39 +1,47 @@
 import type { Handler } from '@netlify/functions';
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export const handler: Handler = async (event) => {
+    console.log('--- Email Function Started ---');
+
     if (event.httpMethod !== 'POST') {
         return { statusCode: 405, body: 'Method Not Allowed' };
     }
 
     try {
-        if (!process.env.RESEND_API_KEY) {
-            console.error('RESEND_API_KEY is missing');
+        const apiKey = process.env.RESEND_API_KEY;
+        if (!apiKey) {
+            console.error('ERROR: RESEND_API_KEY is not defined in environment variables');
             return {
                 statusCode: 500,
-                body: JSON.stringify({ error: 'RESEND_API_KEY is not configured in environment variables' }),
+                body: JSON.stringify({ error: 'Configuración de servidor incompleta (API KEY)' }),
             };
         }
 
-        const body = JSON.parse(event.body || '{}');
-        console.log('Received email request for status:', body.status, 'to:', body.to);
+        const resend = new Resend(apiKey);
+
+        let body;
+        try {
+            body = JSON.parse(event.body || '{}');
+        } catch (parseErr) {
+            console.error('ERROR: Failed to parse request body:', event.body);
+            return { statusCode: 400, body: 'Invalid JSON body' };
+        }
+
         const { to, userName, orderId, status, reason } = body;
+        console.log(`Processing email for ${userName} (${to}) - Status: ${status} - Order: ${orderId}`);
 
         if (!to || !orderId || !status) {
-            console.warn('Missing fields in email request:', { to, orderId, status });
+            console.warn('WARNING: Missing required fields');
             return {
                 statusCode: 400,
-                body: JSON.stringify({ error: 'Missing required fields: to, orderId, status' }),
+                body: JSON.stringify({ error: 'Faltan campos requeridos (to, orderId, status)' }),
             };
         }
 
         let subject = '';
         let html = '';
-
         const shortId = orderId.slice(0, 8);
-        const logoUrl = 'https://nathikas.netlify.app/images/logo.png';
 
         if (status === 'pagado') {
             subject = `¡Pago confirmado! Nathikas #${shortId}`;
@@ -90,11 +98,11 @@ export const handler: Handler = async (event) => {
         }
 
         if (!html) {
-            console.warn('Unknown status for email notification:', status);
+            console.warn(`WARNING: Invalid status received: ${status}`);
             return { statusCode: 400, body: 'Invalid status for email' };
         }
 
-        console.log('Sending email via Resend to:', to);
+        console.log('Attempting to send email via Resend...');
         const { data, error } = await resend.emails.send({
             from: 'Nathikas <ventas@nathikas.com>',
             to: [to],
@@ -103,20 +111,20 @@ export const handler: Handler = async (event) => {
         });
 
         if (error) {
-            console.error('Resend API Error:', error);
+            console.error('RESEND ERROR:', error);
             return {
                 statusCode: 500,
                 body: JSON.stringify({ error: error.message }),
             };
         }
 
-        console.log('Email sent successfully! ID:', data?.id);
+        console.log('SUCCESS: Email sent successfully! Resend ID:', data?.id);
         return {
             statusCode: 200,
             body: JSON.stringify({ message: 'Email sent successfully', id: data?.id }),
         };
     } catch (err: any) {
-        console.error('Netlify Function Internal Error:', err);
+        console.error('CRITICAL FUNCTION ERROR:', err);
         return {
             statusCode: 500,
             body: JSON.stringify({ error: err.message }),
