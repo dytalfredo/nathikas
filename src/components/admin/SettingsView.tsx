@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { db } from '../../lib/firebase';
-import { doc, getDoc, setDoc, collection, onSnapshot } from 'firebase/firestore';
+import { doc, getDoc, setDoc, collection, onSnapshot, query, writeBatch, getDocs } from 'firebase/firestore';
+import { useAuthStore } from '../../store/authStore';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     CreditCard,
@@ -13,7 +14,10 @@ import {
     DollarSign,
     QrCode,
     Smartphone,
-    Globe
+    Globe,
+    UserPlus,
+    ShieldAlert,
+    AlertCircle
 } from 'lucide-react';
 import { useAlertStore } from '../../store/alertStore';
 
@@ -54,13 +58,19 @@ interface GlobalSettings {
 }
 
 export default function SettingsView() {
-    const [activeTab, setActiveTab] = useState<'pagos' | 'productos' | 'descuentos' | 'bot'>('pagos');
+    const [activeTab, setActiveTab] = useState<'pagos' | 'productos' | 'descuentos' | 'bot' | 'usuarios' | 'developer'>('pagos');
     const [settings, setSettings] = useState<GlobalSettings | null>(null);
     const [products, setProducts] = useState<ProductPrice[]>([]);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
 
     const showAlert = useAlertStore(state => state.showAlert);
+
+    // User Creation State
+    const [newUserEmail, setNewUserEmail] = useState('');
+    const [newUserPassword, setNewUserPassword] = useState('');
+    const [newUserRole, setNewUserRole] = useState<'administrator' | 'asistente' | 'vendedor'>('vendedor');
+    const [isCreatingUser, setIsCreatingUser] = useState(false);
 
     useEffect(() => {
         if (!db) return;
@@ -130,15 +140,94 @@ export default function SettingsView() {
         }
     };
 
+    const handleCreateUser = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!newUserEmail || !newUserPassword) {
+            showAlert("Faltan Datos", "Por favor completa el correo y la contraseña.", "error");
+            return;
+        }
+
+        setIsCreatingUser(true);
+        try {
+            const firebaseConfig = {
+                apiKey: import.meta.env.PUBLIC_FIREBASE_API_KEY,
+                authDomain: import.meta.env.PUBLIC_FIREBASE_AUTH_DOMAIN,
+                projectId: import.meta.env.PUBLIC_FIREBASE_PROJECT_ID,
+                storageBucket: import.meta.env.PUBLIC_FIREBASE_STORAGE_BUCKET,
+                messagingSenderId: import.meta.env.PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+                appId: import.meta.env.PUBLIC_FIREBASE_APP_ID
+            };
+
+            const { initializeApp, deleteApp } = await import('firebase/app');
+            const { getAuth, createUserWithEmailAndPassword } = await import('firebase/auth');
+
+            const secondaryApp = initializeApp(firebaseConfig, "Secondary");
+            const secondaryAuth = getAuth(secondaryApp);
+
+            const userCredential = await createUserWithEmailAndPassword(secondaryAuth, newUserEmail, newUserPassword);
+            const uid = userCredential.user.uid;
+
+            await setDoc(doc(db, "users", uid), {
+                email: newUserEmail,
+                role: newUserRole,
+                name: newUserEmail.split('@')[0],
+                createdAt: new Date(),
+                isAnonymous: false
+            });
+
+            await deleteApp(secondaryApp);
+            showAlert("¡Éxito!", `Usuario ${newUserEmail} creado con rol ${newUserRole}`, "success");
+            setNewUserEmail('');
+            setNewUserPassword('');
+        } catch (err: any) {
+            console.error("Error creating user:", err);
+            showAlert("Error al crear usuario", err.message || "Ocurrió un error inesperado.", "error");
+        } finally {
+            setIsCreatingUser(false);
+        }
+    };
+
+    const handleResetDatabase = async () => {
+        const confirm1 = window.confirm("¡ATENCIÓN! Estás a punto de borrar todos los PEDIDOS y PRODUCCIONES. ¿Estás seguro?");
+        if (!confirm1) return;
+
+        const confirm2 = window.prompt("Por seguridad, escribe 'ELIMINAR TODO' para confirmar:");
+        if (confirm2 !== 'ELIMINAR TODO') {
+            showAlert("Cancelado", "La frase de confirmación no coincide.", "error");
+            return;
+        }
+
+        setSaving(true);
+        try {
+            const collectionsToClear = ['orders', 'production_needs'];
+            for (const collName of collectionsToClear) {
+                const q = query(collection(db, collName));
+                const snapshot = await getDocs(q);
+                const batch = writeBatch(db);
+                snapshot.docs.forEach(doc => batch.delete(doc.ref));
+                await batch.commit();
+            }
+
+            showAlert("Base de Datos Limpia", "Se han eliminado los pedidos y producciones correctamente.", "success");
+        } catch (err: any) {
+            console.error("Error resetting DB:", err);
+            showAlert("Error", "No se pudo limpiar la base de datos totalmente.", "error");
+        } finally {
+            setSaving(false);
+        }
+    };
+
     if (loading || !settings) {
         return <div className="p-12 text-center text-gray-400 font-bold">Cargando configuraciones...</div>;
     }
 
     const tabs = [
-        { id: 'pagos', label: 'Formas de Pago', icon: CreditCard },
+        { id: 'pagos', label: 'Pagos', icon: CreditCard },
         { id: 'productos', label: 'Precios', icon: Package },
         { id: 'descuentos', label: 'Descuentos', icon: Percent },
         { id: 'bot', label: 'SensiBot', icon: Bot },
+        { id: 'usuarios', label: 'Usuarios', icon: UserPlus },
+        { id: 'developer', label: 'Developer', icon: ShieldAlert },
     ];
 
     return (
@@ -399,6 +488,98 @@ export default function SettingsView() {
                                 </p>
                             </div>
                         )}
+                    </div>
+                )}
+
+                {activeTab === 'usuarios' && (
+                    <div className="space-y-8">
+                        <h3 className="text-xl font-heading text-[#3E2723] mb-6 flex items-center gap-2">
+                            <UserPlus className="text-[#D91A2A]" /> Crear Nuevo Usuario de Staff
+                        </h3>
+
+                        <form onSubmit={handleCreateUser} className="bg-gray-50 p-6 rounded-3xl border border-gray-100 max-w-xl space-y-4">
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-gray-400 uppercase">Correo Electrónico</label>
+                                <input
+                                    type="email"
+                                    required
+                                    value={newUserEmail}
+                                    onChange={(e) => setNewUserEmail(e.target.value)}
+                                    className="w-full bg-white border border-gray-200 rounded-xl p-3 text-sm focus:border-[#F2A900] outline-none"
+                                    placeholder="ejemplo@nathikas.com"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-gray-400 uppercase">Contraseña Temporal</label>
+                                <input
+                                    type="password"
+                                    required
+                                    value={newUserPassword}
+                                    onChange={(e) => setNewUserPassword(e.target.value)}
+                                    className="w-full bg-white border border-gray-200 rounded-xl p-3 text-sm focus:border-[#F2A900] outline-none"
+                                    placeholder="Mínimo 6 caracteres"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-gray-400 uppercase">Rol del Sistema</label>
+                                <select
+                                    value={newUserRole}
+                                    onChange={(e) => setNewUserRole(e.target.value as any)}
+                                    className="w-full bg-white border border-gray-200 rounded-xl p-3 text-sm focus:border-[#F2A900] outline-none font-bold"
+                                >
+                                    <option value="vendedor">Vendedor (Ventas / Inventario)</option>
+                                    <option value="asistente">Asistente (Producción / Pedidos)</option>
+                                    <option value="administrator">Administrador (Acceso Total)</option>
+                                </select>
+                            </div>
+                            <button
+                                type="submit"
+                                disabled={isCreatingUser}
+                                className="w-full bg-[#D91A2A] text-white py-3 rounded-xl font-bold hover:bg-[#B71524] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                            >
+                                {isCreatingUser ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Plus size={18} />}
+                                CREAR USUARIO
+                            </button>
+                        </form>
+                        <div className="flex gap-2 p-4 bg-yellow-50 rounded-2xl border border-yellow-100 items-start max-w-xl">
+                            <AlertCircle size={20} className="text-yellow-600 flex-shrink-0 mt-0.5" />
+                            <p className="text-[10px] text-yellow-700 font-bold leading-normal">
+                                Nota: Los nuevos usuarios podrán iniciar sesión con estas credenciales. Se recomienda que cambien su contraseña en su primer ingreso si es posible.
+                            </p>
+                        </div>
+                    </div>
+                )}
+
+                {activeTab === 'developer' && (
+                    <div className="space-y-8">
+                        <div className="flex items-center gap-2 mb-6 text-red-600">
+                            <ShieldAlert size={24} />
+                            <h3 className="text-xl font-heading">Zona de Peligro (Developer)</h3>
+                        </div>
+
+                        <div className="bg-red-50 p-8 rounded-[2rem] border-2 border-red-100 space-y-6">
+                            <div>
+                                <h4 className="font-bold text-red-800">Limpieza de Base de Datos</h4>
+                                <p className="text-sm text-red-600/70 mt-1 font-bold">
+                                    Esta acción eliminará de forma irreversible todos los registros de <span className="underline">Pedidos</span> y <span className="underline">Producción</span>.
+                                    Los perfiles de usuario y las configuraciones globales se mantendrán intactos.
+                                </p>
+                            </div>
+
+                            <button
+                                onClick={handleResetDatabase}
+                                className="bg-white border-2 border-red-200 text-red-600 px-8 py-4 rounded-2xl font-bold hover:bg-red-600 hover:text-white hover:border-red-600 transition-all shadow-sm flex items-center gap-3 active:scale-95"
+                            >
+                                <Trash2 size={24} />
+                                REINICIAR PEDIDOS Y PRODUCCIÓN
+                            </button>
+
+                            <div className="border-t border-red-100 pt-6">
+                                <p className="text-[10px] text-red-400 font-bold flex items-center gap-2">
+                                    <Smartphone size={14} /> ID del Admin Actual: {useAuthStore.getState().user?.uid}
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 )}
             </motion.div>

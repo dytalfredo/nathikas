@@ -180,10 +180,10 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
             batch.update(orderRef, { status: newStatus });
             await batch.commit();
 
-            // Enviar Notificación por Correo
+            // Enviar Notificación por Correo (Netlify Function)
             if (order.userEmail && ['pagado', 'despachado', 'cancelado'].includes(newStatus)) {
                 try {
-                    await fetch('/api/send-notification', {
+                    await fetch('/.netlify/functions/send-email', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

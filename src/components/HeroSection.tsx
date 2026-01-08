@@ -11,7 +11,7 @@ export default function HeroSection({ scrollToStore }: { scrollToStore: () => vo
         >
             {/* Gummy Rain Particles (Layered) */}
             <GummyRain id="tsparticles-back" zIndex="z-0" count={10} />
-            <GummyRain id="tsparticles-front" zIndex="z-[60]" count={10} />
+            <GummyRain id="tsparticles-mid" zIndex="z-10" count={10} />
 
             {/* Background Decorations */}
 
@@ -127,9 +127,9 @@ export default function HeroSection({ scrollToStore }: { scrollToStore: () => vo
             </div>
 
             {/* Bottom Wave Decoration */}
-            <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-30 translate-y-10">
-                <svg className="relative block w-full h-[100px] text-[#F2A900]" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-                    <path d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z" className="fill-current"></path>
+            <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-30">
+                <svg className="relative block w-full h-[120px] text-[#F2A900]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120" preserveAspectRatio="none">
+                    <path d="M0,120L0,64C144,40,288,100,432,60C576,20,720,100,864,40C1008,0,1152,80,1296,40C1368,20,1440,60,1440,120L1440,120Z" className="fill-current"></path>
                 </svg>
             </div>
         </section>
