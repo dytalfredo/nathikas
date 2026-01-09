@@ -11,6 +11,16 @@ export default function AdminManager() {
         initAuth();
     }, []);
 
+    useEffect(() => {
+        if (!loading) {
+            console.log("--- Diagnóstico de Admin ---");
+            console.log("UID:", user?.uid);
+            console.log("Rol Detectado:", user?.role);
+            console.log("Sesión activa:", !!user);
+            console.log("---------------------------");
+        }
+    }, [user, loading]);
+
     if (loading) {
         return (
             <div className="min-h-screen bg-[#FDF6E3] flex items-center justify-center">

@@ -183,7 +183,7 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
             // Enviar Notificación por Correo (Netlify Function)
             if (order.userEmail && ['pagado', 'despachado', 'cancelado'].includes(newStatus)) {
                 try {
-                    await fetch('/.netlify/functions/send-email', {
+                    const response = await fetch('/.netlify/functions/send-email', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -196,8 +196,15 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
                             reason: reason,
                         })
                     });
+
+                    if (!response.ok) {
+                        const errData = await response.json().catch(() => ({ error: 'Error desconocido' }));
+                        console.error("❌ Error en función de email (HTTP " + response.status + "):", errData);
+                    } else {
+                        console.log("✅ Email enviado correctamente");
+                    }
                 } catch (emailErr) {
-                    console.error("Error enviando correo:", emailErr);
+                    console.error("❌ Error de red al enviar correo:", emailErr);
                 }
             }
 

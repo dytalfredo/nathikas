@@ -104,8 +104,10 @@ export const handler: Handler = async (event) => {
 
         console.log('Attempting to send email via Resend...');
         const { data, error } = await resend.emails.send({
-            from: 'Nathikas <ventas@nathikas.com>',
+            from: 'Nathikas <onboarding@resend.dev>',
             to: [to],
+            // Note: In onboarding mode, 'to' must be your account email.
+            // For now we leave it as 'to', but be aware of Resend's restriction.
             subject: subject,
             html: html,
         });

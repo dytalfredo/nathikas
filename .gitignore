@@ -4,6 +4,6 @@ biblioteca
 dist
 .env
 
-firestore.rules
+
 # Local Netlify folder
 .netlify
