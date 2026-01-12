@@ -17,7 +17,9 @@ import {
     Globe,
     UserPlus,
     ShieldAlert,
-    AlertCircle
+    AlertCircle,
+    Bell,
+    Mail
 } from 'lucide-react';
 import { useAlertStore } from '../../store/alertStore';
 
@@ -55,10 +57,22 @@ interface GlobalSettings {
         email: string;
     };
     paymentMethods: PaymentMethod[];
+    notifications: {
+        email: {
+            pagado: { subject: string; body: string };
+            despachado: { subject: string; body: string };
+            cancelado: { subject: string; body: string };
+        };
+        push: {
+            pagado: { title: string; body: string };
+            despachado: { title: string; body: string };
+            cancelado: { title: string; body: string };
+        };
+    };
 }
 
 export default function SettingsView() {
-    const [activeTab, setActiveTab] = useState<'pagos' | 'productos' | 'descuentos' | 'bot' | 'usuarios' | 'developer'>('pagos');
+    const [activeTab, setActiveTab] = useState<'pagos' | 'productos' | 'descuentos' | 'bot' | 'usuarios' | 'notifications' | 'developer'>('pagos');
     const [settings, setSettings] = useState<GlobalSettings | null>(null);
     const [products, setProducts] = useState<ProductPrice[]>([]);
     const [loading, setLoading] = useState(true);
@@ -92,7 +106,19 @@ export default function SettingsView() {
                             { id: 'pago-movil', name: 'Pago Móvil', enabled: true },
                             { id: 'zelle', name: 'Zelle', enabled: false },
                             { id: 'binance', name: 'Binance', enabled: false }
-                        ]
+                        ],
+                        notifications: {
+                            email: {
+                                pagado: { subject: '¡Pago confirmado! Nathikas #{{orderId}}', body: 'Hola {{userName}}, hemos verificado tu pago.' },
+                                despachado: { subject: '¡Envío en camino! Nathikas #{{orderId}}', body: 'Hola {{userName}}, tu pedido va en camino.' },
+                                cancelado: { subject: 'Tu pedido Nathikas #{{orderId}} ha sido cancelado', body: 'Hola {{userName}}, tu pedido ha sido cancelado.' }
+                            },
+                            push: {
+                                pagado: { title: '¡Pago Confirmado! ✅', body: 'Hola {{userName}}, estamos preparando tu pedido #{{orderId}}' },
+                                despachado: { title: '¡Pedido en Camino! 🚚', body: 'Tus Nathikas van volando a su destino.' },
+                                cancelado: { title: 'Pedido Cancelado ❌', body: 'Tu orden #{{orderId}} ha sido cancelada.' }
+                            }
+                        }
                     };
                     setSettings(defaultSettings);
                     await setDoc(doc(db, "settings", "global"), defaultSettings);
@@ -227,6 +253,7 @@ export default function SettingsView() {
         { id: 'descuentos', label: 'Descuentos', icon: Percent },
         { id: 'bot', label: 'SensiBot', icon: Bot },
         { id: 'usuarios', label: 'Usuarios', icon: UserPlus },
+        { id: 'notifications', label: 'Notificaciones', icon: Bell },
         { id: 'developer', label: 'Developer', icon: ShieldAlert },
     ];
 
@@ -547,6 +574,99 @@ export default function SettingsView() {
                                 Nota: Los nuevos usuarios podrán iniciar sesión con estas credenciales. Se recomienda que cambien su contraseña en su primer ingreso si es posible.
                             </p>
                         </div>
+                    </div>
+                )}
+
+                {activeTab === 'notifications' && (
+                    <div className="space-y-8">
+                        <header className="flex items-center justify-between mb-6">
+                            <div>
+                                <h3 className="text-xl font-heading text-[#3E2723] flex items-center gap-2">
+                                    <Bell className="text-[#D91A2A]" /> Configuración de Notificaciones
+                                </h3>
+                                <p className="text-xs text-gray-500 font-bold mt-1">Usa {"{{userName}}"}, {"{{orderId}}"} y {"{{status}}"} como variables.</p>
+                            </div>
+                        </header>
+
+                        {(['pagado', 'despachado', 'cancelado'] as const).map((status) => (
+                            <div key={status} className="bg-gray-50 p-6 rounded-3xl border border-gray-100 space-y-6">
+                                <h4 className="font-bold text-[#D91A2A] uppercase flex items-center gap-2">
+                                    <div className="w-2 h-2 rounded-full bg-[#D91A2A]" />
+                                    Estado: {status}
+                                </h4>
+
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                    {/* Email Template */}
+                                    <div className="space-y-4">
+                                        <div className="flex items-center gap-2 text-sm font-bold text-gray-700 border-b pb-2">
+                                            <Mail size={16} /> Correo Electrónico
+                                        </div>
+                                        <div className="space-y-3">
+                                            <div>
+                                                <label className="text-[10px] font-bold text-gray-400">ASUNTO</label>
+                                                <input
+                                                    type="text"
+                                                    value={settings.notifications.email[status].subject}
+                                                    onChange={(e) => {
+                                                        const newNotif = { ...settings.notifications };
+                                                        newNotif.email[status].subject = e.target.value;
+                                                        setSettings({ ...settings, notifications: newNotif });
+                                                    }}
+                                                    className="w-full bg-white border border-gray-200 rounded-xl p-3 text-sm focus:border-[#F2A900] outline-none"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="text-[10px] font-bold text-gray-400">CUERPO (TEXTO/HTML)</label>
+                                                <textarea
+                                                    value={settings.notifications.email[status].body}
+                                                    onChange={(e) => {
+                                                        const newNotif = { ...settings.notifications };
+                                                        newNotif.email[status].body = e.target.value;
+                                                        setSettings({ ...settings, notifications: newNotif });
+                                                    }}
+                                                    className="w-full bg-white border border-gray-200 rounded-xl p-3 text-sm focus:border-[#F2A900] outline-none h-32 resize-none"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Push Notification Template */}
+                                    <div className="space-y-4">
+                                        <div className="flex items-center gap-2 text-sm font-bold text-gray-700 border-b pb-2">
+                                            <Smartphone size={16} /> Notificación Push
+                                        </div>
+                                        <div className="space-y-3">
+                                            <div>
+                                                <label className="text-[10px] font-bold text-gray-400">TÍTULO</label>
+                                                <input
+                                                    type="text"
+                                                    value={settings.notifications.push[status].title}
+                                                    onChange={(e) => {
+                                                        const newNotif = { ...settings.notifications };
+                                                        newNotif.push[status].title = e.target.value;
+                                                        setSettings({ ...settings, notifications: newNotif });
+                                                    }}
+                                                    className="w-full bg-white border border-gray-200 rounded-xl p-3 text-sm focus:border-[#D91A2A] outline-none"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="text-[10px] font-bold text-gray-400">MENSAJE CORTO</label>
+                                                <textarea
+                                                    value={settings.notifications.push[status].body}
+                                                    onChange={(e) => {
+                                                        const newNotif = { ...settings.notifications };
+                                                        newNotif.push[status].body = e.target.value;
+                                                        setSettings({ ...settings, notifications: newNotif });
+                                                    }}
+                                                    className="w-full bg-white border border-gray-200 rounded-xl p-3 text-sm focus:border-[#D91A2A] outline-none h-32 resize-none"
+                                                    maxLength={150}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 )}
 

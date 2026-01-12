@@ -1,7 +1,8 @@
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut, signInAnonymously, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
-import { auth, db } from "./firebase";
+import { auth, db, initMessaging } from "./firebase";
 import { useAuthStore, type UserRole } from "../store/authStore";
+import { requestNotificationPermission } from "./notification-service";
 
 export const initAuth = () => {
     if (!auth || typeof auth.onAuthStateChanged !== 'function') {
@@ -11,6 +12,7 @@ export const initAuth = () => {
     }
 
     console.log("Iniciando escucha de estado de sesión...");
+    initMessaging(); // Inicializar mensajería asíncronamente
     onAuthStateChanged(auth, async (user) => {
         console.log("Cambio de estado de Auth:", user ? (user.isAnonymous ? "Cliente Anónimo" : "Usuario Registrado") : "Sin sesión");
         if (user) {
@@ -50,6 +52,11 @@ export const initAuth = () => {
                         cedula: data.cedula,
                         isAnonymous: false
                     });
+
+                    // Solicitar permisos de notificación para el Staff
+                    if (['administrator', 'asistente', 'vendedor'].includes(role) && user.uid) {
+                        requestNotificationPermission(user!.uid as string);
+                    }
                 } else {
                     console.warn("⚠️ Perfil de Firestore no encontrado para UID:", user.uid);
                     useAuthStore.getState().setUser({

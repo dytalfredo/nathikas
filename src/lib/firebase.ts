@@ -26,3 +26,27 @@ const app = isConfigValid
 
 export const auth = app ? getAuth(app) : { onAuthStateChanged: (cb: any) => { console.warn("Auth no disponible"); } } as any;
 export const db = app ? getFirestore(app) : null as any;
+
+// Initialize messaging only in browser and if supported
+let messagingInstance: any = null;
+
+export const initMessaging = async () => {
+    if (typeof window !== 'undefined' && app) {
+        try {
+            const { getMessaging, isSupported } = await import("firebase/messaging");
+            const supported = await isSupported();
+            if (supported) {
+                messagingInstance = getMessaging(app);
+                console.log("Firebase Messaging inicializado correctamente.");
+                return messagingInstance;
+            }
+        } catch (e) {
+            console.warn("Firebase Messaging no es compatible con este entorno:", e);
+        }
+    }
+    return null;
+};
+
+// Export a way to get the instance
+export const getMessagingInstance = () => messagingInstance;
+export const messaging = messagingInstance; // Keep for compatibility if needed, but it might be null initially

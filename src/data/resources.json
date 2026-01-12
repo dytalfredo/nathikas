@@ -1,0 +1,49 @@
+{
+    "logo": "/images/logo.png",
+    "backgrounds": {
+        "heroDesktop": "/images/fondo1.png",
+        "heroMobile": "/images/fondo1m.png",
+        "loginSprite": "/images/AnimacionLoginSprite.png",
+        "blackScales": "https://www.transparenttextures.com/patterns/black-scales.png"
+    },
+    "ui": {
+        "papelPicadoBottom": "/recursos/papel-picado-bottom.png",
+        "qrPlaceholder": "/images/qr-placeholder.png",
+        "userPlaceholder": "/recursos/recurso5.png",
+        "loadingAnimation": "/images/AnimacionLoginSprite.png"
+    },
+    "particles": {
+        "g1": "/particulas/g1.png",
+        "g2": "/particulas/g2.png",
+        "g3": "/particulas/g3.png",
+        "g4": "/particulas/g4.png",
+        "g5": "/particulas/g5.png",
+        "g6": "/particulas/g6.png"
+    },
+    "recursos": {
+        "r1": "/recursos/recurso1.png",
+        "r2": "/recursos/recurso2.png",
+        "r5": "/recursos/recurso5.png",
+        "r6": "/recursos/recurso6.png",
+        "r7": "/recursos/recurso7.png",
+        "r8": "/recursos/recurso8.png",
+        "r9": "/recursos/recurso9.png",
+        "r10": "/recursos/recurso10.png",
+        "r11": "/recursos/recurso11.png",
+        "r12": "/recursos/recurso12.png",
+        "r13": "/recursos/recurso13.png",
+        "r14": "/recursos/recurso14.png",
+        "r15": "/recursos/recurso15.png",
+        "r16": "/recursos/recurso16.png"
+    },
+    "videos": {
+        "chamoybol": "/videos/chamoybol.mp4",
+        "promoBg": "/videos/promo-bg.mp4"
+    },
+    "placeholders": {
+        "ref1": "/images/ref1.jpg",
+        "ref2": "/images/ref2.jpg",
+        "ref3": "/images/ref3.jpg",
+        "ref4": "/images/ref4.jpg"
+    }
+}

@@ -8,6 +8,7 @@ export default function LoadingScreen() {
 
     const handleEnter = () => {
         sessionStorage.setItem('hasSeenLoadingScreen', 'true');
+        document.documentElement.classList.remove('app-loading');
         setIsVisible(false);
     };
 
@@ -15,6 +16,7 @@ export default function LoadingScreen() {
         // Check if seen on client mount
         const hasSeen = sessionStorage.getItem('hasSeenLoadingScreen');
         if (hasSeen) {
+            document.documentElement.classList.remove('app-loading');
             setIsVisible(false);
             return;
         }

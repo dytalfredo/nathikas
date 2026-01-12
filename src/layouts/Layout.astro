@@ -40,8 +40,26 @@ const { title, showLoading = true, enablePWA = false } = Astro.props;
         }
     </head>
     <body class="bg-[#FDF6E3] text-[#3E2723] min-h-screen relative">
+        <script is:inline>
+            // Anti-flash script: hide content immediately if loading screen should show
+            if (!sessionStorage.getItem("hasSeenLoadingScreen")) {
+                document.documentElement.classList.add("app-loading");
+            }
+        </script>
+        <style is:global>
+            html.app-loading #main-content {
+                opacity: 0;
+                visibility: hidden;
+            }
+        </style>
+
         {showLoading && <LoadingScreen client:only="react" />}
         <CustomAlert client:only="react" />
-        <slot />
+        <div
+            id="main-content"
+            class="transition-opacity duration-700 ease-in-out"
+        >
+            <slot />
+        </div>
     </body>
 </html>

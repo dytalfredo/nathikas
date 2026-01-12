@@ -27,7 +27,7 @@ export default function Shop({ data }: Props) {
             <RitualSteps steps={data.ritualSteps || []} />
 
             {/* 3. Benefits Section (New) */}
-            {data.benefits && <BenefitsSection benefits={data.benefits} />}
+            <BenefitsSection />
 
             <div className="container mx-auto px-4 py-12">
                 {/* 5. The Store (Products) - Moved to /shop */}
@@ -39,14 +39,7 @@ export default function Shop({ data }: Props) {
             {/* 7. FAQ Section (New) */}
             {data.faq && <FAQSection faqs={data.faq} />}
 
-            {/* 8. Video CTA */}
-            {data.company.videoCTA && (
-                <VideoCTA
-                    title={data.company.videoCTA.title}
-                    videoUrl={data.company.videoCTA.videoUrl}
-                    onCtaClick={() => window.location.href = '/shop'}
-                />
-            )}
+            {/* 8. Video CTA Removed */}
 
             {/* 9. Footer */}
             <Footer companyData={data.company} />

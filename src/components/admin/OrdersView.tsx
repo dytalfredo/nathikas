@@ -28,6 +28,7 @@ interface OrderItem {
 
 interface Order {
     id: string;
+    customerId?: string;
     userName: string;
     userPhone: string;
     userCedula?: string;
@@ -183,7 +184,7 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
             // Enviar Notificación por Correo (Netlify Function)
             if (order.userEmail && ['pagado', 'despachado', 'cancelado'].includes(newStatus)) {
                 try {
-                    const response = await fetch('/.netlify/functions/send-email', {
+                    const response = await fetch('/.netlify/functions/notifications', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -192,6 +193,7 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
                             to: order.userEmail,
                             userName: order.userName,
                             orderId: order.id,
+                            customerId: order.customerId,
                             status: newStatus,
                             reason: reason,
                         })

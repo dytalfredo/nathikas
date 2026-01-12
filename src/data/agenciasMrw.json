@@ -1,0 +1,2257 @@
+{
+    "DISTRITO CAPITAL": [
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01010",
+            "nombre": "LOS CAOBOS",
+            "direccion": "AV. PANAMA CON AV. LIBERTADOR, URB LOS CAOBOS CARACAS.",
+            "telefonos": [
+                "0212-781.79.78"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01020",
+            "nombre": "BELLO MONTE",
+            "direccion": "AVENIDA LEONARDO DA VINCI PLAZA LINCOLN, COLINAS DE BELLO MONTE.",
+            "telefonos": [
+                "0212-753.61.80",
+                "0212-751.83.24"
+            ],
+            "gps": {
+                "lat": 10.4993512,
+                "lng": -66.8860583
+            }
+        },
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01030",
+            "nombre": "EL LLANITO",
+            "direccion": "AV. PCPAL DEL LLANITO EN LA FERRETERIA CASATRIGO.",
+            "telefonos": [
+                "0212-987.53.54"
+            ],
+            "gps": {
+                "lat": 10.4684908,
+                "lng": -66.8057784
+            }
+        },
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01031",
+            "nombre": "PLAZA LAS AMERICAS",
+            "direccion": "C.C. PLAZA LAS AMERICAS, EL CAFETAL.",
+            "telefonos": [],
+            "gps": {
+                "lat": 10.458950,
+                "lng": -66.828896
+            }
+        },
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01040",
+            "nombre": "CENTRO",
+            "direccion": "AV. UNIVERSIDAD, ESQ. DE SOCIEDAD A GRADILLAS.",
+            "telefonos": [
+                "0212-542.1166"
+            ],
+            "gps": {
+                "lat": 10.5047855,
+                "lng": -66.9141235
+            }
+        },
+        {
+            "ciudad": "CHACAO",
+            "codigo": "01050",
+            "nombre": "CHACAO EL MUÑECO",
+            "direccion": "CALLE EL MUÑECO, EDIF. GUAN, PB, LOCAL 7. CHACAO.",
+            "telefonos": [
+                "0212-267.07.36",
+                "0212-266.31.89"
+            ],
+            "gps": {
+                "lat": 10.49131,
+                "lng": -66.8581542
+            }
+        },
+        {
+            "ciudad": "CHACAO",
+            "codigo": "01060",
+            "nombre": "CHUAO",
+            "direccion": "CC CIUDAD TAMANACO NIVEL PB LOCAL F SECTOR CHUAO.",
+            "telefonos": [
+                "0212-959.52.38",
+                "0212-959.99.82"
+            ],
+            "gps": {
+                "lat": 10.484559,
+                "lng": -66.8564348
+            }
+        },
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01070",
+            "nombre": "EL PARAISO",
+            "direccion": "URBANIZACION EL PARAISO, MUNICIPIO LIBERTADOR, CARACAS.",
+            "telefonos": [
+                "0212-451.69.53"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01080",
+            "nombre": "PLAZA ESTRELLA",
+            "direccion": "PLAZA ESTRELLA A SAN FELIPE, SAN BERNARDINO.",
+            "telefonos": [
+                "0212-552.95.77"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01090",
+            "nombre": "CAMPO CLARO",
+            "direccion": "AV. FRANCISCO DE MIRANDA CON CALLE GUANCHE, CAMPO CLARO.",
+            "telefonos": [
+                "0212-239.76.88"
+            ],
+            "gps": {
+                "lat": 10.4933241,
+                "lng": -66.8308808
+            }
+        },
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01100",
+            "nombre": "LA TRINIDAD",
+            "direccion": "CALLE DEL ARENAL, QTA. LAURA NRO 15-14, LA TRINIDAD.",
+            "telefonos": [
+                "0212-941.80.37",
+                "0212-941.53.71"
+            ],
+            "gps": {
+                "lat": 10.4363832,
+                "lng": -66.8610611
+            }
+        },
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01110",
+            "nombre": "LOS CHAGUARAMOS",
+            "direccion": "AV. EL PARQUE, C.C. LOS CHAGUARAMOS, NIVEL P.B.",
+            "telefonos": [
+                "0212-663.04.63"
+            ],
+            "gps": {
+                "lat": 10.4857699,
+                "lng": -66.8847565
+            }
+        },
+        {
+            "ciudad": "PETARE",
+            "codigo": "01130",
+            "nombre": "LEBRUN PETARE",
+            "direccion": "CALLE LOS NARANJOS EDIF LEBRUN PB LOCAL 19, PETARE.",
+            "telefonos": [
+                "0212-258.30.02"
+            ],
+            "gps": {
+                "lat": 10.4802917,
+                "lng": -66.8120616
+            }
+        },
+        {
+            "ciudad": "PETARE",
+            "codigo": "01132",
+            "nombre": "PALO VERDE",
+            "direccion": "CENTRO COMERCIAL PALO VERDE, NIVEL 2, LOCAL 11-2.",
+            "telefonos": [
+                "0212-251.22.67"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01140",
+            "nombre": "SABANA GRANDE",
+            "direccion": "AV ORINOCO QTA ISMENIA, BELLO MONTE NORTE.",
+            "telefonos": [
+                "0212-953.49.32",
+                "952.48.08"
+            ],
+            "gps": {
+                "lat": 10.4889629,
+                "lng": -66.8748077
+            }
+        },
+        {
+            "ciudad": "CHACAO",
+            "codigo": "01150",
+            "nombre": "ALTAMIRA",
+            "direccion": "AV SAN JUAN BOSCO DE ALTAMIRA, RES. EXCELSIOR PB LOCAL 2.",
+            "telefonos": [
+                "0212-265.35.41"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01160",
+            "nombre": "LOS CHORROS",
+            "direccion": "2DA. AV. MONTECRISTO C/C 5TA. TRANSV. QTA. KOLOSVAR.",
+            "telefonos": [
+                "0212-237.09.19"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "BARUTA",
+            "codigo": "01170",
+            "nombre": "BARUTA",
+            "direccion": "CALLE NEGRO PRIMERO C/C SUCRE Nº15-04, BARUTA.",
+            "telefonos": [
+                "0212-943.23.17"
+            ],
+            "gps": {
+                "lat": 10.4350612,
+                "lng": -66.8754722
+            }
+        },
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01190",
+            "nombre": "LAS ACACIAS",
+            "direccion": "AVENIDA GENERAL MEDINA ANGARITA, LAS ACACIAS.",
+            "telefonos": [
+                "0212-634.45.09"
+            ],
+            "gps": {
+                "lat": 10.4858122,
+                "lng": -66.9041824
+            }
+        },
+        {
+            "ciudad": "PETARE",
+            "codigo": "01200",
+            "nombre": "LA URBINA",
+            "direccion": "AV. PPAL. LA URBINA. EDIF. APULIA. P.B. LOCAL 4.",
+            "telefonos": [
+                "0212-242.29.39"
+            ],
+            "gps": {
+                "lat": 10.4886828,
+                "lng": -66.8067014
+            }
+        },
+        {
+            "ciudad": "BARUTA",
+            "codigo": "01210",
+            "nombre": "SANTA FE",
+            "direccion": "C.C. SANTA FE, PISO 2 NIVEL ALAMEDA, LOCAL C2-43.",
+            "telefonos": [
+                "0212-978.22.90"
+            ],
+            "gps": {
+                "lat": 10.4664086,
+                "lng": -66.8713392
+            }
+        },
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01220",
+            "nombre": "LOS ROSALES",
+            "direccion": "AV. LOS LAURELES CON AV. ROOSEVELT, LOS ROSALES.",
+            "telefonos": [
+                "0212-693.06.14"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "BARUTA",
+            "codigo": "01230",
+            "nombre": "LAS MERCEDES",
+            "direccion": "AV. VERACRUZ. EDIF. MATISCO. P.B., LAS MERCEDES.",
+            "telefonos": [
+                "0212-993.97.83"
+            ],
+            "gps": {
+                "lat": 10.4798852,
+                "lng": -66.855312
+            }
+        },
+        {
+            "ciudad": "BARUTA",
+            "codigo": "01240",
+            "nombre": "SANTA SOFIA",
+            "direccion": "AV. PPAL. SANTA SOFIA. C.C. STA. SOFIA. LOCAL Z-3.",
+            "telefonos": [
+                "0212-987.21.19"
+            ],
+            "gps": {
+                "lat": 10.47158,
+                "lng": -66.84261
+            }
+        },
+        {
+            "ciudad": "EL HATILLO",
+            "codigo": "01250",
+            "nombre": "EL HATILLO",
+            "direccion": "CALLE MATADERO, C.C. PRISCOS, PB OF 904-4, EL HATILLO.",
+            "telefonos": [
+                "0416-408.44.93"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01260",
+            "nombre": "EL CEMENTERIO",
+            "direccion": "AV LOS TOTUMOS, CASA 20 LOCAL UNICO EL CEMENTERIO.",
+            "telefonos": [
+                "0212-493.85.16"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01280",
+            "nombre": "CATIA",
+            "direccion": "AV. SUCRE, C.C. OESTE NIVEL 3 LOCAL 038, CATIA.",
+            "telefonos": [
+                "0212-860.55.82"
+            ],
+            "gps": {
+                "lat": 10.4529588,
+                "lng": -66.9064385
+            }
+        },
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01290",
+            "nombre": "EL JUNQUITO",
+            "direccion": "C.C. CASA JUNKO PB, LOCAL B5. KM 18 EL JUNQUITO.",
+            "telefonos": [],
+            "gps": {
+                "lat": 10.4705757,
+                "lng": -67.0574431
+            }
+        },
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01300",
+            "nombre": "SANTA MÓNICA",
+            "direccion": "AV. ARTURO MICHELENA, QTA. CEIBA, SANTA MONICA.",
+            "telefonos": [
+                "0212-693.28.87"
+            ],
+            "gps": {
+                "lat": 10.4776992,
+                "lng": -66.8910918
+            }
+        },
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01310",
+            "nombre": "EL BOSQUE",
+            "direccion": "CALLE EL CARMEN QTA.TORRE LA VEGA, EL BOSQUE.",
+            "telefonos": [
+                "0212-730.07.90"
+            ],
+            "gps": {
+                "lat": 10.4964516,
+                "lng": -66.8688333
+            }
+        },
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01320",
+            "nombre": "CARICUAO",
+            "direccion": "C.C. CARICUAO PLAZA, PISO 2, PARROQUIA CARICUAO.",
+            "telefonos": [
+                "0212-438.03.22"
+            ],
+            "gps": {
+                "lat": 10.434337,
+                "lng": -67.0000542
+            }
+        },
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01330",
+            "nombre": "LA FLORIDA",
+            "direccion": "URB. LA FLORIDA. AV. LOS CHAGUARAMOS.QTA COROLI.",
+            "telefonos": [
+                "0212-731.34.63"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01340",
+            "nombre": "SAN MARTIN",
+            "direccion": "AV. SAN MARTIN C.C. MARACAIBO, SECTOR SAN MARTIN.",
+            "telefonos": [
+                "0212-451.85.03"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01350",
+            "nombre": "LECUNA",
+            "direccion": "CALLE SUR 3, ESQUINA DE ZAMURO A MISERIA, AV. LECUNA.",
+            "telefonos": [
+                "0212-542.09.42"
+            ],
+            "gps": {
+                "lat": 10.5000458,
+                "lng": -66.9155426
+            }
+        },
+        {
+            "ciudad": "CHACAO",
+            "codigo": "01370",
+            "nombre": "CHACAO PANTIN",
+            "direccion": "CALLE PANTIN, GALPON MRW, CHACAO.",
+            "telefonos": [
+                "0212-267.13.17"
+            ],
+            "gps": {
+                "lat": 10.4871228,
+                "lng": -66.8560183
+            }
+        },
+        {
+            "ciudad": "BARUTA",
+            "codigo": "01380",
+            "nombre": "LAS MINAS",
+            "direccion": "AV. PPAL.LAS MINAS DE BARUTA, C.C. LUNA.",
+            "telefonos": [
+                "0212-899.31.13"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01390",
+            "nombre": "QUINTA CRESPO",
+            "direccion": "AV SUR, EDIF 126 PISO PB, QUINTA CRESPO.",
+            "telefonos": [
+                "0212-481.16.80"
+            ],
+            "gps": {
+                "lat": 10.4949873,
+                "lng": -66.9163036
+            }
+        },
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01400",
+            "nombre": "LA CANDELARIA",
+            "direccion": "PERICO A PUENTE YANEZ EDF. SERRANO PB, LA CANDELARIA.",
+            "telefonos": [
+                "0212-578.27.09"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01410",
+            "nombre": "AV. CASANOVA",
+            "direccion": "INICIO AV. CASANOVA C.C. DEL ESTE, SABANA GRANDE.",
+            "telefonos": [
+                "0212-761.64.58"
+            ],
+            "gps": {
+                "lat": 10.4943508,
+                "lng": -66.879882
+            }
+        },
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01420",
+            "nombre": "EL VALLE",
+            "direccion": "INICIO AV. INTERCOMUNAL DEL VALLE, RES. DON PEDRO.",
+            "telefonos": [
+                "0212-690.54.28"
+            ],
+            "gps": {
+                "lat": 10.4691513,
+                "lng": -66.9030418
+            }
+        },
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01430",
+            "nombre": "ANDRES BELLO",
+            "direccion": "AV ANDRES BELLO COLEGIO NACIONAL DE PERIODISTA.",
+            "telefonos": [
+                "0212-793.14.72"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01440",
+            "nombre": "SEBUCAN",
+            "direccion": "AVENIDA ROMULO GALLEGOS, RESIDENCIAS CARLO LOCAL 2.",
+            "telefonos": [
+                "0212-238.19.18"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01450",
+            "nombre": "CAPITOLIO",
+            "direccion": "AVENIDA BARALT ESQUINA DE CONDE A PIÑANGO.",
+            "telefonos": [
+                "0212-862.39.49"
+            ],
+            "gps": {
+                "lat": 10.5068851,
+                "lng": -66.9168309
+            }
+        },
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01460",
+            "nombre": "ANTIMANO/ LA YAGUARA",
+            "direccion": "CALLE REAL BOULEVARD DE ANTIMANO, ANTIMANO.",
+            "telefonos": [
+                "0212-442.46.31"
+            ],
+            "gps": {
+                "lat": 10.4607697,
+                "lng": -66.9859112
+            }
+        },
+        {
+            "ciudad": "CHACAO",
+            "codigo": "01470",
+            "nombre": "LA CASTELLANA",
+            "direccion": "CALLE URDANETA CON PRINCIPAL DE LA CASTELLANA.",
+            "telefonos": [
+                "0212-265.04.29"
+            ],
+            "gps": {
+                "lat": 10.4964971,
+                "lng": -66.8521954
+            }
+        },
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01480",
+            "nombre": "CHACAITO",
+            "direccion": "AV. PICHINCHA CC UNICO NIVEL PB, EL ROSAL.",
+            "telefonos": [
+                "0212-952.02.70"
+            ],
+            "gps": {
+                "lat": 10.4901623,
+                "lng": -66.8680727
+            }
+        },
+        {
+            "ciudad": "CHACAO",
+            "codigo": "01500",
+            "nombre": "LOS PALOS GRANDES",
+            "direccion": "AV ANDRES BELLO CON 2DA TRANSV, LOS PALOS GRANDES.",
+            "telefonos": [
+                "0212-285.35.96"
+            ],
+            "gps": {
+                "lat": 10.4995067,
+                "lng": -66.8455899
+            }
+        },
+        {
+            "ciudad": "CARACAS",
+            "codigo": "01510",
+            "nombre": "FUERTE TIUNA",
+            "direccion": "AV. LAS ESCUELAS, FRENTE AL STADIUM JOSE CASANOVA.",
+            "telefonos": [
+                "0412-602.33.78"
+            ],
+            "gps": null
+        }
+    ],
+    "ESTADO ARAGUA": [
+        {
+            "ciudad": "MARACAY",
+            "codigo": "05010",
+            "nombre": "MARACAY ZONA INDUSTRIAL",
+            "direccion": "AV. ARAGUA CENTRO Nº 58, MARACAY.",
+            "telefonos": [
+                "0243-235.95.22"
+            ],
+            "gps": {
+                "lat": 10.2325173,
+                "lng": -67.5992514
+            }
+        },
+        {
+            "ciudad": "LA VICTORIA",
+            "codigo": "05030",
+            "nombre": "LA VICTORIA",
+            "direccion": "AV. VICTORIA LOCAL #2 PB, LA VICTORIA.",
+            "telefonos": [
+                "0424-136.74.95"
+            ],
+            "gps": {
+                "lat": 10.2265456,
+                "lng": -67.3315944
+            }
+        },
+        {
+            "ciudad": "MARACAY",
+            "codigo": "05040",
+            "nombre": "MARACAY 5 DE JULIO",
+            "direccion": "CALLE 5 DE JULIO, ZONA CENTRO, MARACAY.",
+            "telefonos": [
+                "0243-246.95.15"
+            ],
+            "gps": {
+                "lat": 10.2497141,
+                "lng": -67.5991998
+            }
+        },
+        {
+            "ciudad": "TURMERO",
+            "codigo": "05060",
+            "nombre": "TURMERO",
+            "direccion": "CALLE MARIÑO C/C CALLE PEÑALVER, TURMERO.",
+            "telefonos": [
+                "0244-661.15.66"
+            ],
+            "gps": {
+                "lat": 10.2290922,
+                "lng": -67.4778999
+            }
+        },
+        {
+            "ciudad": "VILLA DE CURA",
+            "codigo": "05070",
+            "nombre": "VILLA DE CURA",
+            "direccion": "CALLE URDANETA NORTE N° 15, VILLA DE CURA.",
+            "telefonos": [
+                "0244-386.19.73"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "LAS TEJERIAS",
+            "codigo": "05080",
+            "nombre": "LAS TEJERIAS",
+            "direccion": "C. MIRANDA, CASCO CENTRAL, LAS TEJERIAS.",
+            "telefonos": [
+                "0244-334.16.58"
+            ],
+            "gps": {
+                "lat": 10.2525801,
+                "lng": -67.1717686
+            }
+        },
+        {
+            "ciudad": "SAN SEBASTIAN",
+            "codigo": "05090",
+            "nombre": "SAN SEBASTIAN DE LOS REYES",
+            "direccion": "CALLE BOLIVAR LOCAL NRO 18-2, SAN SEBASTIAN.",
+            "telefonos": [
+                "0246-521.03.66"
+            ],
+            "gps": {
+                "lat": 9.9460006,
+                "lng": -67.1795018
+            }
+        },
+        {
+            "ciudad": "MARACAY",
+            "codigo": "05100",
+            "nombre": "MARACAY LA DEMOCRACIA",
+            "direccion": "AV AYACUCHO NORTE NRO 83, BARRIO LA DEMOCRACIA.",
+            "telefonos": [
+                "0243-553.02.24"
+            ],
+            "gps": {
+                "lat": 10.2576291,
+                "lng": -67.6096241
+            }
+        },
+        {
+            "ciudad": "TURMERO",
+            "codigo": "05110",
+            "nombre": "TURMERO ZONA INDUSTRIAL",
+            "direccion": "AV INTERCOMUNAL MARACAY TURMERO, LA MORITA I.",
+            "telefonos": [
+                "0414-294.17.88"
+            ],
+            "gps": {
+                "lat": 10.2286009,
+                "lng": -67.5510235
+            }
+        },
+        {
+            "ciudad": "TURMERO",
+            "codigo": "05120",
+            "nombre": "LA ENCRUCIJADA",
+            "direccion": "AV. PRINCIPAL, C.C. LOS LAURELES, LA ENCRUCIJADA.",
+            "telefonos": [
+                "0244-935.13.05"
+            ],
+            "gps": {
+                "lat": 10.2025453,
+                "lng": -67.4714206
+            }
+        },
+        {
+            "ciudad": "MARACAY",
+            "codigo": "05130",
+            "nombre": "MARACAY BASE ARAGUA",
+            "direccion": "AV. LAS DELICIAS C.C. HOTEL PASEO LAS DELICIAS II.",
+            "telefonos": [
+                "0243-232.87.77"
+            ],
+            "gps": {
+                "lat": 10.2557458,
+                "lng": -67.5919065
+            }
+        },
+        {
+            "ciudad": "MARACAY",
+            "codigo": "05140",
+            "nombre": "MARACAY LA COOPERATIVA",
+            "direccion": "AV. PRINCIPAL DE LA COOPERATIVA, LOCAL 13-B.",
+            "telefonos": [
+                "0243-242.80.43"
+            ],
+            "gps": {
+                "lat": 10.268989,
+                "lng": -67.580537
+            }
+        },
+        {
+            "ciudad": "MARACAY",
+            "codigo": "05160",
+            "nombre": "MARACAY SANTA ROSA",
+            "direccion": "CALLE CARABOBO, Nº 75-A, SECTOR SANTA ROSA.",
+            "telefonos": [],
+            "gps": {
+                "lat": 10.246619,
+                "lng": -67.591906
+            }
+        }
+    ],
+    "ESTADO LARA": [
+        {
+            "ciudad": "BARQUISIMETO",
+            "codigo": "13000",
+            "nombre": "BARQUISIMETO CENTRO",
+            "direccion": "AV. VENEZUELA ENTRE CALLES 39 Y 40, BARQUISIMETO.",
+            "telefonos": [
+                "0251-445.91.34"
+            ],
+            "gps": {
+                "lat": 10.0715248,
+                "lng": -69.3309241
+            }
+        },
+        {
+            "ciudad": "BARQUISIMETO",
+            "codigo": "13002",
+            "nombre": "CANAIMA",
+            "direccion": "AV. PEDRO LEON TORRES, C.C. CANAIMA, BARQUISIMETO.",
+            "telefonos": [],
+            "gps": null
+        },
+        {
+            "ciudad": "BARQUISIMETO",
+            "codigo": "13003",
+            "nombre": "ANDRES BELLO",
+            "direccion": "CARRERA 22 CON CALE 22 ANDRES BELLO, BARQUISIMETO.",
+            "telefonos": [],
+            "gps": null
+        },
+        {
+            "ciudad": "BARQUISIMETO",
+            "codigo": "13010",
+            "nombre": "BARQUISIMETO OESTE",
+            "direccion": "AV. FLORENCIO JIMENEZ, C.C. ARCOIRIS, OBELISCO.",
+            "telefonos": [
+                "0251-443.10.70"
+            ],
+            "gps": {
+                "lat": 10.0709,
+                "lng": -69.3556
+            }
+        },
+        {
+            "ciudad": "CARORA",
+            "codigo": "13020",
+            "nombre": "CARORA",
+            "direccion": "AV FCO DE MIRANDA CASA NRO 15, CARORA.",
+            "telefonos": [
+                "0252-421.22.69"
+            ],
+            "gps": {
+                "lat": 10.1731161,
+                "lng": -70.0812122
+            }
+        },
+        {
+            "ciudad": "BARQUISIMETO",
+            "codigo": "13030",
+            "nombre": "BARQUISIMETO ESTE",
+            "direccion": "CALLE 15, ENTRE CARRERAS 20 Y 21, BARQUISIMETO.",
+            "telefonos": [
+                "0251-252.37.70"
+            ],
+            "gps": {
+                "lat": 10.0685978,
+                "lng": -69.3066788
+            }
+        },
+        {
+            "ciudad": "BARQUISIMETO",
+            "codigo": "13031",
+            "nombre": "AV. MORAN",
+            "direccion": "CARRERA 21, ENTRE AV. MORAN Y CALLE 9, BARQUISIMETO.",
+            "telefonos": [
+                "0251-935.25.44"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "CABUDARE",
+            "codigo": "13040",
+            "nombre": "CABUDARE",
+            "direccion": "AV. SANTA BARBARA, C.C. STA. BARBARA, CABUDARE.",
+            "telefonos": [
+                "0251-261.64.44"
+            ],
+            "gps": {
+                "lat": 10.0339,
+                "lng": -69.2635
+            }
+        },
+        {
+            "ciudad": "BARQUISIMETO",
+            "codigo": "13060",
+            "nombre": "VALLE LINDO",
+            "direccion": "AUTOPISTA VIA DUACA KM 10 SECTOR SABANA GRANDE.",
+            "telefonos": [
+                "0251-886.15.94"
+            ],
+            "gps": {
+                "lat": 10.1691728,
+                "lng": -69.3130929
+            }
+        },
+        {
+            "ciudad": "BARQUISIMETO",
+            "codigo": "13070",
+            "nombre": "BQTO. NUEVA SEGOVIA",
+            "direccion": "CALLE 3 ENTRE CARRERA 1 Y AV LARA, NUEVA SEGOVIA.",
+            "telefonos": [
+                "0251–935.18.70"
+            ],
+            "gps": {
+                "lat": 10.0646896,
+                "lng": -69.2954941
+            }
+        },
+        {
+            "ciudad": "BARQUISIMETO",
+            "codigo": "13071",
+            "nombre": "PATARATA",
+            "direccion": "AV. LIBERTADOR, SECTOR PATARATA, BARQUISIMETO.",
+            "telefonos": [
+                "0416-651.00.44"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "BARQUISIMETO",
+            "codigo": "13080",
+            "nombre": "BABILOM",
+            "direccion": "CALLE 19 CON AV LIBERTADOR C.C LIBERTADOR.",
+            "telefonos": [],
+            "gps": {
+                "lat": 10.0638548,
+                "lng": -69.3612843
+            }
+        },
+        {
+            "ciudad": "BARQUISIMETO",
+            "codigo": "13081",
+            "nombre": "EL RECREO",
+            "direccion": "AV. LIBERTADOR. C.C. EL ROSARIO, BARQUISIMETO.",
+            "telefonos": [],
+            "gps": null
+        },
+        {
+            "ciudad": "BARQUISIMETO",
+            "codigo": "13100",
+            "nombre": "AV. VENEZUELA",
+            "direccion": "AV. VENEZUELA CON CALLE 22, BARQUISIMETO.",
+            "telefonos": [
+                "0251-231.37.90"
+            ],
+            "gps": null
+        }
+    ],
+    "ESTADO ZULIA": [
+        {
+            "ciudad": "MARACAIBO",
+            "codigo": "24000",
+            "nombre": "LA LIMPIA",
+            "direccion": "AV. 28 EDIF. RODRÍGUEZ Y BARBOZA, LA LIMPIA.",
+            "telefonos": [],
+            "gps": null
+        },
+        {
+            "ciudad": "MARACAIBO",
+            "codigo": "24005",
+            "nombre": "LOS OLIVOS",
+            "direccion": "AV 28 LA LIMPIA, SECTOR LOS ACEITUNOS.",
+            "telefonos": [
+                "0414-961.97.26"
+            ],
+            "gps": {
+                "lat": 10.6759767,
+                "lng": -71.6581133
+            }
+        },
+        {
+            "ciudad": "MARACAIBO",
+            "codigo": "24006",
+            "nombre": "MARACAIBO NORTE",
+            "direccion": "AV. PAUL MORENO, EDIF. MILENIUM CASAS SAAS.",
+            "telefonos": [],
+            "gps": null
+        },
+        {
+            "ciudad": "MARACAIBO",
+            "codigo": "24010",
+            "nombre": "MARACAIBO INDIO MARA",
+            "direccion": "CALLE 78 DR PORTILLO ENTRE AV. 16 Y 17.",
+            "telefonos": [
+                "0261-783.53.69"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "CIUDAD OJEDA",
+            "codigo": "24040",
+            "nombre": "CIUDAD OJEDA",
+            "direccion": "AV. INTERCOMUNAL SECTOR LAS MOROCHAS, CD. OJEDA.",
+            "telefonos": [
+                "0265-415.36.28"
+            ],
+            "gps": {
+                "lat": 10.1996,
+                "lng": -71.3286
+            }
+        },
+        {
+            "ciudad": "MARACAIBO",
+            "codigo": "24060",
+            "nombre": "MANZANILLO",
+            "direccion": "CALLE 10 LA UNION CON AV. 24, MANZANILLO.",
+            "telefonos": [
+                "0261-762.09.66"
+            ],
+            "gps": {
+                "lat": 10.5866082,
+                "lng": -71.6231292
+            }
+        },
+        {
+            "ciudad": "SAN FRANCISCO",
+            "codigo": "24062",
+            "nombre": "COROMOTO",
+            "direccion": "URBANIZACIÓN COROMOTO, AVENIDA 40, SAN FRANCISCO.",
+            "telefonos": [
+                "0261-418.14.22"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "MACHIQUES",
+            "codigo": "24080",
+            "nombre": "MACHIQUES",
+            "direccion": "AV. ARTES ESQ, CALLE PAZ, MACHIQUES EDO. ZULIA.",
+            "telefonos": [
+                "0263-473.03.96"
+            ],
+            "gps": {
+                "lat": 10.0580689,
+                "lng": -72.5468125
+            }
+        },
+        {
+            "ciudad": "CABIMAS",
+            "codigo": "24120",
+            "nombre": "CABIMAS",
+            "direccion": "AV INTERCUMANA, ESQUINA CUMANA, CABIMAS.",
+            "telefonos": [
+                "0264-241.47.18"
+            ],
+            "gps": {
+                "lat": 10.3989083,
+                "lng": -71.4456623
+            }
+        },
+        {
+            "ciudad": "CABIMAS",
+            "codigo": "24121",
+            "nombre": "AMBROSIO",
+            "direccion": "MINI C.C. LA INTERNACIONAL, E/S BP AMBROSIO.",
+            "telefonos": [
+                "0264-814.03.15"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "MARACAIBO",
+            "codigo": "24130",
+            "nombre": "LA CHINITA",
+            "direccion": "AV. 12 C/C 93 PADILLA, CASCO CENTRAL.",
+            "telefonos": [
+                "0261-723.09.74"
+            ],
+            "gps": {
+                "lat": 10.6449518,
+                "lng": -71.6136246
+            }
+        },
+        {
+            "ciudad": "MARACAIBO",
+            "codigo": "24140",
+            "nombre": "MARACAIBO IRAMA",
+            "direccion": "AV 5 CON CALLE E, 18 DE OCTUBRE, MARACAIBO.",
+            "telefonos": [
+                "0261-743.24.84"
+            ],
+            "gps": {
+                "lat": 10.6921937,
+                "lng": -71.6113049
+            }
+        },
+        {
+            "ciudad": "SANTA BARBARA",
+            "codigo": "24150",
+            "nombre": "SANTA BARBARA DEL ZULIA",
+            "direccion": "AV 8 CASA N° 5-127, SANTA BARBARA ZULIA.",
+            "telefonos": [
+                "0275-555.23.68"
+            ],
+            "gps": {
+                "lat": 8.999263,
+                "lng": -71.9155527
+            }
+        },
+        {
+            "ciudad": "BARALT",
+            "codigo": "24160",
+            "nombre": "EL VENADO",
+            "direccion": "AV. INDEPENDENCIA, C.C. SAN ANTONIO, MENE GRANDE.",
+            "telefonos": [],
+            "gps": null
+        },
+        {
+            "ciudad": "CIUDAD OJEDA",
+            "codigo": "24170",
+            "nombre": "CIUDAD OJEDA CENTRO",
+            "direccion": "CALLE FARIA ESQ CALLE LARA, CIUDAD OJEDA.",
+            "telefonos": [
+                "0265-415.37.47"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "TIA JUANA",
+            "codigo": "24200",
+            "nombre": "TIA JUANA",
+            "direccion": "AVENIDA INTERCOMUNAL, TIA JUANA.",
+            "telefonos": [
+                "0424-639.26.46"
+            ],
+            "gps": {
+                "lat": 10.2324396,
+                "lng": -71.3523583
+            }
+        },
+        {
+            "ciudad": "MARACAIBO",
+            "codigo": "24230",
+            "nombre": "MARACAIBO LA LAGO",
+            "direccion": "AV. 3E ENTRE CALLES 72 Y 73, SECTOR LA LAGO.",
+            "telefonos": [
+                "0261-793.66.85"
+            ],
+            "gps": {
+                "lat": 10.6743,
+                "lng": -71.604
+            }
+        },
+        {
+            "ciudad": "CAJA SECA",
+            "codigo": "24240",
+            "nombre": "CAJA SECA",
+            "direccion": "NUEVA BOLIVIA MERIDA, CTRA. PANAMERICANA.",
+            "telefonos": [
+                "0271-772.27.59"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "MARACAIBO",
+            "codigo": "24250",
+            "nombre": "CURVA DE MOLINA",
+            "direccion": "CALLE 79 NRO 92-58, CURVA DE MOLINA.",
+            "telefonos": [
+                "0424-681.46.10"
+            ],
+            "gps": null
+        }
+    ],
+    "ESTADO FALCÓN": [
+        {
+            "ciudad": "CORO",
+            "codigo": "11000",
+            "nombre": "CORO",
+            "direccion": "CALLE ZAMORA ESQ ITURBE, CORO.",
+            "telefonos": [
+                "0268-252.17.07"
+            ],
+            "gps": {
+                "lat": 11.4108253,
+                "lng": -69.6709781
+            }
+        },
+        {
+            "ciudad": "TUCACAS",
+            "codigo": "11020",
+            "nombre": "TUCACAS",
+            "direccion": "AV LIBERTADOR DE TUCACAS, TUCACAS.",
+            "telefonos": [
+                "0259-41.605.13"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "PUNTO FIJO",
+            "codigo": "11030",
+            "nombre": "SANTA IRENE",
+            "direccion": "AV. RAFAEL GONZALEZ, URB. SANTA IRENE, PUNTO FIJO.",
+            "telefonos": [
+                "0269-416.42.24"
+            ],
+            "gps": {
+                "lat": 11.6956216,
+                "lng": -70.1906767
+            }
+        },
+        {
+            "ciudad": "CORO",
+            "codigo": "11050",
+            "nombre": "EL CASTILLO",
+            "direccion": "AVENIDA MANAURE C.C. EL CASTILLO, CORO.",
+            "telefonos": [
+                "0268-253.67.63"
+            ],
+            "gps": {
+                "lat": 11.4023989,
+                "lng": -69.6721584
+            }
+        },
+        {
+            "ciudad": "PUNTO FIJO",
+            "codigo": "11060",
+            "nombre": "PUNTO FIJO AV. MONAGAS",
+            "direccion": "CALLE MONAGAS EDIF. LUCRISCAR, PUNTO FIJO.",
+            "telefonos": [],
+            "gps": {
+                "lat": 11.6910626,
+                "lng": -70.2002248
+            }
+        }
+    ],
+    "ESTADO YARACUY": [
+        {
+            "ciudad": "SAN FELIPE",
+            "codigo": "23000",
+            "nombre": "SAN FELIPE",
+            "direccion": "2º AV. CON CALLE 16 EDIF. ROSPIER, SAN FELIPE.",
+            "telefonos": [
+                "0416-755.42.57"
+            ],
+            "gps": {
+                "lat": 10.3361,
+                "lng": -68.739
+            }
+        },
+        {
+            "ciudad": "NIRGUA",
+            "codigo": "23010",
+            "nombre": "NIRGUA",
+            "direccion": "AV. 5 ENTRE CALLES 4 Y 5, NIRGUA.",
+            "telefonos": [
+                "0254-572.21.21"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "YARITAGUA",
+            "codigo": "23030",
+            "nombre": "YARITAGUA",
+            "direccion": "CALLE 17 ENTRE CARRERAS 7 Y 8, YARITAGUA.",
+            "telefonos": [
+                "0414-520.59.80"
+            ],
+            "gps": null
+        }
+    ],
+    "ESTADO APURE": [
+        {
+            "ciudad": "GUASDUALITO",
+            "codigo": "04010",
+            "nombre": "GUASDUALITO",
+            "direccion": "CALLE CEDEÑO SECTOR CENTRO, GUASDUALITO.",
+            "telefonos": [
+                "0278-332.01.54"
+            ],
+            "gps": {
+                "lat": 7.2393652,
+                "lng": -70.7349022
+            }
+        },
+        {
+            "ciudad": "SAN FERNANDO",
+            "codigo": "04020",
+            "nombre": "SAN FERNANDO CENTRO",
+            "direccion": "AV CARACAS CENTRO EMPRESARIAL GENESIS, SAN FERNANDO.",
+            "telefonos": [
+                "0247-341.22.41"
+            ],
+            "gps": {
+                "lat": 7.8834063,
+                "lng": -67.4716484
+            }
+        }
+    ],
+    "ESTADO BARINAS": [
+        {
+            "ciudad": "BARINAS",
+            "codigo": "06000",
+            "nombre": "BARINAS",
+            "direccion": "CALLE CEDEÑO C.C. GIAMMA, BARINAS.",
+            "telefonos": [
+                "0273-415.88.03"
+            ],
+            "gps": {
+                "lat": 8.6212679,
+                "lng": -70.2022988
+            }
+        },
+        {
+            "ciudad": "SOCOPO",
+            "codigo": "06010",
+            "nombre": "SOCOPO",
+            "direccion": "BARRIO EL CARMEN, SOCOPO-BARINAS.",
+            "telefonos": [
+                "0273-928.10.73"
+            ],
+            "gps": {
+                "lat": 8.2371621,
+                "lng": -70.8178072
+            }
+        },
+        {
+            "ciudad": "BARINAS",
+            "codigo": "06020",
+            "nombre": "BARINAS ZONA IND.",
+            "direccion": "AV. ELIAS CORDERO EDIFICIO REY DE REYES.",
+            "telefonos": [
+                "0273-414.27.97"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "SANTA BARBARA",
+            "codigo": "06030",
+            "nombre": "SANTA BARBARA DE BARINAS",
+            "direccion": "SECTOR EL PROGRESO, BARINAS.",
+            "telefonos": [
+                "0278-222.18.63"
+            ],
+            "gps": {
+                "lat": 7.8183872,
+                "lng": -71.1796984
+            }
+        },
+        {
+            "ciudad": "SABANETA",
+            "codigo": "06040",
+            "nombre": "BARINAS SABANETA",
+            "direccion": "C.C. TRICOLOR, SECTOR 9 DE DICIEMBRE.",
+            "telefonos": [
+                "0273-775.61.75"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "BARINAS",
+            "codigo": "06050",
+            "nombre": "ALTO BARINAS",
+            "direccion": "URB ALTO BARINAS NORTE, BARINAS.",
+            "telefonos": [
+                "0273-541.13.38"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "BARINAS",
+            "codigo": "06051",
+            "nombre": "FORUM",
+            "direccion": "C.C. FORUM LOCAL 52, BARINAS.",
+            "telefonos": [
+                "0273-541.41.63"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "BARINAS",
+            "codigo": "06060",
+            "nombre": "BARINAS 23 DE ENERO",
+            "direccion": "AV 23 DE ENERO EDIF LA FORTANA.",
+            "telefonos": [
+                "0273-552.05.26"
+            ],
+            "gps": null
+        }
+    ],
+    "ESTADO GUÁRICO": [
+        {
+            "ciudad": "SAN JUAN DE LOS MORROS",
+            "codigo": "12000",
+            "nombre": "SAN JUAN DE LOS MORROS",
+            "direccion": "CALLE EL CARMEN, EDIF. RAGUCEO, LOCAL 02.",
+            "telefonos": [
+                "0246-432.09.22"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "CALABOZO",
+            "codigo": "12010",
+            "nombre": "CALABOZO",
+            "direccion": "CARRERA 12 C.C COROMOTO, CALABOZO.",
+            "telefonos": [],
+            "gps": {
+                "lat": 8.9343,
+                "lng": -67.4281
+            }
+        },
+        {
+            "ciudad": "VALLE DE LA PASCUA",
+            "codigo": "12020",
+            "nombre": "VALLE DE LA PASCUA",
+            "direccion": "CENTRO COMERCIAL STAR CENTER, VALLE DE LA PASCUA.",
+            "telefonos": [
+                "0235-342.56.33"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "ZARAZA",
+            "codigo": "12030",
+            "nombre": "ZARAZA",
+            "direccion": "CALLE BOLIVAR SECTOR CENTRO, ZARAZA.",
+            "telefonos": [
+                "0238-762.19.02"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "TUCUPIDO",
+            "codigo": "12040",
+            "nombre": "TUCUPIDO",
+            "direccion": "CALLE SALOM NRO 24, TUCUPIDO.",
+            "telefonos": [
+                "0238-552.08.54"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "ALTAGRACIA",
+            "codigo": "12050",
+            "nombre": "ALTAGRACIA DE ORITUCO",
+            "direccion": "EDF. RESIDENCIAS LA PAZ, ALTAGRACIA DE ORITUCO.",
+            "telefonos": [
+                "0238-334.29.73"
+            ],
+            "gps": null
+        }
+    ],
+    "ESTADO PORTUGUESA": [
+        {
+            "ciudad": "GUANARE",
+            "codigo": "18000",
+            "nombre": "GUANARE",
+            "direccion": "AV JOSE MARIA VARGAS, C.C. REVICA, GUANARE.",
+            "telefonos": [
+                "0257-251.42.38"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "ACARIGUA",
+            "codigo": "18010",
+            "nombre": "ACARIGUA",
+            "direccion": "CALLE 22, ACARIGUA CENTRO.",
+            "telefonos": [
+                "0255-623.62.96"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "ACARIGUA",
+            "codigo": "18040",
+            "nombre": "CENTRO LOS LLANOS",
+            "direccion": "CALLE 31 CON AV 28 C.C LOS LLANOS.",
+            "telefonos": [
+                "0255-622.01.69"
+            ],
+            "gps": {
+                "lat": 9.560776,
+                "lng": -69.2045441
+            }
+        }
+    ],
+    "ESTADO MÉRIDA": [
+        {
+            "ciudad": "MERIDA",
+            "codigo": "14000",
+            "nombre": "MÉRIDA CUBO ROJO",
+            "direccion": "AV GONZALO PICON C.C. CUBO ROJO, MÉRIDA.",
+            "telefonos": [
+                "0274-263.58.85"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "MERIDA",
+            "codigo": "14010",
+            "nombre": "MÉRIDA PASEO LA FERIA",
+            "direccion": "AV. PASEO DE LA FERIA, RESIDENCIA EL PASEO.",
+            "telefonos": [
+                "0274-252.56.66"
+            ],
+            "gps": {
+                "lat": 8.5924301,
+                "lng": -71.1474609
+            }
+        },
+        {
+            "ciudad": "MERIDA",
+            "codigo": "14012",
+            "nombre": "CATEDRAL",
+            "direccion": "AV. 5, ENTRE CALLES 23 Y 24, MERIDA.",
+            "telefonos": [],
+            "gps": null
+        },
+        {
+            "ciudad": "EL VIGIA",
+            "codigo": "14020",
+            "nombre": "EL VIGÍA",
+            "direccion": "CALLE 3 CON AV. DON PEPE ROJAS, EL VIGÍA.",
+            "telefonos": [
+                "0412-064.94.04"
+            ],
+            "gps": {
+                "lat": 8.6124631,
+                "lng": -71.6575131
+            }
+        },
+        {
+            "ciudad": "TOVAR",
+            "codigo": "14030",
+            "nombre": "TOVAR",
+            "direccion": "CARRERA 4TA, C.C. EL LLANO, TOVAR.",
+            "telefonos": [
+                "0275-873.47.68"
+            ],
+            "gps": {
+                "lat": 8.3291184,
+                "lng": -71.7561206
+            }
+        },
+        {
+            "ciudad": "EJIDO",
+            "codigo": "14040",
+            "nombre": "EJIDO",
+            "direccion": "AV. FERNÁNDEZ PEÑA, CENTRO EJIDO.",
+            "telefonos": [
+                "0426-385.95.31"
+            ],
+            "gps": {
+                "lat": 8.5489483,
+                "lng": -71.2383251
+            }
+        },
+        {
+            "ciudad": "MERIDA",
+            "codigo": "14050",
+            "nombre": "MÉRIDA MILLA",
+            "direccion": "AV. 5 CON ESQ. CALLE 15, SECTOR BELÉN.",
+            "telefonos": [
+                "0274-252.27.94"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "MERIDA",
+            "codigo": "14060",
+            "nombre": "MÉRIDA LOS PRÓCERES",
+            "direccion": "PROLONGACIÓN AV. LOS PRÓCERES, C.C. DON LUIS.",
+            "telefonos": [
+                "0274-266.75.63"
+            ],
+            "gps": {
+                "lat": 8.5612892,
+                "lng": -71.2131123
+            }
+        },
+        {
+            "ciudad": "TUCANIZON",
+            "codigo": "14070",
+            "nombre": "TUCANIZÓN",
+            "direccion": "CARRETERA PANAMERICANA, TUCANIZÓN.",
+            "telefonos": [
+                "0414-751.91.11"
+            ],
+            "gps": {
+                "lat": 8.9661928,
+                "lng": -71.2757046
+            }
+        },
+        {
+            "ciudad": "SANTA ELENA",
+            "codigo": "14071",
+            "nombre": "SANTA ELENA DE ARENALES",
+            "direccion": "CALLE PRINCIPAL, SANTA ELENA DE ARENALES.",
+            "telefonos": [
+                "0275-920.23.63"
+            ],
+            "gps": null
+        }
+    ],
+    "ESTADO TÁCHIRA": [
+        {
+            "ciudad": "SAN CRISTOBAL",
+            "codigo": "20000",
+            "nombre": "SAN CRISTÓBAL CARRERA 20",
+            "direccion": "BARRIO OBRERO, CALLE 10 CON CARRERA 20.",
+            "telefonos": [
+                "0276-356.14.43"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "SAN CRISTOBAL",
+            "codigo": "20010",
+            "nombre": "SAN CRISTÓBAL CONCORDIA",
+            "direccion": "CALLE 4 BIS LA CONCORDIA, SAN CRISTÓBAL.",
+            "telefonos": [
+                "0276-347.44.90"
+            ],
+            "gps": {
+                "lat": 7.7581188,
+                "lng": -72.2333028
+            }
+        },
+        {
+            "ciudad": "SAN ANTONIO",
+            "codigo": "20020",
+            "nombre": "SAN ANTONIO DEL TÁCHIRA",
+            "direccion": "AV. VENEZUELA CON CALLE 7, SAN ANTONIO.",
+            "telefonos": [
+                "0276-771.45.45"
+            ],
+            "gps": {
+                "lat": 7.8161625,
+                "lng": -72.441885
+            }
+        },
+        {
+            "ciudad": "LA FRIA",
+            "codigo": "20030",
+            "nombre": "LA FRÍA",
+            "direccion": "CARRERA 11 ENTRE CALLES 5 Y 6, LA FRÍA.",
+            "telefonos": [
+                "0277-514.72.80"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "LA GRITA",
+            "codigo": "20040",
+            "nombre": "LA GRITA",
+            "direccion": "AV. FRANCISCO DE CÁCERES, LA GRITA.",
+            "telefonos": [
+                "0277-311.01.63"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "RUBIO",
+            "codigo": "20050",
+            "nombre": "RUBIO",
+            "direccion": "C.C. VENEZIA FRENTE A LA PLAZA BOLÍVAR.",
+            "telefonos": [
+                "0276-762.74.78"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "EL PIÑAL",
+            "codigo": "20060",
+            "nombre": "EL PIÑAL",
+            "direccion": "CALLE 1, VÍA LA MORITA, EL PIÑAL.",
+            "telefonos": [
+                "0277-234.03.91"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "TARIBA",
+            "codigo": "20070",
+            "nombre": "TÁRIBA",
+            "direccion": "CALLE 8 CON CARRERA 8, TÁRIBA.",
+            "telefonos": [
+                "0276-391.34.50"
+            ],
+            "gps": {
+                "lat": 7.8217101,
+                "lng": -72.2237421
+            }
+        },
+        {
+            "ciudad": "SAN CRISTOBAL",
+            "codigo": "20080",
+            "nombre": "BARRIO OBRERO",
+            "direccion": "CARRERA 22, BARRIO OBRERO, SAN CRISTÓBAL.",
+            "telefonos": [
+                "0276-356.77.31"
+            ],
+            "gps": {
+                "lat": 7.7710114,
+                "lng": -72.2183533
+            }
+        },
+        {
+            "ciudad": "UREÑA",
+            "codigo": "20090",
+            "nombre": "UREÑA",
+            "direccion": "CALLE 5 CON ESQUINA CARRERA 6, UREÑA.",
+            "telefonos": [
+                "0276-787.14.44"
+            ],
+            "gps": {
+                "lat": 11.6952,
+                "lng": -72.5316
+            }
+        },
+        {
+            "ciudad": "SAN CRISTOBAL",
+            "codigo": "20100",
+            "nombre": "SAN CRISTÓBAL CENTRO",
+            "direccion": "7MA AV. C.C. PARTENÓN, SAN CRISTÓBAL.",
+            "telefonos": [
+                "0276-342.34.17"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "SAN CRISTOBAL",
+            "codigo": "20110",
+            "nombre": "PARAMILLO",
+            "direccion": "AV. LOS AGUSTINOS URB. EL LOBO, PARAMILLO.",
+            "telefonos": [
+                "0276-356.41.61"
+            ],
+            "gps": {
+                "lat": 7.7946404,
+                "lng": -72.2076812
+            }
+        },
+        {
+            "ciudad": "COLON",
+            "codigo": "20120",
+            "nombre": "SAN JUAN DE COLÓN",
+            "direccion": "CARRERA 5 ESQUINA CALLE 7, SAN JUAN DE COLÓN.",
+            "telefonos": [
+                "0277-291.52.46"
+            ],
+            "gps": null
+        }
+    ],
+    "ESTADO TRUJILLO": [
+        {
+            "ciudad": "TRUJILLO",
+            "codigo": "21000",
+            "nombre": "TRUJILLO",
+            "direccion": "C.C. GEMINIS CENTER, PB, LOCAL 3, TRUJILLO.",
+            "telefonos": [
+                "0272-236.55.15"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "VALERA",
+            "codigo": "21010",
+            "nombre": "VALERA",
+            "direccion": "EDIF. PROFESIONAL DON PEPE, PB, VALERA.",
+            "telefonos": [
+                "0271-221.14.82"
+            ],
+            "gps": {
+                "lat": 9.3156783,
+                "lng": -70.6058351
+            }
+        },
+        {
+            "ciudad": "BOCONO",
+            "codigo": "21030",
+            "nombre": "BOCONÓ",
+            "direccion": "AV. MIRANDA CON CALLE ANDRÉS BELLO, BOCONÓ.",
+            "telefonos": [
+                "0272-652.46.76"
+            ],
+            "gps": {
+                "lat": 10.5075,
+                "lng": -66.8884
+            }
+        },
+        {
+            "ciudad": "VALERA",
+            "codigo": "21040",
+            "nombre": "VALERA LOS LIMONCITOS",
+            "direccion": "RESIDENCIAS TRINITARIAS II, LOS LIMONCITOS.",
+            "telefonos": [
+                "0271-231.35.63"
+            ],
+            "gps": {
+                "lat": 9.3015099,
+                "lng": -70.6135101
+            }
+        },
+        {
+            "ciudad": "VALERA",
+            "codigo": "21050",
+            "nombre": "VALERA CENTRO",
+            "direccion": "AV. 12 CON CALLES 8 Y 9, SECTOR CENTRO, VALERA.",
+            "telefonos": [
+                "0271-221.44.55"
+            ],
+            "gps": {
+                "lat": 9.3149416,
+                "lng": -70.6091462
+            }
+        },
+        {
+            "ciudad": "SABANA DE MENDOZA",
+            "codigo": "21060",
+            "nombre": "SABANA DE MENDOZA",
+            "direccion": "AV. LAS FLORES, SABANA DE MENDOZA.",
+            "telefonos": [
+                "0271-669.43.05"
+            ],
+            "gps": {
+                "lat": 9.4341762,
+                "lng": -70.7729124
+            }
+        }
+    ],
+    "ESTADO ANZOÁTEGUI": [
+        {
+            "ciudad": "BARCELONA",
+            "codigo": "03000",
+            "nombre": "BARCELONA",
+            "direccion": "AV. FUERZAS ARMADAS EDIF. AZGAN, BARCELONA.",
+            "telefonos": [
+                "0281-276.11.76"
+            ],
+            "gps": {
+                "lat": 10.1373363,
+                "lng": -64.6829436
+            }
+        },
+        {
+            "ciudad": "ANACO",
+            "codigo": "03010",
+            "nombre": "ANACO",
+            "direccion": "AV. JOSÉ ANTONIO ANZOÁTEGUI, C.C. ANACO CENTER.",
+            "telefonos": [
+                "0282-424.93.14"
+            ],
+            "gps": {
+                "lat": 9.4324139,
+                "lng": -64.4662499
+            }
+        },
+        {
+            "ciudad": "EL TIGRE",
+            "codigo": "03020",
+            "nombre": "EL TIGRE",
+            "direccion": "AV. FRANCISCO DE MIRANDA CON CALLE 18 SUR.",
+            "telefonos": [
+                "0283-241.92.74"
+            ],
+            "gps": {
+                "lat": 8.8943036,
+                "lng": -64.2369862
+            }
+        },
+        {
+            "ciudad": "LECHERIA",
+            "codigo": "03030",
+            "nombre": "LAS GARZAS",
+            "direccion": "AV. JORGE RODRÍGUEZ, SECTOR LAS GARZAS, LECHERÍA.",
+            "telefonos": [],
+            "gps": {
+                "lat": 10.1815638,
+                "lng": -64.6686459
+            }
+        },
+        {
+            "ciudad": "PUERTO LA CRUZ",
+            "codigo": "03040",
+            "nombre": "PUERTO LA CRUZ",
+            "direccion": "AV. MUNICIPAL, URB. PUEBLO NUEVO, PLC.",
+            "telefonos": [
+                "0281-268.76.60"
+            ],
+            "gps": {
+                "lat": 10.201703,
+                "lng": -64.6353149
+            }
+        },
+        {
+            "ciudad": "PIRITU",
+            "codigo": "03050",
+            "nombre": "PÍRITU",
+            "direccion": "AV. FERNANDO PEÑALVER, QTA. DON CARLO, PÍRITU.",
+            "telefonos": [
+                "0281-441.09.76"
+            ],
+            "gps": {
+                "lat": 10.0466413,
+                "lng": -65.0330200
+            }
+        },
+        {
+            "ciudad": "PARIAGUAN",
+            "codigo": "03080",
+            "nombre": "PARIAGUÁN",
+            "direccion": "CALLE BOLÍVAR CRUCE CON COLOMBIA, PARIAGUÁN.",
+            "telefonos": [
+                "0414-993.64.54"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "PUERTO LA CRUZ",
+            "codigo": "03090",
+            "nombre": "PUERTO LA CRUZ CENTRO",
+            "direccion": "CALLE RICAURTE, CASCO CENTRAL, PLC.",
+            "telefonos": [
+                "0281-268.60.59"
+            ],
+            "gps": {
+                "lat": 10.2168865,
+                "lng": -64.6378683
+            }
+        },
+        {
+            "ciudad": "BARCELONA",
+            "codigo": "03100",
+            "nombre": "NUEVA BARCELONA",
+            "direccion": "C.C. LOS CHAGUARAMOS, NUEVA BARCELONA.",
+            "telefonos": [
+                "0281-268.60.59"
+            ],
+            "gps": {
+                "lat": 10.1533222,
+                "lng": -64.6858063
+            }
+        },
+        {
+            "ciudad": "CLARINES",
+            "codigo": "03110",
+            "nombre": "CLARINES",
+            "direccion": "AV. FERNÁNDEZ PADILLA, C.C. MTC, CLARINES.",
+            "telefonos": [
+                "0281-445.17.19"
+            ],
+            "gps": {
+                "lat": 9.9438372,
+                "lng": -65.1639481
+            }
+        },
+        {
+            "ciudad": "LECHERIA",
+            "codigo": "03120",
+            "nombre": "LECHERÍA",
+            "direccion": "PROLONGACIÓN AV. PRINCIPAL DE LECHERÍA.",
+            "telefonos": [
+                "0281-282.14.51"
+            ],
+            "gps": {
+                "lat": 10.1828176,
+                "lng": -64.6893312
+            }
+        },
+        {
+            "ciudad": "EL TIGRE",
+            "codigo": "03130",
+            "nombre": "EL TIGRE CENTRO",
+            "direccion": "CARRERA 2 SUR ENTRE CALLES 2 Y 3, EL TIGRE.",
+            "telefonos": [
+                "0283-226.28.62"
+            ],
+            "gps": {
+                "lat": 8.8869825,
+                "lng": -64.2571774
+            }
+        }
+    ],
+    "ESTADO BOLÍVAR": [
+        {
+            "ciudad": "CIUDAD BOLIVAR",
+            "codigo": "07000",
+            "nombre": "CIUDAD BOLÍVAR",
+            "direccion": "AV. REPÚBLICA, EDIF. FRANCO, CIUDAD BOLÍVAR.",
+            "telefonos": [
+                "0285-654.67.01"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "PUERTO ORDAZ",
+            "codigo": "07010",
+            "nombre": "ALTA VISTA",
+            "direccion": "AV. PUERTO ORDAZ, C.C. BABILONIA MALL, ALTA VISTA.",
+            "telefonos": [
+                "0286-962.30.26"
+            ],
+            "gps": {
+                "lat": 8.2942171,
+                "lng": -62.7293434
+            }
+        },
+        {
+            "ciudad": "SANTA ELENA",
+            "codigo": "07040",
+            "nombre": "SANTA ELENA DE UAIRÉN",
+            "direccion": "CALLE IKABARÚ, TRONCAL 10, SANTA ELENA DE UAIRÉN.",
+            "telefonos": [
+                "0289-995.21.97"
+            ],
+            "gps": {
+                "lat": 4.5988806,
+                "lng": -61.1098221
+            }
+        },
+        {
+            "ciudad": "PUERTO ORDAZ",
+            "codigo": "07060",
+            "nombre": "UNARE",
+            "direccion": "CALLE NEVERÍ, SECTOR UNARE 1, PUERTO ORDAZ.",
+            "telefonos": [
+                "0286-952.66.95"
+            ],
+            "gps": {
+                "lat": 8.2858096,
+                "lng": -62.7542851
+            }
+        },
+        {
+            "ciudad": "CIUDAD BOLIVAR",
+            "codigo": "07080",
+            "nombre": "CIUDAD BOLÍVAR ZONA INDUSTRIAL",
+            "direccion": "AV. NUEVA GRANADA, CIUDAD BOLÍVAR.",
+            "telefonos": [
+                "0285-631.66.35"
+            ],
+            "gps": {
+                "lat": 8.1121051,
+                "lng": -63.5426025
+            }
+        },
+        {
+            "ciudad": "PUERTO ORDAZ",
+            "codigo": "07090",
+            "nombre": "AV. LAS AMÉRICAS",
+            "direccion": "URB. VILLA BRASIL, SECTOR VILLA ANTILLANA.",
+            "telefonos": [
+                "0286-922.72.70"
+            ],
+            "gps": null
+        }
+    ],
+    "ESTADO DELTA AMACURO": [
+        {
+            "ciudad": "TUCUPITA",
+            "codigo": "10000",
+            "nombre": "TUCUPITA",
+            "direccion": "CALLE DALLA COSTA Nº 22, TUCUPITA.",
+            "telefonos": [
+                "0287-721.44.66"
+            ],
+            "gps": {
+                "lat": 9.0572867,
+                "lng": -62.0507850
+            }
+        }
+    ],
+    "ESTADO MONAGAS": [
+        {
+            "ciudad": "MATURIN",
+            "codigo": "16010",
+            "nombre": "MATURÍN PLAZA AYACUCHO",
+            "direccion": "CALLE CANTAURA, FRENTE AL HOTEL TRINIDAD.",
+            "telefonos": [
+                "0412-853.81.00"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "PUNTA DE MATA",
+            "codigo": "16020",
+            "nombre": "PUNTA DE MATA",
+            "direccion": "CALLE 5 DE JULIO CON CALLE NUEVA, PUNTA DE MATA.",
+            "telefonos": [
+                "0292-337.07.82"
+            ],
+            "gps": {
+                "lat": 9.6882055,
+                "lng": -63.6133092
+            }
+        },
+        {
+            "ciudad": "MATURIN",
+            "codigo": "16030",
+            "nombre": "MATURÍN CENTRO",
+            "direccion": "CALLE 14 CON CALLE 10, SECTOR CENTRO, MATURÍN.",
+            "telefonos": [
+                "0291-643.88.15"
+            ],
+            "gps": {
+                "lat": 9.7442988,
+                "lng": -63.1821784
+            }
+        },
+        {
+            "ciudad": "CARIPE",
+            "codigo": "16040",
+            "nombre": "CARIPE",
+            "direccion": "AV. BOLÍVAR, C.C. BOLÍVAR PLAZA, CARIPE.",
+            "telefonos": [],
+            "gps": null
+        },
+        {
+            "ciudad": "TEMBLADOR",
+            "codigo": "16050",
+            "nombre": "TEMBLADOR",
+            "direccion": "CALLE BOLÍVAR Nº 70-A, SECTOR LA PLAZA.",
+            "telefonos": [
+                "0287-792.27.89"
+            ],
+            "gps": {
+                "lat": 9.0065445,
+                "lng": -62.6381211
+            }
+        },
+        {
+            "ciudad": "MATURIN",
+            "codigo": "16070",
+            "nombre": "MATURÍN ZONA INDUSTRIAL",
+            "direccion": "VÍA PRINCIPAL DE LA CRUZ E, C.C. LAS MACARENAS.",
+            "telefonos": [
+                "0416-692.24.60"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "MATURIN",
+            "codigo": "16080",
+            "nombre": "MATURÍN AV. RAÚL LEONI",
+            "direccion": "AV. RAÚL LEONI, FRENTE AL POLIDEPORTIVO.",
+            "telefonos": [
+                "0291-641.03.85"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "MATURIN",
+            "codigo": "16090",
+            "nombre": "MATURÍN LA FLORESTA",
+            "direccion": "C.C. LA REDOMA, SECTOR BRISAS DEL AEROPUERTO.",
+            "telefonos": [
+                "0291-206.55.40"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "MATURIN",
+            "codigo": "16100",
+            "nombre": "MATURÍN PLAZA EL INDIO",
+            "direccion": "AV. BICENTENARIO, AL LADO DE LA LÍNEA DE TAXI.",
+            "telefonos": [
+                "0291-643.79.10"
+            ],
+            "gps": {
+                "lat": 9.7412412,
+                "lng": -63.1975527
+            }
+        }
+    ],
+    "ESTADO NUEVA ESPARTA": [
+        {
+            "ciudad": "JUAN GRIEGO",
+            "codigo": "17020",
+            "nombre": "JUAN GRIEGO",
+            "direccion": "CALLE GUEVARA Nº 12-B, JUAN GRIEGO.",
+            "telefonos": [
+                "0295-253.63.30"
+            ],
+            "gps": {
+                "lat": 11.0781954,
+                "lng": -63.9683247
+            }
+        },
+        {
+            "ciudad": "EL ESPINAL",
+            "codigo": "17021",
+            "nombre": "EL ESPINAL",
+            "direccion": "SECTOR LA ENCRUCIJADA DEL ESPINAL.",
+            "telefonos": [
+                "0295-416.69.52"
+            ],
+            "gps": null
+        },
+        {
+            "ciudad": "PAMPATAR",
+            "codigo": "17040",
+            "nombre": "JÓVITO VILLALBA",
+            "direccion": "AV. JÓVITO VILLALBA, E/S MANEIRO, PAMPATAR.",
+            "telefonos": [
+                "0295-267.00.60"
+            ],
+            "gps": {
+                "lat": 10.9949417,
+                "lng": -63.8099213
+            }
+        },
+        {
+            "ciudad": "PORLAMAR",
+            "codigo": "17050",
+            "nombre": "NUEVA CÁDIZ",
+            "direccion": "AV. JUAN BAUTISTA ARISMENDI, SECTOR LOS COCOS.",
+            "telefonos": [
+                "0295-274.57.05"
+            ],
+            "gps": {
+                "lat": 10.9524771,
+                "lng": -63.8622069
+            }
+        },
+        {
+            "ciudad": "PORLAMAR",
+            "codigo": "17060",
+            "nombre": "PORLAMAR CENTRO",
+            "direccion": "CALLE VELÁZQUEZ CON ESQUINA FAJARDO, PORLAMAR.",
+            "telefonos": [
+                "0414-837.97.83"
+            ],
+            "gps": {
+                "lat": 10.9560073,
+                "lng": -63.8481411
+            }
+        },
+        {
+            "ciudad": "PORLAMAR",
+            "codigo": "17070",
+            "nombre": "VILLA ROSA",
+            "direccion": "SECTOR SAN ANTONIO NORTE, VILLA ROSA.",
+            "telefonos": [
+                "0412-092.78.96"
+            ],
+            "gps": {
+                "lat": 10.9473848,
+                "lng": -63.9215851
+            }
+        }
+    ],
+    "ESTADO SUCRE": [
+        {
+            "ciudad": "CUMANA",
+            "codigo": "19000",
+            "nombre": "CUMANÁ",
+            "direccion": "CALLE MARINO, EDIF. TUNIMIQUIRE, CUMANÁ.",
+            "telefonos": [
+                "0293-433.00.88"
+            ],
+            "gps": {
+                "lat": 10.4632762,
+                "lng": -64.1858912
+            }
+        },
+        {
+            "ciudad": "CARUPANO",
+            "codigo": "19010",
+            "nombre": "CARÚPANO",
+            "direccion": "AV. UNIVERSITARIA, SECTOR LOS MOLINOS, CARÚPANO.",
+            "telefonos": [
+                "0294-332.60.07"
+            ],
+            "gps": {
+                "lat": 10.6422434,
+                "lng": -63.2558670
+            }
+        },
+        {
+            "ciudad": "CUMANA",
+            "codigo": "19020",
+            "nombre": "CUMANÁ URDANETA",
+            "direccion": "AV. GRAN MARISCAL CON URDANETA, CUMANÁ.",
+            "telefonos": [
+                "0293-431.20.73"
+            ],
+            "gps": {
+                "lat": 10.4727305,
+                "lng": -64.1681464
+            }
+        }
+    ],
+    "ESTADO AMAZONAS": [
+        {
+            "ciudad": "PUERTO AYACUCHO",
+            "codigo": "2000",
+            "nombre": "PUERTO AYACUCHO",
+            "direccion": "AV. PRINCIPAL ANDRÉS ELOY BLANCO, EDIF. BELLMAR.",
+            "telefonos": [
+                "0248-521.42.17"
+            ],
+            "gps": {
+                "lat": 5.6690622,
+                "lng": -67.6217056
+            }
+        }
+    ]
+}
