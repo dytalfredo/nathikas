@@ -1,0 +1,3212 @@
+[
+  {
+    "agencia_id": 1,
+    "estado_id": 11,
+    "nombre": "ZOOM ACARIGUA",
+    "codigo": "2",
+    "direccion": "CALLE 30 CON AV. 35, CENTRO COMERCIAL PÁEZ, PLANTA BAJA, LOCAL 02.",
+    "latitud": "9.554431",
+    "longitud": "-69.206197",
+    "estado": "PORTUGUESA"
+  },
+  {
+    "agencia_id": 2,
+    "estado_id": 18,
+    "nombre": "ZOOM ANACO",
+    "codigo": "3",
+    "direccion": "CALLE 5 DE JULIO, EDF. SAN ELIAS NRO 3-23B PB. P.REF. UNA CUADRA DE BANESCO.",
+    "latitud": "9.428201",
+    "longitud": "-64.476141",
+    "estado": "ANZOATEGUI"
+  },
+  {
+    "agencia_id": 3,
+    "estado_id": 20,
+    "nombre": "ZOOM ARAGUA",
+    "codigo": "4132",
+    "direccion": "EDIFICIO TORRE SINDONI, ENTRE LAS AV. MIRANDA Y BOLIVAR LOCALES NRO PB-19-A, PB-19-D, M1-18-D Y M1-18-B",
+    "latitud": "10.249086",
+    "longitud": "-67.590291",
+    "estado": "ARAGUA"
+  },
+  {
+    "agencia_id": 4,
+    "estado_id": 18,
+    "nombre": "ZOOM BARCELONA",
+    "codigo": "106",
+    "direccion": "AV. INTERCOMUNAL JORGE RODRIGUEZ, C.C. BRISAS DEL NEVERI, LOCAL 04. P.REF. FRENTE A LA ESCUELA DE INGENIERIA UGMA.",
+    "latitud": "10.147179",
+    "longitud": "-64.682445",
+    "estado": "ANZOATEGUI"
+  },
+  {
+    "agencia_id": 5,
+    "estado_id": 21,
+    "nombre": "ZOOM BARINAS",
+    "codigo": "6",
+    "direccion": "AV. ELIAS CORDERO, N° 1- 120. P.REF. FRENTE A SUELAPIEL.",
+    "latitud": "8.628500",
+    "longitud": "-70.221529",
+    "estado": "BARINAS"
+  },
+  {
+    "agencia_id": 6,
+    "estado_id": 6,
+    "nombre": "ZOOM BARQUISIMETO",
+    "codigo": "15",
+    "direccion": "CARRERA 24, ENTRE CALLES 23 Y 24, NRO. 23-69. P.REF. FRENTE A LA PLAZA MORA, DIAGONAL AL IUTIRLA.",
+    "latitud": "10.071035",
+    "longitud": "-69.314928",
+    "estado": "LARA"
+  },
+  {
+    "agencia_id": 7,
+    "estado_id": 16,
+    "nombre": "ZOOM CABIMAS",
+    "codigo": "4113",
+    "direccion": "CARRETERA H CENTRO COMERCIAL BORJAS LOCAL 6 Y 7",
+    "latitud": "10.398600",
+    "longitud": "-71.458300",
+    "estado": "ZULIA"
+  },
+  {
+    "agencia_id": 8,
+    "estado_id": 4,
+    "nombre": "ZOOM CALABOZO",
+    "codigo": "872",
+    "direccion": "CALLE 5 ENTRE CARRERAS 9 Y 10, EDIFICIO VILLAVICENCIO, P.B LOCALES 5 Y 6. P.REF. A 50 MTS DEL MUSEO DE CALABOZO.",
+    "latitud": "8.933208",
+    "longitud": "-67.425295",
+    "estado": "GUARICO"
+  },
+  {
+    "agencia_id": 9,
+    "estado_id": 12,
+    "nombre": "ZOOM CARUPANO",
+    "codigo": "744",
+    "direccion": "AV. LIBERTADOR CON CALLE MONAGAS, EDF. TURBO ORIENTE, P. PB., PARROQUIA SANTA CATALINA, MUNICIPIO BERMUDEZ.",
+    "latitud": "10.663118",
+    "longitud": "-63.253408",
+    "estado": "SUCRE"
+  },
+  {
+    "agencia_id": 10,
+    "estado_id": 8,
+    "nombre": "ZOOM CHARALLAVE CIUDAD CONCORDIA",
+    "codigo": "54",
+    "direccion": "AV. TOSTA GARCIA, CENTRO COMERCIAL CIUDAD CONCORDIA, PISO NRO. 1, LOCALES 8, 9 Y 10.",
+    "latitud": "10.241088",
+    "longitud": "-66.859778",
+    "estado": "MIRANDA"
+  },
+  {
+    "agencia_id": 11,
+    "estado_id": 22,
+    "nombre": "ZOOM CIUDAD BOLIVAR",
+    "codigo": "56",
+    "direccion": "AV. JESUS SOTO CON CALLE CAURA, C.C. TEPUY, LOCAL 1 Y 2, PB.",
+    "latitud": "8.122170",
+    "longitud": "-63.544513",
+    "estado": "BOLIVAR"
+  },
+  {
+    "agencia_id": 12,
+    "estado_id": 16,
+    "nombre": "ZOOM CIUDAD OJEDA",
+    "codigo": "57",
+    "direccion": "SECTOR LAS MOROCHAS, AV. INTERCOMUNAL CALLE CARDON, EDIFICIO OJEDA. PB., LOCALES 6 Y 7.",
+    "latitud": "10.195354",
+    "longitud": "-71.321147",
+    "estado": "ZULIA"
+  },
+  {
+    "agencia_id": 13,
+    "estado_id": 3,
+    "nombre": "ZOOM CORO",
+    "codigo": "59",
+    "direccion": "SECTOR LOS TRES PLATOS, AV. LOS MEDANOS CRUCE CON AV. INDEPENDENCIA, EDIFICIO AREF, PB., LOCAL 1.",
+    "latitud": "11.411046",
+    "longitud": "-69.668659",
+    "estado": "FALCON"
+  },
+  {
+    "agencia_id": 14,
+    "estado_id": 12,
+    "nombre": "ZOOM CUMANA",
+    "codigo": "60",
+    "direccion": "AV SANTA ROSA, EDIFICIO GRUPO PROFESIONAL SANTA ROSA  PB LOCAL 2 CUMANA ESTADO SUCRE",
+    "latitud": "10.472312",
+    "longitud": "-64.165037",
+    "estado": "SUCRE"
+  },
+  {
+    "agencia_id": 15,
+    "estado_id": 18,
+    "nombre": "ZOOM EL TIGRE",
+    "codigo": "62",
+    "direccion": "AV. FCO. DE MIRANDA, CENTRO COMERCIAL FLAMINGO, PB. LOCALES A-07 Y A-08. P.REF.  AL LADO DE LA ALCALDIA.",
+    "latitud": "8.887469",
+    "longitud": "-64.259062",
+    "estado": "ANZOATEGUI"
+  },
+  {
+    "agencia_id": 16,
+    "estado_id": 7,
+    "nombre": "ZOOM EL VIGIA",
+    "codigo": "745",
+    "direccion": "AV. 3 NRO 3-88, BARRIO PANAMERICANO, ENTRE AV. BOLIVAR Y DON PEPE ROJAS, P.REF. DIAGONAL AL DISTRIBUIDOR CARRERO MENDEZ.",
+    "latitud": "8.610266",
+    "longitud": "-71.641332",
+    "estado": "MERIDA"
+  },
+  {
+    "agencia_id": 17,
+    "estado_id": 11,
+    "nombre": "ZOOM GUANARE",
+    "codigo": "875",
+    "direccion": "AV. SIMON BOLIVAR ENTRE AV. UNDA Y CALLE 9, CENTRO COMERCIAL AUTOCENTRO, PB. LOCAL ZOOM.",
+    "latitud": "9.034422",
+    "longitud": "-69.740997",
+    "estado": "PORTUGUESA"
+  },
+  {
+    "agencia_id": 18,
+    "estado_id": 8,
+    "nombre": "ZOOM GUARENAS",
+    "codigo": "67",
+    "direccion": "ZONA INDUSTRIAL SANTA CRUZ, URB. LOS NARANJOS, P.REF. PASANDO LOS BOMBEROS ENTRANDO POR LA LEVIS AL LADO DE PANDOK.",
+    "latitud": "10.472300",
+    "longitud": "-66.594800",
+    "estado": "MIRANDA"
+  },
+  {
+    "agencia_id": 19,
+    "estado_id": 2,
+    "nombre": "ZOOM LA URBINA",
+    "codigo": "46",
+    "direccion": "SECTOR SUR, CALLE 7, URB LA URBINA, EDIFICIO GRUPO ZOOM.",
+    "latitud": "10.493600",
+    "longitud": "-66.809600",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 20,
+    "estado_id": 8,
+    "nombre": "ZOOM LOS TEQUES",
+    "codigo": "73",
+    "direccion": "SECTOR EL TAMBOR, AV. PEDRO RUFFO FERRER, C.C. LOS TEQUES LOCAL A5. P.REF. FRENTE AL BANCO DE VENEZUELA.",
+    "latitud": "10.354645",
+    "longitud": "-67.032282",
+    "estado": "MIRANDA"
+  },
+  {
+    "agencia_id": 21,
+    "estado_id": 25,
+    "nombre": "ZOOM MAIQUETIA",
+    "codigo": "4137",
+    "direccion": "AV. SOUBLETTE, C. C. LITORAL, NIVEL COMERCIO 1, LOCAL 12",
+    "latitud": "10.596803",
+    "longitud": "-66.954909",
+    "estado": "LA GUAIRA"
+  },
+  {
+    "agencia_id": 22,
+    "estado_id": 16,
+    "nombre": "ZOOM MARACAIBO",
+    "codigo": "82",
+    "direccion": "AVENIDA 5 DE JULIO, CALLE 77 CON AV. 12.",
+    "latitud": "10.664600",
+    "longitud": "-71.614100",
+    "estado": "ZULIA"
+  },
+  {
+    "agencia_id": 23,
+    "estado_id": 9,
+    "nombre": "ZOOM MATURIN",
+    "codigo": "89",
+    "direccion": "AV. BICENTENARIO EDIFICIO CONGESA, LOCAL I Y II PUNTO DE REFERENCIA: FRENTE PLAZA EL INDIO",
+    "latitud": "9.739641",
+    "longitud": "-63.202025",
+    "estado": "MONAGAS"
+  },
+  {
+    "agencia_id": 24,
+    "estado_id": 7,
+    "nombre": "ZOOM MERIDA",
+    "codigo": "95",
+    "direccion": "AV. DON TULIO FEBRES CORDERO, EDF. DON MIGUEL, PB. LOCAL 37-94.",
+    "latitud": "8.588026",
+    "longitud": "-71.153851",
+    "estado": "MERIDA"
+  },
+  {
+    "agencia_id": 25,
+    "estado_id": 10,
+    "nombre": "ZOOM PORLAMAR",
+    "codigo": "99",
+    "direccion": "AV. 4 DE MAYO, RESIDENCIAS PANERCO, PLANTA BAJA, LOCAL 1.",
+    "latitud": "10.966866",
+    "longitud": "-63.840373",
+    "estado": "NUEVA ESPARTA"
+  },
+  {
+    "agencia_id": 26,
+    "estado_id": 17,
+    "nombre": "ZOOM PUERTO AYACUCHO",
+    "codigo": "100",
+    "direccion": "AV. RIO NEGRO, CENTRO COMERCIAL JUNCOSA, LOCAL 2-A.",
+    "latitud": "5.668400",
+    "longitud": "-67.628500",
+    "estado": "AMAZONAS"
+  },
+  {
+    "agencia_id": 27,
+    "estado_id": 23,
+    "nombre": "ZOOM PUERTO CABELLO",
+    "codigo": "101",
+    "direccion": "PRIMERA CALLE SEGRESTAA, EDIFICIO ENNA, PB., LOCAL 26 Y 27.P.REF. DIAGONAL A LA CRUZ ROJA.",
+    "latitud": "10.466422",
+    "longitud": "-68.009287",
+    "estado": "CARABOBO"
+  },
+  {
+    "agencia_id": 28,
+    "estado_id": 22,
+    "nombre": "ZOOM PUERTO ORDAZ",
+    "codigo": "109",
+    "direccion": "SECTOR UNARE, ZONA INDUSTRIAL I, CALLE TUNAPUY, P.REF. DIAGONAL AL TIGASCO.",
+    "latitud": "8.284558",
+    "longitud": "-62.753666",
+    "estado": "BOLIVAR"
+  },
+  {
+    "agencia_id": 29,
+    "estado_id": 3,
+    "nombre": "ZOOM PUNTO FIJO",
+    "codigo": "110",
+    "direccion": "SECTOR CENTRO, CALLE ARISMENDI, ENTRE TALAVERA Y LAS PALMAS, LOCAL 203.",
+    "latitud": "11.694218",
+    "longitud": "-70.202472",
+    "estado": "FALCON"
+  },
+  {
+    "agencia_id": 30,
+    "estado_id": 13,
+    "nombre": "ZOOM SAN ANTONIO",
+    "codigo": "112",
+    "direccion": "CALLE 9 ENTRE CARRERAS 10 Y 11 NúMERO 10-44 BARRIO LA POPA SAN ANTONIO DEL TáCHIRA.",
+    "latitud": "7.813831",
+    "longitud": "-72.441073",
+    "estado": "TACHIRA"
+  },
+  {
+    "agencia_id": 31,
+    "estado_id": 24,
+    "nombre": "ZOOM SAN CARLOS",
+    "codigo": "939",
+    "direccion": "AV. BOLIVAR CRUCE CON CALLE SILVA, CENTRO COMERCIAL COLAVITA, PLANTA BAJA, LOCALES L1 Y L2.",
+    "latitud": "9.661863",
+    "longitud": "-68.591580",
+    "estado": "COJEDES"
+  },
+  {
+    "agencia_id": 32,
+    "estado_id": 13,
+    "nombre": "ZOOM SAN CRISTOBAL",
+    "codigo": "117",
+    "direccion": "AV. LIBERTADOR, EDIFICIO EL MARACUCHO PB. LOCAL A-56. P.REF. FRENTE AL HOTEL HAMBURGO.",
+    "latitud": "7.780561",
+    "longitud": "-72.233856",
+    "estado": "TACHIRA"
+  },
+  {
+    "agencia_id": 33,
+    "estado_id": 15,
+    "nombre": "ZOOM SAN FELIPE",
+    "codigo": "874",
+    "direccion": "AV. LA PATRIA CON AV. 19 DE ABRIL, CENTRO COMERCIAL ARACOI, LOCAL C-5. P.REF. FTE. A OFICINAS DE CALEY.",
+    "latitud": "10.334117",
+    "longitud": "-68.736976",
+    "estado": "YARACUY"
+  },
+  {
+    "agencia_id": 34,
+    "estado_id": 19,
+    "nombre": "ZOOM SAN FERNANDO DE APURE",
+    "codigo": "871",
+    "direccion": "EDIFICIO LARA,PLANTA BAJA CALLE BOLíVAR, CRUCE CON CALLE 24 DE JULIO.",
+    "latitud": "7.893697",
+    "longitud": "-67.471228",
+    "estado": "APURE"
+  },
+  {
+    "agencia_id": 35,
+    "estado_id": 4,
+    "nombre": "ZOOM SAN JUAN DE LOS MORROS",
+    "codigo": "945",
+    "direccion": "AVENIDA BOLÍVAR, TORRE TAURO, PLANTA BAJA",
+    "latitud": "9.913790",
+    "longitud": "-67.355403",
+    "estado": "GUARICO"
+  },
+  {
+    "agencia_id": 36,
+    "estado_id": 23,
+    "nombre": "ZOOM VALENCIA",
+    "codigo": "136",
+    "direccion": "AV. ESTE OESTE CON CALLE 97, URBANIZACION SAN DIEGO, PARQUE COMERCIAL INDUSTRIAL CASTILLITO PARCELA L-70 Y L-78.",
+    "latitud": "10.186183",
+    "longitud": "-67.961979",
+    "estado": "CARABOBO"
+  },
+  {
+    "agencia_id": 37,
+    "estado_id": 14,
+    "nombre": "ZOOM VALERA",
+    "codigo": "139",
+    "direccion": "AVENIDA BOLÍVAR EDIFICIO GALOTTA II, URB LAS ACACIAS AL LADO DE LA BERA",
+    "latitud": "9.303160",
+    "longitud": "-70.612455",
+    "estado": "TRUJILLO"
+  },
+  {
+    "agencia_id": 38,
+    "estado_id": 4,
+    "nombre": "ZOOM VALLE DE LA PASCUA",
+    "codigo": "889",
+    "direccion": "AVENIDA LAS INDUSTRIAS CRUCE CON CALLE LOS PARAMOS CENTRO COMERCIAL LA PASCUA CENTER LOCAL NRO 2",
+    "latitud": "9.201116",
+    "longitud": "-66.004420",
+    "estado": "GUARICO"
+  },
+  {
+    "agencia_id": 39,
+    "estado_id": 6,
+    "nombre": "ZOOM AEROPUERTO JACINTO LARA",
+    "codigo": "612",
+    "direccion": "AV. VICENTE LANDAETA GIL CON AV. LA SALLE, AEROPUERTO GENERAL JACINTO LARA  P.B,LOCAL A-6",
+    "latitud": "10.046000",
+    "longitud": "-69.359400",
+    "estado": "LARA"
+  },
+  {
+    "agencia_id": 40,
+    "estado_id": 6,
+    "nombre": "ZOOM AEROPUERTO JACINTO LARA II",
+    "codigo": "4086",
+    "direccion": "AV. VICENTE LANDAETA GIL CON AV. LA SALLE, AEROPUERTO GENERAL JACINTO LARA, LOCAL M-8, UBICADA EN EL áREA MEZZANINA",
+    "latitud": "10.046000",
+    "longitud": "-69.359400",
+    "estado": "LARA"
+  },
+  {
+    "agencia_id": 41,
+    "estado_id": 18,
+    "nombre": "ZOOM AMANA",
+    "codigo": "919",
+    "direccion": "CALLE BOLIVAR CRUCE CON CALLE MANEIRO. CENTRO COMERCIAL AMANA LOCAL PB A-6",
+    "latitud": "10.222462",
+    "longitud": "-64.636233",
+    "estado": "ANZOATEGUI"
+  },
+  {
+    "agencia_id": 42,
+    "estado_id": 23,
+    "nombre": "ZOOM AV. BOLIVAR NORTE",
+    "codigo": "137",
+    "direccion": "AV. BOLIVAR NORTE, EDF. DON ENRIQUE PB. P.REF. FRENTE A LA FUNERARIA LA SUPERIOR A 100 MTS DEL ATENEO DE VALENCIA.",
+    "latitud": "10.188940",
+    "longitud": "-68.004477",
+    "estado": "CARABOBO"
+  },
+  {
+    "agencia_id": 43,
+    "estado_id": 21,
+    "nombre": "ZOOM BARINAS CENTRO",
+    "codigo": "1543",
+    "direccion": "SECTOR BARRIO OBRERO, CALLE CAMEJO ENTRE AVENIDAS MONTILLA Y OLMEDILLA, EDIFICIO LOS HERMANOS.",
+    "latitud": "8.631489",
+    "longitud": "-70.215792",
+    "estado": "BARINAS"
+  },
+  {
+    "agencia_id": 44,
+    "estado_id": 6,
+    "nombre": "ZOOM CABUDARE",
+    "codigo": "873",
+    "direccion": "AVENIDA LIBERTADOR ENTRE CALLES MIGUEL BERNAL Y JUAREZ, CENTRO COMERCIAL LIBERTADOR, LOCALES PB-02 Y PB-03.",
+    "latitud": "10.032700",
+    "longitud": "-69.261900",
+    "estado": "LARA"
+  },
+  {
+    "agencia_id": 45,
+    "estado_id": 20,
+    "nombre": "ZOOM CAGUA",
+    "codigo": "1266",
+    "direccion": "SECTOR CENTRO, CALLE RONDON C/C CALLE BERMUDEZ NRO 104-03-07, LOCAL L-3.",
+    "latitud": "10.189460",
+    "longitud": "-67.462261",
+    "estado": "ARAGUA"
+  },
+  {
+    "agencia_id": 46,
+    "estado_id": 18,
+    "nombre": "ZOOM CAMINO REAL",
+    "codigo": "4058",
+    "direccion": "AV COSTANERA CON AV FUERZAS ARMADAS C.C CAMINO REAL NIVEL PLAZA PB LOCAL C11, SECTOR NUEVA BARCELONA",
+    "latitud": "10.161006",
+    "longitud": "-64.693514",
+    "estado": "ANZOATEGUI"
+  },
+  {
+    "agencia_id": 47,
+    "estado_id": 2,
+    "nombre": "ZOOM CATIA",
+    "codigo": "3476",
+    "direccion": "AV PRINCIPAL DE ALTAVISTA, GALPON CARACAS",
+    "latitud": "10.518663",
+    "longitud": "-66.941638",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 48,
+    "estado_id": 25,
+    "nombre": "ZOOM CATIA LA MAR",
+    "codigo": "74",
+    "direccion": "AV. ATLANTIDA, CALLES 5 Y 6, QTA. HUCARIMAR, PB. LOCAL 1.",
+    "latitud": "10.605728",
+    "longitud": "-67.031817",
+    "estado": "LA GUAIRA"
+  },
+  {
+    "agencia_id": 49,
+    "estado_id": 16,
+    "nombre": "ZOOM C.C AKRAI CENTER",
+    "codigo": "4036",
+    "direccion": "CALLE 86 PICHINCHA CON AV 4 BELLA VISTA, CENTRO COMERCIAL AKRAI CENTER, LOCALES\r\nA-14 Y A-15 PB.",
+    "latitud": "10.654832",
+    "longitud": "-71.605359",
+    "estado": "ZULIA"
+  },
+  {
+    "agencia_id": 50,
+    "estado_id": 2,
+    "nombre": "ZOOM C.C. BELLO CAMPO",
+    "codigo": "4067",
+    "direccion": "CENTRO COMERCIAL BELLO CAMPO, ENTRE LA AV. COROMOTO, JOSÉ FELIX SOSA Y LA PRINCIPAL DE LA URB. BELLO CAMPO, LOCALES 27, 28 Y 29",
+    "latitud": "10.493446",
+    "longitud": "-66.850721",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 51,
+    "estado_id": 8,
+    "nombre": "ZOOM C.C. BUENAVENTURA VISTA PLACE",
+    "codigo": "1452",
+    "direccion": "AV. INTERCOMUNAL GUARENAS-GUATIRE, CENTRO COMERCIAL BUENAVENTURA VISTA PLACE NIVEL PLAZA LOCALES PL-94 Y PL-95.",
+    "latitud": "10.464836",
+    "longitud": "-66.574116",
+    "estado": "MIRANDA"
+  },
+  {
+    "agencia_id": 52,
+    "estado_id": 20,
+    "nombre": "ZOOM C.C LAS AMERICAS",
+    "codigo": "4126",
+    "direccion": "AV LAS DELICIAS, CENTRO COMERCIAL LAS AMERICAS LOCALES NROS M1-428 Y M1-428A MEZZANINA UNO (M1)",
+    "latitud": "10.262195",
+    "longitud": "-67.588241",
+    "estado": "ARAGUA"
+  },
+  {
+    "agencia_id": 53,
+    "estado_id": 23,
+    "nombre": "ZOOM C.C METROPOLIS",
+    "codigo": "4061",
+    "direccion": "AUTOPISTA REGIONAL DEL CENTRO. ENTRADA DE VALENCIA, AL LADO DE MAKRO.CENTRO COMERCIAL METROPOLIS NIVEL CIELO, LOCAL A1-300B",
+    "latitud": "10.184344",
+    "longitud": "-67.974192",
+    "estado": "CARABOBO"
+  },
+  {
+    "agencia_id": 54,
+    "estado_id": 8,
+    "nombre": "ZOOM C.C MIRANDA",
+    "codigo": "163",
+    "direccion": "AV. INTERCOMUNAL MENCA DE LEONI, C.C. MIRANDA, LOCAL 30-22. P.REF. AREA DE MINITIENDAS, PARTE ALTA DE GUARENAS.",
+    "latitud": "10.471800",
+    "longitud": "-66.609000",
+    "estado": "MIRANDA"
+  },
+  {
+    "agencia_id": 55,
+    "estado_id": 2,
+    "nombre": "ZOOM C.C.C.T",
+    "codigo": "4044",
+    "direccion": "AV LA ESTANCIA ENTRE CALLE BLOHM Y DISTRIBUIDOR CIEMPIÉS C.C CIUDAD TAMANACO NIVEL 1ERA ETAPA LOCAL 43-R2 URB CHUAO",
+    "latitud": "10.484931",
+    "longitud": "-66.854789",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 56,
+    "estado_id": 2,
+    "nombre": "ZOOM CDO CATIA",
+    "codigo": "48",
+    "direccion": "AV.PPAL DE ALTAVISTA, A 50 METROS DE LA TEXTILERIA OVEJITA, GALPON GRUPO ZOOM.",
+    "latitud": "10.518663",
+    "longitud": "-66.941638",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 57,
+    "estado_id": 13,
+    "nombre": "ZOOM CDO SVZ",
+    "codigo": "1204",
+    "direccion": "CALLE 14 CON CALLEJUELA LA REPUBLICA, NRO G-46. SECTOR PUENTE REAL",
+    "latitud": "7.773608",
+    "longitud": "-72.237295",
+    "estado": "TACHIRA"
+  },
+  {
+    "agencia_id": 58,
+    "estado_id": 2,
+    "nombre": "ZOOM CHACAITO I",
+    "codigo": "825",
+    "direccion": "AV. TAMANACO, URBANIZACION EL ROSAL, CENTRO COMERCIAL ARTA, PISO 1, LOCAL 1-3.",
+    "latitud": "10.490000",
+    "longitud": "-66.868000",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 59,
+    "estado_id": 7,
+    "nombre": "ZOOM EJIDO MALL",
+    "codigo": "4105",
+    "direccion": "CALLE EL COBRE MUNICIPIO CAMPO ELÍAS, PARROQUIA MATRIZ, LOCAL PB-B-17/PB-B-18,CENTRO COMERCIAL EJIDO MALL, SECTOR POZO HONDO.",
+    "latitud": "8.543086",
+    "longitud": "-71.245588",
+    "estado": "MERIDA"
+  },
+  {
+    "agencia_id": 60,
+    "estado_id": 2,
+    "nombre": "ZOOM EL MARQUES",
+    "codigo": "4103",
+    "direccion": "AV. SANZ, ENTRE AV. RÓMULO GALLEGOS Y CALLE NAIGUATÁ,C.C. EL MARQUÉS, LOCALES 2 - 3 -9 10",
+    "latitud": "10.495540",
+    "longitud": "-66.810840",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 61,
+    "estado_id": 6,
+    "nombre": "ZOOM FIN DE SIGLO BARQUISIMETO",
+    "codigo": "149",
+    "direccion": "CALLE 20, ENTRE CARRERAS 31 Y 32, EDF. FIN DE SIGLO PISO 2. P.REF. DETRAS DEL CENTRO COMERCIAL ARCA.",
+    "latitud": "10.078800",
+    "longitud": "-69.312300",
+    "estado": "LARA"
+  },
+  {
+    "agencia_id": 62,
+    "estado_id": 2,
+    "nombre": "ZOOM FORUM IPSFA",
+    "codigo": "4150",
+    "direccion": "CENTRO COMERCIAL LOS PRóCERES (IPSFA), PASEO  LOS ILUSTRES, CARACAS",
+    "latitud": "10.476350",
+    "longitud": "-66.896090",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 63,
+    "estado_id": 2,
+    "nombre": "ZOOM LA CALIFORNIA",
+    "codigo": "1257",
+    "direccion": "AV FRANCISCO DE MIRANDA, RESIDENCIAS MÓNACO LOCAL B, URB LA CALIFORNIA NORTE",
+    "latitud": "10.483400",
+    "longitud": "-66.819700",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 64,
+    "estado_id": 8,
+    "nombre": "ZOOM LA CASCADA",
+    "codigo": "4106",
+    "direccion": "CARRETERA PANAMERICANA KM 21, C.C. LA CASCADA NIVEL PLANTA BAJA LOCAL PB-43,SECTOR CORRALITO",
+    "latitud": "10.354200",
+    "longitud": "-67.002300",
+    "estado": "MIRANDA"
+  },
+  {
+    "agencia_id": 65,
+    "estado_id": 16,
+    "nombre": "ZOOM LA CHINITA",
+    "codigo": "168",
+    "direccion": "AV. 15, ENTRE CALLES 93 Y 95, CENTRO COMERCIAL LA CHINITA, PRIMER NIVEL, LOCAL N° 26. P.REF.  POR LA FERIA DE COMIDA.",
+    "latitud": "10.644836",
+    "longitud": "-71.618160",
+    "estado": "ZULIA"
+  },
+  {
+    "agencia_id": 66,
+    "estado_id": 2,
+    "nombre": "ZOOM LA HOYADA",
+    "codigo": "4040",
+    "direccion": "AV FUERZAS ARMADAS ENTRE ESQUINAS DE SOCARRAS Y CORAZÓN DE JESUS EDF LA GALERIA PB LOCAL 8, LA HOYADA",
+    "latitud": "10.503917",
+    "longitud": "-66.910060",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 67,
+    "estado_id": 20,
+    "nombre": "ZOOM LA VICTORIA",
+    "codigo": "1556",
+    "direccion": "CALLE RIVAS DAVILA, C.C. VICTORIA CENTER, PRIMERA ETAPA, NIVEL PLANTA BAJA, LOCAL A-6.",
+    "latitud": "10.227600",
+    "longitud": "-67.333125",
+    "estado": "ARAGUA"
+  },
+  {
+    "agencia_id": 68,
+    "estado_id": 20,
+    "nombre": "ZOOM LOS AVIADORES",
+    "codigo": "4127",
+    "direccion": "CALLE OESTE DEL PARCELAMIENTO CIUDAD LIBERTADOR, FRENTE A LA AVENIDA LOS AVIADORES CENTRO COMERCIAL PARQUE LOS AVIADORES, PARCELA 2-A1 LOCAL COMERCIAL L-218, SECTOR NORTE",
+    "latitud": "10.188450",
+    "longitud": "-67.579510",
+    "estado": "ARAGUA"
+  },
+  {
+    "agencia_id": 69,
+    "estado_id": 2,
+    "nombre": "ZOOM LOS PALOS GRANDES",
+    "codigo": "4102",
+    "direccion": "1RA. TRANSVERSAL DE LOS PALOS GRANDES, ENTRE 2DA. Y 3RA. AVENIDA, EDIFICIO GREEN PALACE PLANTA BAJA, LOCAL 4. LOS PALOS GRANDES",
+    "latitud": "10.498700",
+    "longitud": "-66.844150",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 70,
+    "estado_id": 2,
+    "nombre": "ZOOM MAKRO LA YAGUARA",
+    "codigo": "1372",
+    "direccion": "AV. INTERCOMUNAL DE ANTIMANO CRUCE CON AV. PRINCIPAL DE LA YAGUARA.",
+    "latitud": "10.477492",
+    "longitud": "-66.956848",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 71,
+    "estado_id": 20,
+    "nombre": "ZOOM MARACAY",
+    "codigo": "87",
+    "direccion": "AV. ANTHON PHILLIPS, ZONA INDUSTRIAL SAN VICENTE, CENTRO COMERCIAL SAN VICENTE, LOCAL 2. P.REF. AL LADO DE EMPRESAS SAVIRAN.",
+    "latitud": "10.235350",
+    "longitud": "-67.622617",
+    "estado": "ARAGUA"
+  },
+  {
+    "agencia_id": 72,
+    "estado_id": 20,
+    "nombre": "ZOOM MARACAY AV. MIRANDA",
+    "codigo": "805",
+    "direccion": "AV. MIRANDA OESTE, CRUCE CON CALLE CAMPO ELIAS NRO 165.",
+    "latitud": "10.252511",
+    "longitud": "-67.612336",
+    "estado": "ARAGUA"
+  },
+  {
+    "agencia_id": 73,
+    "estado_id": 13,
+    "nombre": "ZOOM MULTISERVICIOS BARRIO OBRERO",
+    "codigo": "1280",
+    "direccion": "CALLE 11 ENTRE CARRERAS 18 Y 19 NRO 19-59, CALLE 11 ENTRE CARRERAS 18 Y 19 NRO 19-59.",
+    "latitud": "7.770090",
+    "longitud": "-72.222049",
+    "estado": "TACHIRA"
+  },
+  {
+    "agencia_id": 74,
+    "estado_id": 2,
+    "nombre": "ZOOM PARQUE HUMBOLDT",
+    "codigo": "1214",
+    "direccion": "CENTRO COMERCIAL PARQUE HUMBOLDT, LOCAL 10, URB. PRADOS DEL ESTE",
+    "latitud": "10.450700",
+    "longitud": "-66.872200",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 75,
+    "estado_id": 10,
+    "nombre": "ZOOM PORLAMAR CENTRO",
+    "codigo": "235",
+    "direccion": "CALLE VELÁSQUEZ CON CALLE DÍAZ, CENTRO COMERCIAL CONCORD, LOCAL #100. PASILLO CENTRAL",
+    "latitud": "10.955550",
+    "longitud": "-63.847740",
+    "estado": "NUEVA ESPARTA"
+  },
+  {
+    "agencia_id": 76,
+    "estado_id": 2,
+    "nombre": "ZOOM SAMBIL LA CANDELARIA",
+    "codigo": "4131",
+    "direccion": "44 AV. ESTE 0, C.C SAMBIL LA CANDELARIA, LOCAL NO. E-04,  NIVEL SÓTANO 1",
+    "latitud": "10.504282",
+    "longitud": "-66.901413",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 77,
+    "estado_id": 10,
+    "nombre": "ZOOM SAMBIL MARGARITA",
+    "codigo": "4128",
+    "direccion": "AVENIDA JÓVITO VILLALBA, SECTOR SAN LORENZO, SAMBIL MARGARITA, LOCALES T01A Y T01B, AL LADO DE LA SALIDA PLAYA GUACUCO",
+    "latitud": "10.996530",
+    "longitud": "-63.811490",
+    "estado": "NUEVA ESPARTA"
+  },
+  {
+    "agencia_id": 78,
+    "estado_id": 22,
+    "nombre": "ZOOM SAN FELIX",
+    "codigo": "1207",
+    "direccion": "SECTOR EL ROBLE, AV. MORENA MENDOZA, CENTRO COMERCIAL LA CARIÑOSA, LOCAL C.",
+    "latitud": "8.352800",
+    "longitud": "-62.673200",
+    "estado": "BOLIVAR"
+  },
+  {
+    "agencia_id": 79,
+    "estado_id": 2,
+    "nombre": "ZOOM SAN MARTIN",
+    "codigo": "50",
+    "direccion": "AV. SAN MARTIN, ENTRE LA 2DA Y 3ERA CALLE LOS MOLINOS, URB. LOS MOLINOS, EDIFICIO KOMPLOT, PB. P.REF. EDIFICIO KOMPLOT, PB.",
+    "latitud": "10.492200",
+    "longitud": "-66.938000",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 80,
+    "estado_id": 22,
+    "nombre": "ZOOM TAQUILLA CC ARTICA",
+    "codigo": "1206",
+    "direccion": "CENTRO COMERCIAL ARTICA, CARRERA GUASIPATI, LOCALES 5 Y 6. CENTRO DE PUERTO ORDAZ. AL LADO DEL BANCO DE VENEZUELA Y FRENTE A COSMETICOS GENESIS.",
+    "latitud": "8.316584",
+    "longitud": "-62.717197",
+    "estado": "BOLIVAR"
+  },
+  {
+    "agencia_id": 81,
+    "estado_id": 2,
+    "nombre": "INVERSIONES JETES, C.A.",
+    "codigo": "960",
+    "direccion": "AV. ORINOCO, CON CALLE PERIJA EDIF FEDERACION MEDICA  PISO 3 OF A URB LAS MERCEDES",
+    "latitud": "10.480600",
+    "longitud": "-66.862800",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 82,
+    "estado_id": 16,
+    "nombre": "MBE SANTA RITA",
+    "codigo": "707",
+    "direccion": "AV. 8 ENTRE CALLES 66A Y 67 EDIF . EL GLOBO PISO PB LOCAL 3 SECTOR SANTA RITA",
+    "latitud": "0.000000",
+    "longitud": "0.000000",
+    "estado": "ZULIA"
+  },
+  {
+    "agencia_id": 83,
+    "estado_id": 12,
+    "nombre": "ZOOM   C.C SAN ONOFRE",
+    "codigo": "4055",
+    "direccion": "AV HUMBOLDT CC SAN ONOFRE NIVEL PB LOCAL NRO 13, SECTOR SANTA CATALINA",
+    "latitud": "10.466101",
+    "longitud": "-64.177650",
+    "estado": "SUCRE"
+  },
+  {
+    "agencia_id": 84,
+    "estado_id": 12,
+    "nombre": "ZOOM   SANTA ROSA",
+    "codigo": "2177",
+    "direccion": "SECTOR SANTA ROSA, AV. SANTA ROSA, C.C. SANTA ROSA, NIVEL PB., LOCAL 06,",
+    "latitud": "10.471650",
+    "longitud": "-64.167060",
+    "estado": "SUCRE"
+  },
+  {
+    "agencia_id": 85,
+    "estado_id": 10,
+    "nombre": "ZOOM  AV 4 DE MAYO",
+    "codigo": "1488",
+    "direccion": "AV PASEO CULTURAL RAMON VASQUEZ BRITO CC BOULEVARD PORLAMAR EDIFICIO S NIVEL 1 LOCAL S-3A SECTOR 4 DE MAYO",
+    "latitud": "10.967000",
+    "longitud": "-63.839100",
+    "estado": "NUEVA ESPARTA"
+  },
+  {
+    "agencia_id": 86,
+    "estado_id": 22,
+    "nombre": "ZOOM  AV VENEZUELA CENTRO",
+    "codigo": "775",
+    "direccion": "AV VENEZUELA CON CIUDAD BOLIVAR EDIF CENTRO RESIDENCIAL Y EMPRESARIAL PARQUE DEL CENTRO PISO PB LOCAL 5-L2,ZONA CENTRO DE PUERTO ORDAZ.",
+    "latitud": "8.313845",
+    "longitud": "-62.720260",
+    "estado": "BOLIVAR"
+  },
+  {
+    "agencia_id": 87,
+    "estado_id": 2,
+    "nombre": "ZOOM  AV VICTORIA",
+    "codigo": "725",
+    "direccion": "AV. VICTORIA, EDF. MERIDIONAL PB, ENTRE CALLE CUBA Y AV. CENTRO AMÉRICA, DIAGONAL A LA PANADERÍA LA FLOR DEL GRECO.",
+    "latitud": "10.485430",
+    "longitud": "-66.902077",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 88,
+    "estado_id": 18,
+    "nombre": "ZOOM  CANTAURA CENTRO",
+    "codigo": "2262",
+    "direccion": "AV. BOLIVAR CRUCE CON CALLE ARISMENDI, SECTOR CENTRO CANTAURA",
+    "latitud": "9.309857",
+    "longitud": "-64.348365",
+    "estado": "ANZOATEGUI"
+  },
+  {
+    "agencia_id": 89,
+    "estado_id": 18,
+    "nombre": "ZOOM  C.C ALBA",
+    "codigo": "4094",
+    "direccion": "AV FRANCISCO DE MIRANDA CC C.C ALBA NIVEL BAJA LOCAL NRO 8",
+    "latitud": "8.889347",
+    "longitud": "-64.252335",
+    "estado": "ANZOATEGUI"
+  },
+  {
+    "agencia_id": 90,
+    "estado_id": 22,
+    "nombre": "ZOOM  HANGAR DISTRIBUIDORA",
+    "codigo": "4071",
+    "direccion": "AV. JESUS SOTO LOCAL HANGAR DISTRIBUIDORA TOMS. C.A NRO S/N",
+    "latitud": "8.121975",
+    "longitud": "-63.531591",
+    "estado": "BOLIVAR"
+  },
+  {
+    "agencia_id": 91,
+    "estado_id": 18,
+    "nombre": "ZOOM  HOTEL RASIL",
+    "codigo": "3107",
+    "direccion": "AV. PASEO COLON EDIF. HOTEL RASIL PISO, 1 LOCAL NRO 02 SECTOR, PUERTO LA CRUZ.",
+    "latitud": "10.218493",
+    "longitud": "-64.640960",
+    "estado": "ANZOATEGUI"
+  },
+  {
+    "agencia_id": 92,
+    "estado_id": 16,
+    "nombre": "ZOOM 3Y SAN MARTIN",
+    "codigo": "2253",
+    "direccion": "SECTOR BELLA VISTA, CALLE NRO. 74, CON AV. NRO. 3Y, LOCAL CANDELORO NRO. 5-A.",
+    "latitud": "10.669138",
+    "longitud": "-71.607439",
+    "estado": "ZULIA"
+  },
+  {
+    "agencia_id": 93,
+    "estado_id": 13,
+    "nombre": "ZOOM 5TA AVENIDA",
+    "codigo": "2399",
+    "direccion": "AV. 5TA. ENTRE CALLES NRO. 3 Y 4,EDF. A.C., PISO PB, LOCAL NRO. 8,SECTOR CENTRO.",
+    "latitud": "7.776449",
+    "longitud": "-72.234103",
+    "estado": "TACHIRA"
+  },
+  {
+    "agencia_id": 94,
+    "estado_id": 2,
+    "nombre": "ZOOM ALTAMIRA",
+    "codigo": "651",
+    "direccion": "AVENIDA DEL AVILA, RES. BELMONT, PB, LOCAL 01, ALTAMIRA SUR.",
+    "latitud": "10.494070",
+    "longitud": "-66.848170",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 95,
+    "estado_id": 21,
+    "nombre": "ZOOM ALTO BARINAS NORTE",
+    "codigo": "1753",
+    "direccion": "ALTO BARINAS NORTE, AVENIDA COLOMBIA, LOCAL 80-C, FRENTE AL GOLFITO.",
+    "latitud": "8.622162",
+    "longitud": "-70.253697",
+    "estado": "BARINAS"
+  },
+  {
+    "agencia_id": 96,
+    "estado_id": 21,
+    "nombre": "ZOOM ALTO BARINAS SUR",
+    "codigo": "3465",
+    "direccion": "AVENIDA LOS LLANOS C.C SION PB LOCAL 5 ALTO BARINAS SUR FARMACIA BETANIA C.A (QIARIS FARMACIA)",
+    "latitud": "8.606779",
+    "longitud": "-70.256468",
+    "estado": "BARINAS"
+  },
+  {
+    "agencia_id": 97,
+    "estado_id": 7,
+    "nombre": "ZOOM ALTOS DE SANTA MARIA",
+    "codigo": "4109",
+    "direccion": "AV UNIVERSIDAD CC ALTOS DE SANTA MARÍA NIVEL PB LOCAL\r\n11 SECTOR VUELTA DE LOLA",
+    "latitud": "8.610250",
+    "longitud": "-71.145440",
+    "estado": "MERIDA"
+  },
+  {
+    "agencia_id": 98,
+    "estado_id": 20,
+    "nombre": "ZOOM AMANI CALLE COMERCIO",
+    "codigo": "3460",
+    "direccion": "CALLE COMERCIO CRUCE CON CALLE SUCRE EDIF AMANI PISO PB LOCAL 104-70-17,SECTOR CENTRO CAGUA",
+    "latitud": "10.185749",
+    "longitud": "-67.456500",
+    "estado": "ARAGUA"
+  },
+  {
+    "agencia_id": 99,
+    "estado_id": 18,
+    "nombre": "ZOOM ANACO CENTER",
+    "codigo": "4135",
+    "direccion": "AV. JOSE ANTONIO ANZOATEGUI. C.C ANACO CENTER PISO 1 LOCAL 75-S.A",
+    "latitud": "9.433780",
+    "longitud": "-64.464008",
+    "estado": "ANZOATEGUI"
+  },
+  {
+    "agencia_id": 100,
+    "estado_id": 16,
+    "nombre": "ZOOM AV 10 CECILIO ACOSTA",
+    "codigo": "4018",
+    "direccion": "AV 10 ENTRE CALLES 66 Y 66A  #66-48 LOCAL NRO 2, SECTOR LA ESTRELLA",
+    "latitud": "10.679771",
+    "longitud": "-71.614102",
+    "estado": "ZULIA"
+  },
+  {
+    "agencia_id": 101,
+    "estado_id": 15,
+    "nombre": "ZOOM AV 6 C.C DON ANTONIO",
+    "codigo": "4062",
+    "direccion": "AV 6 ENTRE CALLE 16 Y AVENIDA LA PATRIA C.C DON ANTONIO NIVEL P.B LOCAL 5, SECTOR CENTRO",
+    "latitud": "10.339910",
+    "longitud": "-68.742470",
+    "estado": "YARACUY"
+  },
+  {
+    "agencia_id": 102,
+    "estado_id": 16,
+    "nombre": "ZOOM AV. ALONSO DE OJEDA",
+    "codigo": "706",
+    "direccion": "AV. ALONSO DE OJEDA, EDIF. TIBIDABO, P.B. LOCAL 2, SEC. CASCO CENTRAL, CIUDAD OJEDA",
+    "latitud": "10.194200",
+    "longitud": "-71.312900",
+    "estado": "ZULIA"
+  },
+  {
+    "agencia_id": 103,
+    "estado_id": 13,
+    "nombre": "ZOOM AV FERRERO TAMAYO",
+    "codigo": "1163",
+    "direccion": "AV. FERRERO TAMAYO, CRUCE AV. LAS PILAS CENTRO COMERCIAL BARATA, LOCAL P.B-03.",
+    "latitud": "7.787200",
+    "longitud": "-72.214300",
+    "estado": "TACHIRA"
+  },
+  {
+    "agencia_id": 104,
+    "estado_id": 2,
+    "nombre": "ZOOM AV FRANCISCO SOLANO",
+    "codigo": "4075",
+    "direccion": "AV FRANCISCO SOLANO LOPEZ, ENTRE CALLE EL CRISTO Y LOS MANGUITOS EDIF TORRE OASIS PISO PB LOCAL 9, URB LAS DELICIAS",
+    "latitud": "10.493712",
+    "longitud": "-66.874240",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 105,
+    "estado_id": 2,
+    "nombre": "ZOOM AV FUERZAS ARMADAS",
+    "codigo": "1382",
+    "direccion": "AV. FUERZAS ARMADAS NORTE, ESQ. SAN JOSE A SAN LUIS, EDF. RESIDENCIA SAN JOSE.",
+    "latitud": "10.499500",
+    "longitud": "-66.910300",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 106,
+    "estado_id": 22,
+    "nombre": "ZOOM AV GERMANIA",
+    "codigo": "1810",
+    "direccion": "SECTOR GERMANIA, AV. GERMANIA, C.C. LOS PROCERES NIVEL PB, LOCAL ANEXO ESTACIONAMIENTO.",
+    "latitud": "8.132100",
+    "longitud": "-63.530500",
+    "estado": "BOLIVAR"
+  },
+  {
+    "agencia_id": 107,
+    "estado_id": 16,
+    "nombre": "ZOOM AV. LA LIMPIA",
+    "codigo": "4130",
+    "direccion": "AV 28 LA LIMPIA CALLE 79 CASA NRO 77-60",
+    "latitud": "10.685360",
+    "longitud": "-71.666809",
+    "estado": "ZULIA"
+  },
+  {
+    "agencia_id": 108,
+    "estado_id": 2,
+    "nombre": "ZOOM AV LECUNA",
+    "codigo": "1220",
+    "direccion": "AV. LECUNA ESQUINA DE MIRACIELOS AL LADO DE LA ESTACION DEL METRO TEATROS. PARROQUIA SANTA TERESA",
+    "latitud": "10.499700",
+    "longitud": "-66.916200",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 109,
+    "estado_id": 2,
+    "nombre": "ZOOM AV LIBERTADOR",
+    "codigo": "2768",
+    "direccion": "AV. LIBERTADOR CON CALLE NEGRIN , C.C. LIBERTADOR, LOCAL NRO. 13.",
+    "latitud": "10.497178",
+    "longitud": "-66.875953",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 110,
+    "estado_id": 23,
+    "nombre": "ZOOM AV LISANDRO ALVARADO",
+    "codigo": "4133",
+    "direccion": "AV LISANDRO ALVARADO CON CALLE PADRE BEGERETTI CC TORINOCO 83-19 NIVEL PB LOCAL 12",
+    "latitud": "10.172500",
+    "longitud": "-68.014980",
+    "estado": "CARABOBO"
+  },
+  {
+    "agencia_id": 111,
+    "estado_id": 3,
+    "nombre": "ZOOM AV. MANAURE",
+    "codigo": "3953",
+    "direccion": "AV MANAURE CON CALLE EL SOL CC SAN ANTONIO PLAZA P.B LOCAL 08",
+    "latitud": "11.401569",
+    "longitud": "-69.672142",
+    "estado": "FALCON"
+  },
+  {
+    "agencia_id": 112,
+    "estado_id": 23,
+    "nombre": "ZOOM AV MICHELENA",
+    "codigo": "2176",
+    "direccion": "AV NRO.91 (AVENIDA MICHELENA) CASA NRO. 90-63 FRENTE A LA CLINICA SANTA MONICA.",
+    "latitud": "10.175400",
+    "longitud": "-67.993289",
+    "estado": "CARABOBO"
+  },
+  {
+    "agencia_id": 113,
+    "estado_id": 23,
+    "nombre": "ZOOM AV MONTES DE OCA CENTRO",
+    "codigo": "4038",
+    "direccion": "AV 102 MONTE DE OCA CALLE 24 DE JUNIO Y CALLE GIRARDOT NRO CIVICO 96-24 CASA NRO 5-A",
+    "latitud": "10.178778",
+    "longitud": "-68.004951",
+    "estado": "CARABOBO"
+  },
+  {
+    "agencia_id": 114,
+    "estado_id": 17,
+    "nombre": "ZOOM AV ORINOCO",
+    "codigo": "4070",
+    "direccion": "AV. ORINOCO EDIF EL REY PISO P.B LOCAL N°02 ZONA CENTRO",
+    "latitud": "5.668283",
+    "longitud": "-67.630612",
+    "estado": "AMAZONAS"
+  },
+  {
+    "agencia_id": 115,
+    "estado_id": 9,
+    "nombre": "ZOOM AV RAUL LEONI",
+    "codigo": "1830",
+    "direccion": "AV. RAUL LEONI CRUCE CON PROLONGACION BOYACA, EDF. NAR-OLY, TORRE A, P. PB, LOCAL A SUR, SECTOR CENTRO.",
+    "latitud": "9.746656",
+    "longitud": "-63.166783",
+    "estado": "MONAGAS"
+  },
+  {
+    "agencia_id": 116,
+    "estado_id": 22,
+    "nombre": "ZOOM AV REPUBLICA",
+    "codigo": "4123",
+    "direccion": "AV SIEGART CON AV. REPUBLICA EDIF IVANNA PISO P/B. LOCAL NRO 1 SECTOR AV. REPUBLICA PARROQUIA CATEDRAL MUNICIPIO AGOSTURA DEL ORINOCO",
+    "latitud": "8.125402",
+    "longitud": "-63.553181",
+    "estado": "BOLIVAR"
+  },
+  {
+    "agencia_id": 117,
+    "estado_id": 13,
+    "nombre": "ZOOM AV ROTARIA",
+    "codigo": "3149",
+    "direccion": "VDA 8 Y 9 CASA NRO 2-24 SECTOR PROLONGACION DE LA UNIDAD VECINAL",
+    "latitud": "7.748600",
+    "longitud": "-72.221249",
+    "estado": "TACHIRA"
+  },
+  {
+    "agencia_id": 118,
+    "estado_id": 7,
+    "nombre": "ZOOM AV URDANETA",
+    "codigo": "3148",
+    "direccion": "AV URDANETA CC LAS MARGARITAS NIVEL PB LOCAL PB-9,SECTOR URDANETA",
+    "latitud": "8.344930",
+    "longitud": "-71.100040",
+    "estado": "MERIDA"
+  },
+  {
+    "agencia_id": 119,
+    "estado_id": 13,
+    "nombre": "ZOOM AV VENEZUELA",
+    "codigo": "3562",
+    "direccion": "AV VENEZUELA CARRERA 6 LOCAL NRO 6-02,SECTOR BOLIVAR",
+    "latitud": "7.816477",
+    "longitud": "-72.442322",
+    "estado": "TACHIRA"
+  },
+  {
+    "agencia_id": 120,
+    "estado_id": 20,
+    "nombre": "ZOOM AVENIDA 19 DE ABRIL",
+    "codigo": "2396",
+    "direccion": "AV 19 DE ABRIL,C.C MERCADO ATENEO PASILLO F LOCAL F-08 SECTOR CENTRO",
+    "latitud": "10.252720",
+    "longitud": "-67.599640",
+    "estado": "ARAGUA"
+  },
+  {
+    "agencia_id": 121,
+    "estado_id": 20,
+    "nombre": "ZOOM AVENIDA FUERZAS AEREAS LAS ACACIAS",
+    "codigo": "881",
+    "direccion": "AV FUERZAS AEREAS, URB MARIO BRICEÑO IRAGORRI, NRO 93",
+    "latitud": "10.233166",
+    "longitud": "-67.581284",
+    "estado": "ARAGUA"
+  },
+  {
+    "agencia_id": 122,
+    "estado_id": 19,
+    "nombre": "ZOOM AVENIDA PASEO LIBERTADOR",
+    "codigo": "4148",
+    "direccion": "AV PASEO LIBERTADOR EDIF DOÑA ISABEL PISO SN LOCAL SN",
+    "latitud": "7.886424",
+    "longitud": "-67.471468",
+    "estado": "APURE"
+  },
+  {
+    "agencia_id": 123,
+    "estado_id": 16,
+    "nombre": "ZOOM BACHAQUERO",
+    "codigo": "4141",
+    "direccion": "AV BOLIVAR CC BOLIVAR CENTER NIVEL 2 LOCAL 2, SECTOR EL MURO",
+    "latitud": "9.968729",
+    "longitud": "-71.123274",
+    "estado": "ZULIA"
+  },
+  {
+    "agencia_id": 124,
+    "estado_id": 13,
+    "nombre": "ZOOM BARRIO EL CARMEN",
+    "codigo": "1225",
+    "direccion": "CALLE 2 NRO 10-45 BARRIO EL CARMEN LA CONCORDIA",
+    "latitud": "7.751093",
+    "longitud": "-72.229870",
+    "estado": "TACHIRA"
+  },
+  {
+    "agencia_id": 125,
+    "estado_id": 2,
+    "nombre": "ZOOM BARUTA",
+    "codigo": "4035",
+    "direccion": "CALLE PAEZ LOCAL NUMERO 4, REFERENCIA DIAGONAL A LA AVENIDA RICAURTE,PUEBLO DE BARUTA",
+    "latitud": "10.433102",
+    "longitud": "-66.874001",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 126,
+    "estado_id": 20,
+    "nombre": "ZOOM BASE ARAGUA",
+    "codigo": "702",
+    "direccion": "AV. LAS DELICIAS CC Y HOTEL PASEO LAS DELICIAS, NIVEL PB, LOCALES 2-PB-22,URB. BASE ARAGUA MARACAY",
+    "latitud": "10.255790",
+    "longitud": "-67.591600",
+    "estado": "ARAGUA"
+  },
+  {
+    "agencia_id": 127,
+    "estado_id": 23,
+    "nombre": "ZOOM BEJUMA",
+    "codigo": "4112",
+    "direccion": "AV SUCRE C/C CALLE HERES LOCAL NRO SECTOR PUEBLO NUEVO LA UNIÓN",
+    "latitud": "10.172368",
+    "longitud": "-68.264808",
+    "estado": "CARABOBO"
+  },
+  {
+    "agencia_id": 128,
+    "estado_id": 2,
+    "nombre": "ZOOM BELLAS ARTES",
+    "codigo": "4078",
+    "direccion": "AVENIDA ESTE 2 ENTRE SUR 25 Y BOULEVARD AMADOR BENDAYÁN, EDIFICIO AMAYA, PB LA CANDELARIA. CARACAS.",
+    "latitud": "10.501950",
+    "longitud": "-66.897500",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 129,
+    "estado_id": 2,
+    "nombre": "ZOOM BELLO MONTE",
+    "codigo": "1192",
+    "direccion": "AV. BEETHOVEN, EDIF IBAIZABAL, LOCAL F, COLINAS DE BELLO MONTE.",
+    "latitud": "10.488770",
+    "longitud": "-66.877730",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 130,
+    "estado_id": 23,
+    "nombre": "ZOOM BIG LOW SAN DIEGO",
+    "codigo": "361",
+    "direccion": "AV. BOULEVARD NORTE 102 CENTRO COMERCIAL BOULEVARD NORTE LOCAL NRO. 3  URB. SAN DIEGO.",
+    "latitud": "10.195400",
+    "longitud": "-67.967900",
+    "estado": "CARABOBO"
+  },
+  {
+    "agencia_id": 131,
+    "estado_id": 19,
+    "nombre": "ZOOM BIRUACA",
+    "codigo": "2714",
+    "direccion": "AV. LAS ACACIAS , LOCAL N°. 2 , SECTOR ENCRUCIJADA DE BIRUACA APURE.",
+    "latitud": "7.844380",
+    "longitud": "-67.521410",
+    "estado": "APURE"
+  },
+  {
+    "agencia_id": 132,
+    "estado_id": 14,
+    "nombre": "ZOOM BOCONO",
+    "codigo": "1755",
+    "direccion": "SECTOR CENTRO, AV. CARABOBO ENTRE CALLE MONSENOR JAUREGUI Y ANDRES BELLO, CASA NRO. 6-22.",
+    "latitud": "9.243460",
+    "longitud": "-70.270550",
+    "estado": "TRUJILLO"
+  },
+  {
+    "agencia_id": 133,
+    "estado_id": 2,
+    "nombre": "ZOOM BOLEITA",
+    "codigo": "3045",
+    "direccion": "ZONA BOLEITA SUR CALLE SEGUNDA CALLE DE BOLEITA SUR ENTRE SANTA ANA Y AV. PRINCIPAL LOCAL NRO.6.",
+    "latitud": "10.483300",
+    "longitud": "-66.816600",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 134,
+    "estado_id": 16,
+    "nombre": "ZOOM CAJA SECA",
+    "codigo": "4054",
+    "direccion": "AV PRIMERA TRANSVERSAL DEL CORREDOR VIAL AL TERMINAL DE PASAJEROS, CC FARMACIA SUR DEL LAGO NIVEL PB LOCAL 2, SECTOR CASCO CENTRAL CAJA SECA",
+    "latitud": "9.140760",
+    "longitud": "-71.079794",
+    "estado": "ZULIA"
+  },
+  {
+    "agencia_id": 135,
+    "estado_id": 13,
+    "nombre": "ZOOM CALLE 12",
+    "codigo": "1121",
+    "direccion": "CALLE 12, ENTRE CARRERA 4 Y 5TA AVENIDA NRO 4-35 LA ERMITA ( TAPON LACOR) SAN CRISTOBAL",
+    "latitud": "7.771855",
+    "longitud": "-72.233320",
+    "estado": "TACHIRA"
+  },
+  {
+    "agencia_id": 136,
+    "estado_id": 6,
+    "nombre": "ZOOM CALLE 14 CENTRO-ESTE",
+    "codigo": "956",
+    "direccion": "CALLE 14 ENTRE CARRERAS 18 Y 19 QTA NELLY LOCAL NRO 3",
+    "latitud": "10.066190",
+    "longitud": "-69.305440",
+    "estado": "LARA"
+  },
+  {
+    "agencia_id": 137,
+    "estado_id": 13,
+    "nombre": "ZOOM CALLE 15",
+    "codigo": "780",
+    "direccion": "CALLE 15 CON CARRERA 22, EDIF. APOLO, LOCAL 3, BARRIO OBRERO.",
+    "latitud": "7.773200",
+    "longitud": "-72.218200",
+    "estado": "TACHIRA"
+  },
+  {
+    "agencia_id": 138,
+    "estado_id": 18,
+    "nombre": "ZOOM CALLE 20 SUR",
+    "codigo": "2345",
+    "direccion": "CALLE 20 SUR, CRUCE CON 5TA CARRERA BIS",
+    "latitud": "8.892987",
+    "longitud": "-64.234295",
+    "estado": "ANZOATEGUI"
+  },
+  {
+    "agencia_id": 139,
+    "estado_id": 3,
+    "nombre": "ZOOM CALLE ARGENTINA",
+    "codigo": "1799",
+    "direccion": "CALLE ARGENTINA ESQUINA CALLE GARCéS CENTRO PUNTO FIJO.",
+    "latitud": "11.691560",
+    "longitud": "-70.204057",
+    "estado": "FALCON"
+  },
+  {
+    "agencia_id": 140,
+    "estado_id": 10,
+    "nombre": "ZOOM CALLE CAMPOS",
+    "codigo": "1554",
+    "direccion": "CALLE CAMPOS EDIFICIO JUAMO PB",
+    "latitud": "10.962200",
+    "longitud": "-63.840200",
+    "estado": "NUEVA ESPARTA"
+  },
+  {
+    "agencia_id": 141,
+    "estado_id": 2,
+    "nombre": "ZOOM CALLE COLOMBIA",
+    "codigo": "1485",
+    "direccion": "CALLE COLOMBIA, ENTRE CRISTO Y MAGALLANES, URB. NUEVA CARACAS- CATIA, EDIFICIO S/N, PISO PB., LOCAL UNICO.",
+    "latitud": "10.510000",
+    "longitud": "-66.946600",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 142,
+    "estado_id": 2,
+    "nombre": "ZOOM CALLE GARCILASO",
+    "codigo": "4043",
+    "direccion": "CALLE GARCILASO EDIF PERSEO PISO PB LOCAL A, URB BELLO MONTE",
+    "latitud": "10.485715",
+    "longitud": "-66.874512",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 143,
+    "estado_id": 18,
+    "nombre": "ZOOM CALLE GUARAGUAO",
+    "codigo": "694",
+    "direccion": "CALLE LAS FLORES CON CALLE GUARAGUAO, CENTRO COMERCIAL CARABEL, PLANTA BAJA, LOCAL 2",
+    "latitud": "10.224610",
+    "longitud": "-64.631444",
+    "estado": "ANZOATEGUI"
+  },
+  {
+    "agencia_id": 144,
+    "estado_id": 8,
+    "nombre": "ZOOM CALLE MIRANDA",
+    "codigo": "4053",
+    "direccion": "CALLE MIRANDA CON GUAICAIPURO NORTE, C.C ORIENTE, SECTOR CUATRO ESQUINAS",
+    "latitud": "10.349563",
+    "longitud": "-67.042920",
+    "estado": "MIRANDA"
+  },
+  {
+    "agencia_id": 145,
+    "estado_id": 8,
+    "nombre": "ZOOM CALLE RIVAS",
+    "codigo": "4080",
+    "direccion": "SECTOR CASCO CENTRAL CALLE RIVAS LOCAL NRO 15",
+    "latitud": "10.473484",
+    "longitud": "-66.542221",
+    "estado": "MIRANDA"
+  },
+  {
+    "agencia_id": 146,
+    "estado_id": 16,
+    "nombre": "ZOOM CALLE VARGAS",
+    "codigo": "3895",
+    "direccion": "CALLE VARGAS CON CALLE CAMPO ELIAS CC NOCCIANO NIVEL PB LOCAL 2 SECTOR CASCO CENTRAL, CIUDAD OJEDA",
+    "latitud": "10.200931",
+    "longitud": "-71.310688",
+    "estado": "ZULIA"
+  },
+  {
+    "agencia_id": 147,
+    "estado_id": 22,
+    "nombre": "ZOOM CALLE VENEZUELA",
+    "codigo": "4124",
+    "direccion": "CALLE VENEZUELA LOCAL NRO 20",
+    "latitud": "8.144969",
+    "longitud": "-63.549533",
+    "estado": "BOLIVAR"
+  },
+  {
+    "agencia_id": 148,
+    "estado_id": 25,
+    "nombre": "ZOOM CARABALLEDA",
+    "codigo": "1451",
+    "direccion": "AV. LA COSTANERA CON COPACABANA, C.C. MARGARITA, NIVEL S/N, LOCAL S/N, URB. PALMAR ESTE.",
+    "latitud": "10.610200",
+    "longitud": "-66.840900",
+    "estado": "LA GUAIRA"
+  },
+  {
+    "agencia_id": 149,
+    "estado_id": 25,
+    "nombre": "ZOOM CARIBE",
+    "codigo": "3114",
+    "direccion": "URB. CARIBE. CARABALLERA. AV BOULEVARD NAIGUATA, EDF. RESIDENCIA, GRAN TERRAZA. PISO PB. LOCAL NRO. 1-4.",
+    "latitud": "10.611200",
+    "longitud": "-66.852100",
+    "estado": "LA GUAIRA"
+  },
+  {
+    "agencia_id": 150,
+    "estado_id": 6,
+    "nombre": "ZOOM CARORA",
+    "codigo": "4057",
+    "direccion": "AV FCO DE MIRANDA E/CALLE LISBOS Y COROMOTO LOCAL TIENDAS MONTANA, SECTOR FCO DE MIRANDA",
+    "latitud": "10.168603",
+    "longitud": "-70.078132",
+    "estado": "LARA"
+  },
+  {
+    "agencia_id": 151,
+    "estado_id": 13,
+    "nombre": "ZOOM CARRERA 19",
+    "codigo": "4060",
+    "direccion": "CR 19 ENTRE CALLE 15 Y 16 LOCAL NRO 15-15, BARRIO OBRERO",
+    "latitud": "7.773908",
+    "longitud": "-72.221284",
+    "estado": "TACHIRA"
+  },
+  {
+    "agencia_id": 152,
+    "estado_id": 6,
+    "nombre": "ZOOM CARRERA 19 CON 34",
+    "codigo": "1695",
+    "direccion": "CARRERA 19 CON CALLES 33 Y 34 # 33-68, BARQUISIMETO",
+    "latitud": "10.065370",
+    "longitud": "-69.325740",
+    "estado": "LARA"
+  },
+  {
+    "agencia_id": 153,
+    "estado_id": 6,
+    "nombre": "ZOOM CARRERA 25 CALLE 41",
+    "codigo": "1069",
+    "direccion": "CARRERA 25, ENTRE CALLE 40 Y 41 NRO 2.",
+    "latitud": "10.070700",
+    "longitud": "-69.331800",
+    "estado": "LARA"
+  },
+  {
+    "agencia_id": 154,
+    "estado_id": 12,
+    "nombre": "ZOOM CARUPANO CENTRO",
+    "codigo": "4082",
+    "direccion": "CALLE JUNCAL, CRUCE CON CALLE BOLIVAR, LOCAL NRO 258,SECTOR CENTRO",
+    "latitud": "10.661099",
+    "longitud": "-63.151390",
+    "estado": "SUCRE"
+  },
+  {
+    "agencia_id": 155,
+    "estado_id": 9,
+    "nombre": "ZOOM CASCO CENTRAL",
+    "codigo": "2343",
+    "direccion": "AV. AZCUE CON AV ROJAS SECTOR CENTRO, LOCAL NRO. 114 A DOS CUADRAS DE LA AV.BOLIVAR",
+    "latitud": "9.745438",
+    "longitud": "-63.182029",
+    "estado": "MONAGAS"
+  },
+  {
+    "agencia_id": 156,
+    "estado_id": 9,
+    "nombre": "ZOOM CASCO CENTRAL I",
+    "codigo": "4167",
+    "direccion": "AV AZCUE CON AV ROJAS SECTOR CENTRO, LOCAL NRO 01, A DOS CUADRAS DE LA AV.BOLIVAR",
+    "latitud": "9.745480",
+    "longitud": "-63.182040",
+    "estado": "MONAGAS"
+  },
+  {
+    "agencia_id": 157,
+    "estado_id": 18,
+    "nombre": "ZOOM CASCO CENTRAL LECHERIA",
+    "codigo": "2051",
+    "direccion": "SECTOR CASCO CENTRAL LECHERIAS CARRERA 5 ENTRE CALLE 2 Y 3 CENTRO EMPRESARIAL 17-11 LOCAL PB-1",
+    "latitud": "10.198508",
+    "longitud": "-64.695961",
+    "estado": "ANZOATEGUI"
+  },
+  {
+    "agencia_id": 158,
+    "estado_id": 12,
+    "nombre": "ZOOM CASCO HISTORICO",
+    "codigo": "4081",
+    "direccion": "CALLE SUCRE C.C CUMANA NIVEL ÚNICO OFICINA 8, SECTOR CASCO HISTORICO.",
+    "latitud": "10.462413",
+    "longitud": "-64.174250",
+    "estado": "SUCRE"
+  },
+  {
+    "agencia_id": 159,
+    "estado_id": 8,
+    "nombre": "ZOOM CASTILLEJO",
+    "codigo": "4033",
+    "direccion": "AV PRINCIPAL CC CASTILLEJO NIVEL 1 LOCAL 02-14 URB CASTILLEJO",
+    "latitud": "10.470157",
+    "longitud": "-66.547226",
+    "estado": "MIRANDA"
+  },
+  {
+    "agencia_id": 160,
+    "estado_id": 23,
+    "nombre": "ZOOM C.C AEROCENTRO",
+    "codigo": "699",
+    "direccion": "AV. LUIS ERNESTO BRANGER ZONA INDUSTRIAL MUNICIPAL SUR CONJ. EMPRESARIAL ENTRADA F PB5",
+    "latitud": "10.153637",
+    "longitud": "-67.941450",
+    "estado": "CARABOBO"
+  },
+  {
+    "agencia_id": 161,
+    "estado_id": 6,
+    "nombre": "ZOOM C.C ALFA ESTE",
+    "codigo": "1520",
+    "direccion": "AV. MADRID, URB. EL PARQUE, C.C. ALFA, NIVEL P/B, LOCAL 6.",
+    "latitud": "10.065000",
+    "longitud": "-69.286500",
+    "estado": "LARA"
+  },
+  {
+    "agencia_id": 162,
+    "estado_id": 6,
+    "nombre": "ZOOM C.C ALMARRIERA",
+    "codigo": "2489",
+    "direccion": "AV. LA MONTANITA C.C.ALMARRIERA PLANTA BAJA ALTA. LOCAL L-29. URB.ALMARRIERA. LOS RASTROJOS.CABUDARE.",
+    "latitud": "10.031071",
+    "longitud": "-69.239701",
+    "estado": "LARA"
+  },
+  {
+    "agencia_id": 163,
+    "estado_id": 23,
+    "nombre": "ZOOM C.C CARIBEAN PLAZA",
+    "codigo": "1106",
+    "direccion": "SECTOR CAMORUCO, CALLE SAN JORGE, C.C. CARIBBEAN PLAZA, PB., LOCAL 171, MODULO 8.",
+    "latitud": "10.202100",
+    "longitud": "-68.008600",
+    "estado": "CARABOBO"
+  },
+  {
+    "agencia_id": 164,
+    "estado_id": 23,
+    "nombre": "ZOOM C.C CENTRAL GUACARA",
+    "codigo": "1624",
+    "direccion": "CARRETERA NACIONAL GUACARA LOS GUAYOS, CENTRO COMERCIAL CENTRAL GUACARA PB LOCAL 18 Y 20",
+    "latitud": "10.213800",
+    "longitud": "-67.897300",
+    "estado": "CARABOBO"
+  },
+  {
+    "agencia_id": 165,
+    "estado_id": 2,
+    "nombre": "ZOOM C.C EL RECREO",
+    "codigo": "684",
+    "direccion": "AV. CASANOVA CON CALLE EL RECREO CENTRO COMERCIAL EL RECREO NIVEL C1 LOCAL LC1-C29/30,URBANIZACIÓN SABANA GRANDE",
+    "latitud": "10.491614",
+    "longitud": "-66.877098",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 166,
+    "estado_id": 23,
+    "nombre": "ZOOM C.C FIN DE SIGLO",
+    "codigo": "2342",
+    "direccion": "SECTOR SAN DIEGO, AV. DON JULIO CENTENO, C.C. SAN DIEGO (FIN DE SIGLO), NIVEL GALERIA NRO. 3, LOCAL NRO. 1 Y NRO. 2.",
+    "latitud": "10.223241",
+    "longitud": "-67.965832",
+    "estado": "CARABOBO"
+  },
+  {
+    "agencia_id": 167,
+    "estado_id": 2,
+    "nombre": "ZOOM C.C GALERIAS EL RECREO",
+    "codigo": "249",
+    "direccion": "AV. VENEZUELA, CENTRO COMERCIAL GALERIAS EL RECREO. NIVEL AVENIDA. LOCAL AV-1C.",
+    "latitud": "10.491718",
+    "longitud": "-66.878156",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 168,
+    "estado_id": 16,
+    "nombre": "ZOOM C.C. GRAN BAZAR",
+    "codigo": "4097",
+    "direccion": "AV 15 C.C GRAN BAZAR PRIMER PISO LOCAL ML 1480 SECTOR SANTA BÁRBARA",
+    "latitud": "10.641638",
+    "longitud": "-71.619888",
+    "estado": "ZULIA"
+  },
+  {
+    "agencia_id": 169,
+    "estado_id": 23,
+    "nombre": "ZOOM C.C GUACARA PLAZA",
+    "codigo": "1663",
+    "direccion": "CALLE PIAR C.C GUACARA PLAZA NIVEL PB LOCAL PB-09",
+    "latitud": "10.232199",
+    "longitud": "-67.880201",
+    "estado": "CARABOBO"
+  },
+  {
+    "agencia_id": 170,
+    "estado_id": 20,
+    "nombre": "ZOOM C.C IPSFA",
+    "codigo": "4111",
+    "direccion": "AV BOLIVAR ESTE CC LOS PROCERES NIVEL PB LOCAL PCB-15",
+    "latitud": "10.242253",
+    "longitud": "-67.570298",
+    "estado": "ARAGUA"
+  },
+  {
+    "agencia_id": 171,
+    "estado_id": 6,
+    "nombre": "ZOOM C.C LA ESTANCIA",
+    "codigo": "4147",
+    "direccion": "CC LA ESTANCIA LOCAL 20 INTERCOMUNAL BQTO CABUDARE",
+    "latitud": "10.012595",
+    "longitud": "-69.228099",
+    "estado": "LARA"
+  },
+  {
+    "agencia_id": 172,
+    "estado_id": 23,
+    "nombre": "ZOOM C.C LA GALERIA",
+    "codigo": "4046",
+    "direccion": "CALLE 137 CC LA GALERIA NAVE A NIVEL PB LOCAL 1-A6,URB CAMORUCO",
+    "latitud": "10.208630",
+    "longitud": "-68.009550",
+    "estado": "CARABOBO"
+  },
+  {
+    "agencia_id": 173,
+    "estado_id": 8,
+    "nombre": "ZOOM C.C LA HOYADA",
+    "codigo": "4142",
+    "direccion": "CALLE PIAR, CC LA HOYADA, NIVEL SEGUNDA PLANTA, LOCAL 328, MUNICIPIO GUAICAIPURO",
+    "latitud": "10.345145",
+    "longitud": "-67.041749",
+    "estado": "MIRANDA"
+  },
+  {
+    "agencia_id": 174,
+    "estado_id": 10,
+    "nombre": "ZOOM C.C LA REDOMA",
+    "codigo": "4136",
+    "direccion": "CALLE LIBERTAD CC LA REDOMA NIVEL 1 LOCAL 42 SECTOR LOS ROBLES EL PILAR",
+    "latitud": "10.989890",
+    "longitud": "-63.839353",
+    "estado": "NUEVA ESPARTA"
+  },
+  {
+    "agencia_id": 175,
+    "estado_id": 6,
+    "nombre": "ZOOM C.C MADETOR ESTE",
+    "codigo": "703",
+    "direccion": "AV. VENEZUELA, ENTRE AV. BRACAMONTE Y AV. LOS LEONES, CENTRO COMERCIAL IMECA, PISO 1, LOCAL 1-H Y 1-G",
+    "latitud": "10.072853",
+    "longitud": "-69.288877",
+    "estado": "LARA"
+  },
+  {
+    "agencia_id": 176,
+    "estado_id": 20,
+    "nombre": "ZOOM C.C MARACAY PLAZA",
+    "codigo": "1703",
+    "direccion": "AV. BERMUDEZ, CRUCE CON AV. ARAGUA, C.C. MARACAY PLAZA, NIVEL PLANTA BAJA, LOCAL 61-D.",
+    "latitud": "10.233127",
+    "longitud": "-67.596800",
+    "estado": "ARAGUA"
+  },
+  {
+    "agencia_id": 177,
+    "estado_id": 12,
+    "nombre": "ZOOM C.C MARINA PLAZA",
+    "codigo": "1115",
+    "direccion": "AV.CRISTOBAL COLON PERIMETAL, SEC. EL DIQUI, C.C. MARINA PLAZA, EDIF. D-3, LOCAL P.B.-4",
+    "latitud": "10.476300",
+    "longitud": "-64.185400",
+    "estado": "SUCRE"
+  },
+  {
+    "agencia_id": 178,
+    "estado_id": 6,
+    "nombre": "ZOOM C.C METROPOLIS BRM",
+    "codigo": "4095",
+    "direccion": "AV. FLORENCIO JIMENEZ CON AV LA SALLE CC METROPOLI NIVEL SOL LOCAL L-204-205-206",
+    "latitud": "10.063039",
+    "longitud": "-69.364645",
+    "estado": "LARA"
+  },
+  {
+    "agencia_id": 179,
+    "estado_id": 16,
+    "nombre": "ZOOM C.C. METROSOL",
+    "codigo": "3063",
+    "direccion": "AV 58 CC METROSOL NIVEL PB LOCAL 19-A SECTOR CIRCUNVALACION NRO 2 MARACAIBO",
+    "latitud": "10.599233",
+    "longitud": "-71.652280",
+    "estado": "ZULIA"
+  },
+  {
+    "agencia_id": 180,
+    "estado_id": 23,
+    "nombre": "ZOOM C.C NAGUANAGUA",
+    "codigo": "4125",
+    "direccion": "AV UNIVERSIDAD CC NAGUANAGUA NIVEL PB LOCAL 28 SECTOR LA CAMPIÑA",
+    "latitud": "10.266540",
+    "longitud": "-68.016078",
+    "estado": "CARABOBO"
+  },
+  {
+    "agencia_id": 181,
+    "estado_id": 6,
+    "nombre": "ZOOM C.C PARQUE REAL",
+    "codigo": "4076",
+    "direccion": "AV LARA CON CRUCE AVENIDA LOS LEONES CC PARQUE REAL NIVEL P-AL LOCAL 10,ZONA ESTE",
+    "latitud": "10.065590",
+    "longitud": "-69.286646",
+    "estado": "LARA"
+  },
+  {
+    "agencia_id": 182,
+    "estado_id": 23,
+    "nombre": "ZOOM C.C PASEO LAS INDUSTRIAS",
+    "codigo": "2216",
+    "direccion": "AV HENRY FORD CC PASEO LAS INDUCTRIAS NIVEL PB LOCAL 7,ZONA INDUSTRIAL SUR",
+    "latitud": "10.164178",
+    "longitud": "-67.960155",
+    "estado": "CARABOBO"
+  },
+  {
+    "agencia_id": 183,
+    "estado_id": 11,
+    "nombre": "ZOOM C.C. SOL DE CURPA",
+    "codigo": "2252",
+    "direccion": "AV. LIBERTADOR, E/ CALLES 32 Y 33 C.C. SOL DE CURPA NIVEL PB., LOCAL 7",
+    "latitud": "9.557163",
+    "longitud": "-69.203552",
+    "estado": "PORTUGUESA"
+  },
+  {
+    "agencia_id": 184,
+    "estado_id": 16,
+    "nombre": "ZOOM C.C.GALERIAS LA LIMPIA",
+    "codigo": "4121",
+    "direccion": "CALLE 28,  SECTOR LA LIMPIA C.C. GALERIAS MALL P.B LOCAL P.B-ESTE 4A",
+    "latitud": "10.671250",
+    "longitud": "-71.652400",
+    "estado": "ZULIA"
+  },
+  {
+    "agencia_id": 185,
+    "estado_id": 18,
+    "nombre": "ZOOM CENTRAL MADEIRENSE",
+    "codigo": "4023",
+    "direccion": "AV MUNICIPAL CC CENTRAL MADEIRENSE NIVEL PB LOCAL 17,SECTOR PUEBLO NUEVO",
+    "latitud": "10.201844",
+    "longitud": "-64.634305",
+    "estado": "ANZOATEGUI"
+  },
+  {
+    "agencia_id": 186,
+    "estado_id": 2,
+    "nombre": "ZOOM CENTRO",
+    "codigo": "2435",
+    "direccion": "CALLE NORTE 2 ENTRE ESQUINA DE SANTA CAPILLA A MIJARES EDIF SAN SEBASTIAN PISO PB LOCAL NRO 5 ZONA CATEDRAL",
+    "latitud": "10.510050",
+    "longitud": "-66.914182",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 187,
+    "estado_id": 2,
+    "nombre": "ZOOM CENTRO COMERCIAL BELLO MONTE",
+    "codigo": "728",
+    "direccion": "AV. PRINCIPAL DE BELLO MONTE, ENTRE AV. LEONARDO DA VICI Y AV. LINCOLN. CTRO. COMERCIAL BELLO MONTE. P.B. LOCAL NRO. 10. BELLO MONTE.",
+    "latitud": "10.490000",
+    "longitud": "-66.881000",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 188,
+    "estado_id": 7,
+    "nombre": "ZOOM CENTRO EJIDO",
+    "codigo": "3749",
+    "direccion": "CALLE SUCRE FRENTE A LA PLAZA BOLIVAR DE EJIDO CON AV BOLIVAR C.C EJIDO PB LOCAL 1-C",
+    "latitud": "8.546923",
+    "longitud": "-71.242437",
+    "estado": "MERIDA"
+  },
+  {
+    "agencia_id": 189,
+    "estado_id": 7,
+    "nombre": "ZOOM CENTRO MERIDA",
+    "codigo": "3151",
+    "direccion": "AV 3 INDEPENDENCIA ESQUINA CALLE 21 LASO CC LA ROSALERA NIVEL 03 OF 01 SECTOR CENTRO MERIDA",
+    "latitud": "8.598182",
+    "longitud": "-71.143317",
+    "estado": "MERIDA"
+  },
+  {
+    "agencia_id": 190,
+    "estado_id": 16,
+    "nombre": "ZOOM CENTRO NORTE FUERZAS ARMADAS",
+    "codigo": "4066",
+    "direccion": "AV 15 Y 15 A ENTRE CALLES 19 A Y 20 CC NORTE NIVEL PB LOCAL PB-17,SECTOR FUERZAS ARMADAS",
+    "latitud": "10.722900",
+    "longitud": "-71.623520",
+    "estado": "ZULIA"
+  },
+  {
+    "agencia_id": 191,
+    "estado_id": 7,
+    "nombre": "ZOOM CENTRO VIGIA",
+    "codigo": "4083",
+    "direccion": "CALLE 3 AL LADO DE LA PANADERÍA GIORDANO, PARROQUIA PRESIDENTE BETANCOURT,SECTOR CENTRO MÉRIDA",
+    "latitud": "8.620086",
+    "longitud": "-71.646678",
+    "estado": "MERIDA"
+  },
+  {
+    "agencia_id": 192,
+    "estado_id": 2,
+    "nombre": "ZOOM CHACAO, C.A",
+    "codigo": "1623",
+    "direccion": "CALLE NRO 3 MONSENOR JUAN GRILC REZMAN, QTA. SILVIA NRO 309, LOCAL NRO 5 CHACAO.",
+    "latitud": "10.495407",
+    "longitud": "-66.856058",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 193,
+    "estado_id": 2,
+    "nombre": "ZOOM COCHE",
+    "codigo": "1194",
+    "direccion": "AV INTERCOMUNAL VALLE COCHE C.C COCHE NIVEL PB LOCAL 25 URB DELGADO CHALBAUD DIAGONAL AL SUPERMERCADO SUPREMO.",
+    "latitud": "10.448537",
+    "longitud": "-66.924942",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 194,
+    "estado_id": 13,
+    "nombre": "ZOOM COLON",
+    "codigo": "1898",
+    "direccion": "SECTOR CENTRO COLON TACHIRA,CTRA NRO. 7, CON CALLE NRO. 3, CASA NRO. 6-81.",
+    "latitud": "8.030200",
+    "longitud": "-72.262400",
+    "estado": "TACHIRA"
+  },
+  {
+    "agencia_id": 195,
+    "estado_id": 13,
+    "nombre": "ZOOM COLONCITO",
+    "codigo": "2587",
+    "direccion": "SECTOR CASCO CENTRAL COLONCITO, CR. NRO. 04, CASA NRO. 3-47.",
+    "latitud": "8.322800",
+    "longitud": "-72.093428",
+    "estado": "TACHIRA"
+  },
+  {
+    "agencia_id": 196,
+    "estado_id": 20,
+    "nombre": "ZOOM COLONIA TOVAR",
+    "codigo": "1843",
+    "direccion": "SECTOR PLAN DE MORENO, CARRETERA PRINCIPAL PLAN DE MORENO, C.C. PARQUE MORITZ, NIVEL 1, LOCAL N1-3.",
+    "latitud": "10.411710",
+    "longitud": "-67.277320",
+    "estado": "ARAGUA"
+  },
+  {
+    "agencia_id": 197,
+    "estado_id": 11,
+    "nombre": "ZOOM CORREDOR VIAL TOMAS MONTILLA",
+    "codigo": "4144",
+    "direccion": "CR 7 ENTRE AV UNDA Y CORREDOR VIAL TOMAS MONTILLA EDIF FORUM PISO 1 LOCAL 2, BARRIO MATURIN",
+    "latitud": "9.045720",
+    "longitud": "-69.743880",
+    "estado": "PORTUGUESA"
+  },
+  {
+    "agencia_id": 198,
+    "estado_id": 12,
+    "nombre": "ZOOM COSTO SUPERMERCADO",
+    "codigo": "4101",
+    "direccion": "AV ARISTIDES ROJAS CON CALLE BERMUDEZ CC PERMAGAS NIVEL PLANTA BAJA LOCAL I",
+    "latitud": "10.462900",
+    "longitud": "-64.185900",
+    "estado": "SUCRE"
+  },
+  {
+    "agencia_id": 199,
+    "estado_id": 8,
+    "nombre": "ZOOM CUA",
+    "codigo": "3312",
+    "direccion": "CALLE JOSE MARIA CARREÑO LOCAL MINICOZZI NRO PB SECTOR CASCO CENTRAL CUA",
+    "latitud": "10.160200",
+    "longitud": "-66.888500",
+    "estado": "MIRANDA"
+  },
+  {
+    "agencia_id": 200,
+    "estado_id": 3,
+    "nombre": "ZOOM DABAJURO",
+    "codigo": "3540",
+    "direccion": "AV BOLIVAR LOCAL NRO S/N, SECTOR EL CERRO DEBAJURO",
+    "latitud": "11.017864",
+    "longitud": "-70.669506",
+    "estado": "FALCON"
+  },
+  {
+    "agencia_id": 201,
+    "estado_id": 16,
+    "nombre": "ZOOM DELICIAS",
+    "codigo": "4129",
+    "direccion": "AV 15 PROLONGACION DELICIAS CC LUZ Y SOL NO 60C.58 NIVEL NO INDICA LOCAL 3",
+    "latitud": "10.682390",
+    "longitud": "-71.623378",
+    "estado": "ZULIA"
+  },
+  {
+    "agencia_id": 202,
+    "estado_id": 2,
+    "nombre": "ZOOM DON BOSCO",
+    "codigo": "4085",
+    "direccion": "AV SAN JUAN BOSCO ENTRE 1 TRANSVERSAL Y AV FCO DE MIRANDA EDIF MAY FLOWER PISO PB LOCAL B",
+    "latitud": "10.496100",
+    "longitud": "-66.849550",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 203,
+    "estado_id": 16,
+    "nombre": "ZOOM EDIFICIO D MAIO",
+    "codigo": "4154",
+    "direccion": "AVENIDA INTERCOMUNAL EDIFICIO HOTEL D MAIO NIVEL PLANTA BAJA, LOCAL NRO 1 SECTOR EL DIVIDIVE",
+    "latitud": "10.394267",
+    "longitud": "-71.442757",
+    "estado": "ZULIA"
+  },
+  {
+    "agencia_id": 204,
+    "estado_id": 22,
+    "nombre": "ZOOM EL CALLAO",
+    "codigo": "2586",
+    "direccion": "CALLE LA PAZ , FRENTE AL PARQUE INFANTIL VICTORIA TORREALBA LOCAL S/N, ZONA EL CENTRO EL CALLAO BOLIVAR",
+    "latitud": "7.346915",
+    "longitud": "-61.824106",
+    "estado": "BOLIVAR"
+  },
+  {
+    "agencia_id": 205,
+    "estado_id": 2,
+    "nombre": "ZOOM EL CEMENTERIO",
+    "codigo": "4098",
+    "direccion": "AV. PPAL DEL CEMENTERIO CALLE EL DEGREDO MERCAPOP PASILLO 6 GRAN MAYOR LOCAL 12, EL CEMENTERIO.",
+    "latitud": "10.480168",
+    "longitud": "-66.918334",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 206,
+    "estado_id": 25,
+    "nombre": "ZOOM EL CONSUL",
+    "codigo": "3917",
+    "direccion": "CALLE LOS PIPOTES ENTRE LA ESQUINA DEL BRILLANTE Y LOS PIPOTES CASA NRO 129 NIVEL P.B",
+    "latitud": "10.597549",
+    "longitud": "-66.946040",
+    "estado": "LA GUAIRA"
+  },
+  {
+    "agencia_id": 207,
+    "estado_id": 20,
+    "nombre": "ZOOM EL LIMON",
+    "codigo": "1195",
+    "direccion": "SECTOR EL LIMON, AV. UNIVERSIDAD,C.C. EL LIMON, NIVEL PB, LOCAL NRO. 03",
+    "latitud": "10.297130",
+    "longitud": "-67.631372",
+    "estado": "ARAGUA"
+  },
+  {
+    "agencia_id": 208,
+    "estado_id": 13,
+    "nombre": "ZOOM EL PIÑAL",
+    "codigo": "2703",
+    "direccion": "SECTOR EL PIÑAL, CALLE N°. 1 ENTRE CARRERA N°. 3 Y 4, CASA N°. 3-19. (SAN RAFAEL DEL PIñAL).",
+    "latitud": "7.530955",
+    "longitud": "-71.961587",
+    "estado": "TACHIRA"
+  },
+  {
+    "agencia_id": 209,
+    "estado_id": 4,
+    "nombre": "ZOOM EL SOMBRERO",
+    "codigo": "2982",
+    "direccion": "CALLE FRATERNIDAD CRUCE CON CALLE LOS ESTUDIANTES LOCAL NRO S/N, SECTOR FRENTE A LA PLAZA BOLIVAR EL SOMBRERO",
+    "latitud": "9.384372",
+    "longitud": "-67.054202",
+    "estado": "GUARICO"
+  },
+  {
+    "agencia_id": 210,
+    "estado_id": 18,
+    "nombre": "ZOOM EL TIGRITO",
+    "codigo": "4146",
+    "direccion": "AV FERNANDEZ PADILLA CC DECA NIVEL N/A LOCAL LOCAL 3 ZONA SAN JOSE DE GUANIPA",
+    "latitud": "8.894500",
+    "longitud": "-64.180400",
+    "estado": "ANZOATEGUI"
+  },
+  {
+    "agencia_id": 211,
+    "estado_id": 6,
+    "nombre": "ZOOM EL TOCUYO",
+    "codigo": "1668",
+    "direccion": "CALLE 20 ENTRE 7 Y 8 CRUCE FINAL AVENIDA FRATERNIDAD URB CORPAHUAICO",
+    "latitud": "9.788384",
+    "longitud": "-69.795625",
+    "estado": "LARA"
+  },
+  {
+    "agencia_id": 212,
+    "estado_id": 2,
+    "nombre": "ZOOM EL VALLE",
+    "codigo": "4145",
+    "direccion": "CALLE ANTIGUA CALLE REAL DE LOS JARDINES DEL VALLE CALLE 14 LOCAL NRO 14 LOCAL, URB EL VALLE TALLER RANI",
+    "latitud": "10.456634",
+    "longitud": "-66.917466",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 213,
+    "estado_id": 16,
+    "nombre": "ZOOM EL VENADO",
+    "codigo": "4056",
+    "direccion": "CENTRO COMERCIAL DE DOS PLANTAS VERA CRUZ  CARRETERA  LARA -ZULIA LOCAL S/N P.B. PASILLO PRINCIPAL  NO. 06,SECTOR CASCO CENTRAL",
+    "latitud": "10.069454",
+    "longitud": "-70.553310",
+    "estado": "ZULIA"
+  },
+  {
+    "agencia_id": 214,
+    "estado_id": 9,
+    "nombre": "ZOOM ELARBA I",
+    "codigo": "3417",
+    "direccion": "AVENIDA BOLIVAR, EDIFICIO ELARBA, PISO PB, LOCAL 133, SECTOR CENTRO DE MATURIN",
+    "latitud": "9.747080",
+    "longitud": "-63.185664",
+    "estado": "MONAGAS"
+  },
+  {
+    "agencia_id": 215,
+    "estado_id": 3,
+    "nombre": "ZOOM FERIAL PUNTO EXPRESS",
+    "codigo": "3995",
+    "direccion": "CALLE FALCON CC FERIAL NIVEL PB LOCAL 01, ZONA CENTRO SANTA ANA",
+    "latitud": "11.408791",
+    "longitud": "-69.676777",
+    "estado": "FALCON"
+  },
+  {
+    "agencia_id": 216,
+    "estado_id": 23,
+    "nombre": "ZOOM FLOR AMARILLO",
+    "codigo": "1905",
+    "direccion": "SECTOR, FLOR AMARILLO VALENCIA, AV. NRO. 107-C, LOCAL C.C. LA FUNDACION NRO. 1",
+    "latitud": "10.143987",
+    "longitud": "-67.944327",
+    "estado": "CARABOBO"
+  },
+  {
+    "agencia_id": 217,
+    "estado_id": 8,
+    "nombre": "ZOOM GALERIAS LAS AMERICAS",
+    "codigo": "1197",
+    "direccion": "CARRETERA PANAMERICANA, KM 15, SECTOR LAS MINAS, CC GALERÍA LAS AMÉRICAS, NIVEL 1, LOCAL N1-40",
+    "latitud": "10.370918",
+    "longitud": "-66.978779",
+    "estado": "MIRANDA"
+  },
+  {
+    "agencia_id": 218,
+    "estado_id": 7,
+    "nombre": "ZOOM GLORIAS PATRIAS",
+    "codigo": "382",
+    "direccion": "AV. MIRANDA, CENTRO COMERCIAL DOÑA HERACLITA LOCAL 2.",
+    "latitud": "8.588404",
+    "longitud": "-71.155143",
+    "estado": "MERIDA"
+  },
+  {
+    "agencia_id": 219,
+    "estado_id": 22,
+    "nombre": "ZOOM GUASIPATI",
+    "codigo": "4068",
+    "direccion": "CALLE MERIDA CC CLEMENT NIVEL 1 LOCAL NRO 5-6, SECTOR LAS GRACIAS GUASIPATI",
+    "latitud": "7.472811",
+    "longitud": "-61.900727",
+    "estado": "BOLIVAR"
+  },
+  {
+    "agencia_id": 220,
+    "estado_id": 8,
+    "nombre": "ZOOM HIGUEROTE",
+    "codigo": "1886",
+    "direccion": "SECTOR TOCORON HIGUEROTE, AV. ANDRES BELLO ELOY BLANCO, C.C. ANJULICAR NIVEL PB, LOCAL NRO. 3.",
+    "latitud": "10.487557",
+    "longitud": "-66.105125",
+    "estado": "MIRANDA"
+  },
+  {
+    "agencia_id": 221,
+    "estado_id": 20,
+    "nombre": "ZOOM HIPER JUMBO",
+    "codigo": "2294",
+    "direccion": "AV. FUERZAS AEREAS C/C AV. JOSE CASANOVA GODOY, CC H Y PER JUMBO, NIVEL SOTANO",
+    "latitud": "10.254147",
+    "longitud": "-67.584585",
+    "estado": "ARAGUA"
+  },
+  {
+    "agencia_id": 222,
+    "estado_id": 10,
+    "nombre": "ZOOM JUAN GRIEGO",
+    "codigo": "1702",
+    "direccion": "C.C. LA ESTANCIA, LOCAL L23, JUAN GRIEGO.",
+    "latitud": "11.082500",
+    "longitud": "-63.966000",
+    "estado": "NUEVA ESPARTA"
+  },
+  {
+    "agencia_id": 223,
+    "estado_id": 16,
+    "nombre": "ZOOM KILOMETRO 4",
+    "codigo": "4110",
+    "direccion": "CALLE 148 LOCAL NO. 115-59  EDIFICIO TAMI VIA ZONA INDUSTRIAL A 50 METROS DEL KILÓMETRO 4.",
+    "latitud": "10.584223",
+    "longitud": "-71.651688",
+    "estado": "ZULIA"
+  },
+  {
+    "agencia_id": 224,
+    "estado_id": 2,
+    "nombre": "ZOOM LA CANDELARIA",
+    "codigo": "510",
+    "direccion": "AV ESTE 2. TRACABORDO A PUENTE YANEZ, EDIF. RES. YANORAL, P.B. LA CANDELARIA.",
+    "latitud": "10.503800",
+    "longitud": "-66.907100",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 225,
+    "estado_id": 23,
+    "nombre": "ZOOM LA CANDELARIA VALENCIA",
+    "codigo": "1419",
+    "direccion": "VALENCIA CENTER PB, LOCAL NRO 38, AL FRENTE DEL COLEGIO REPUBLICA DEL PERU,  DETRAS DEL REGISTRO CIVIL.",
+    "latitud": "10.175600",
+    "longitud": "-68.007300",
+    "estado": "CARABOBO"
+  },
+  {
+    "agencia_id": 226,
+    "estado_id": 21,
+    "nombre": "ZOOM LA CAROLINA",
+    "codigo": "4143",
+    "direccion": "AV ANDRES VARELA LOCAL ESTADIO AGUSTIN TOVAR LA CAROLINA NRO A1, SECTOR LA CAROLINA",
+    "latitud": "8.624430",
+    "longitud": "-70.207401",
+    "estado": "BARINAS"
+  },
+  {
+    "agencia_id": 227,
+    "estado_id": 16,
+    "nombre": "ZOOM LA CONCEPCION",
+    "codigo": "2350",
+    "direccion": "SECTOR LOS LIRIOS LA CONCEPCION, (LOS TEQUES), AV. PRINCIPAL, LOCAL NRO. S/N.",
+    "latitud": "10.644708",
+    "longitud": "-71.820996",
+    "estado": "ZULIA"
+  },
+  {
+    "agencia_id": 228,
+    "estado_id": 18,
+    "nombre": "ZOOM LA CONCHA LECHERIA",
+    "codigo": "4021",
+    "direccion": "AV PRINCIPAL CC LA CONCHA NIVEL S/N LOCAL 17, SECTOR CIUDAD DE LECHERIAS",
+    "latitud": "10.182840",
+    "longitud": "-64.689297",
+    "estado": "ANZOATEGUI"
+  },
+  {
+    "agencia_id": 229,
+    "estado_id": 13,
+    "nombre": "ZOOM LA CONCORDIA",
+    "codigo": "764",
+    "direccion": "AV 19 DE ABRIL NRO 9-29 ENTRE CARRERAS 9 Y 10 LA CONCORDIA.",
+    "latitud": "7.760479",
+    "longitud": "-72.229650",
+    "estado": "TACHIRA"
+  },
+  {
+    "agencia_id": 230,
+    "estado_id": 2,
+    "nombre": "ZOOM LA FLORIDA",
+    "codigo": "2706",
+    "direccion": "AV. JUAN BAUTISTA ARISMENDI, ENTRE CALLE PEDROZA Y AV. DON BOSCO.",
+    "latitud": "10.501791",
+    "longitud": "-66.874347",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 231,
+    "estado_id": 13,
+    "nombre": "ZOOM LA FRIA",
+    "codigo": "1723",
+    "direccion": "SECTOR TERMINAL DE PASAJEROS LA FRIA, CALLE 2 ENTRE CARRERAS 18 Y 19, LOCAL NRO. 25",
+    "latitud": "8.222016",
+    "longitud": "-72.252299",
+    "estado": "TACHIRA"
+  },
+  {
+    "agencia_id": 232,
+    "estado_id": 13,
+    "nombre": "ZOOM LA GRITA C.A",
+    "codigo": "3654",
+    "direccion": "CALLE 2 ENTRE CARRERAS 11 Y 12 CASA 11-86 SECTOR CASCO CENTRAL",
+    "latitud": "8.132466",
+    "longitud": "-71.981140",
+    "estado": "TACHIRA"
+  },
+  {
+    "agencia_id": 233,
+    "estado_id": 23,
+    "nombre": "ZOOM LA ISABELICA",
+    "codigo": "3462",
+    "direccion": "AV 73 HUMBERTO CELLI NRO 84-50 LOCAL 17 CENTRO COMERCIAL METRO SUR ZONA INDUSTRIAL MUNICIPAL NORTE.",
+    "latitud": "10.169637",
+    "longitud": "-67.963690",
+    "estado": "CARABOBO"
+  },
+  {
+    "agencia_id": 234,
+    "estado_id": 7,
+    "nombre": "ZOOM LA PARROQUIA",
+    "codigo": "4100",
+    "direccion": "CALLE PÁEZ CASA NRO 2-35 LOCAL A, SECTOR LA PARROQUIA",
+    "latitud": "8.559608",
+    "longitud": "-71.199698",
+    "estado": "MERIDA"
+  },
+  {
+    "agencia_id": 235,
+    "estado_id": 6,
+    "nombre": "ZOOM LA PASTORA",
+    "codigo": "2274",
+    "direccion": "CALLE PRINCIPAL LOCAL NRO 02 SECTOR EL CENTRO, LA PASTORA",
+    "latitud": "9.823848",
+    "longitud": "-70.188923",
+    "estado": "LARA"
+  },
+  {
+    "agencia_id": 236,
+    "estado_id": 3,
+    "nombre": "ZOOM LA PUMAROSA",
+    "codigo": "709",
+    "direccion": "AV. PUMARROSA, EDIFICIO MARIA LUISA, NUMERO 61-16, LOCAL 2, URBANIZACION SANTA FE",
+    "latitud": "11.706200",
+    "longitud": "-70.194400",
+    "estado": "FALCON"
+  },
+  {
+    "agencia_id": 237,
+    "estado_id": 2,
+    "nombre": "ZOOM LA TAHONA",
+    "codigo": "4037",
+    "direccion": "AVENIDA LA GUAIRITA CALLE REYNA, INSTITUTO UNIVERSITARIO AVEPANE, URB LA\r\nTAHONA",
+    "latitud": "10.440706",
+    "longitud": "-66.857200",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 238,
+    "estado_id": 16,
+    "nombre": "ZOOM LA VILLA DEL ROSARIO",
+    "codigo": "2052",
+    "direccion": "SECTOR CASCO CENTRAL LA VILLA DEL ROSARIO, AV. N°. 18 DE OCTUBRE, LOCAL N°. 18-13.",
+    "latitud": "10.326439",
+    "longitud": "-72.317960",
+    "estado": "ZULIA"
+  },
+  {
+    "agencia_id": 239,
+    "estado_id": 7,
+    "nombre": "ZOOM LAGUNILLAS",
+    "codigo": "4034",
+    "direccion": "AV 6, AGUA DE URAO LOCAL NRO S/N SECTOR PUEBLO VIEJO",
+    "latitud": "8.502950",
+    "longitud": "-71.393717",
+    "estado": "MERIDA"
+  },
+  {
+    "agencia_id": 240,
+    "estado_id": 6,
+    "nombre": "ZOOM LARA PALACE",
+    "codigo": "1669",
+    "direccion": "CARRERA 23, ENTRE CALLES 52 Y 54, URBANIZACION SANTA EDUVIGIS,CONJUNTO RESIDENCIAL LARA PALACE, NRO. 1-06,",
+    "latitud": "10.067900",
+    "longitud": "-69.344000",
+    "estado": "LARA"
+  },
+  {
+    "agencia_id": 241,
+    "estado_id": 6,
+    "nombre": "ZOOM LAS INDUSTRIAS",
+    "codigo": "964",
+    "direccion": "AV. LAS INDUSTRIAS, EDIF. SEDE DE INDUSTRIALES DEL ESTADO LARA, URB. RAFAEL CALDERA",
+    "latitud": "10.072300",
+    "longitud": "-69.375600",
+    "estado": "LARA"
+  },
+  {
+    "agencia_id": 242,
+    "estado_id": 3,
+    "nombre": "ZOOM LAS MARGARITAS",
+    "codigo": "4117",
+    "direccion": "AV CORO CON AVENIDA DONA EMILIA LOCAL COMERCIAL NRO 6 SECTOR DOÑA EMILIA",
+    "latitud": "11.680585",
+    "longitud": "-70.179420",
+    "estado": "FALCON"
+  },
+  {
+    "agencia_id": 243,
+    "estado_id": 2,
+    "nombre": "ZOOM LAS MERCEDES",
+    "codigo": "685",
+    "direccion": "CALLE VERACRUZ, EDIFICIO TORREON, P.B, LOCAL 4. LAS MERCEDES",
+    "latitud": "10.479740",
+    "longitud": "-66.856540",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 244,
+    "estado_id": 2,
+    "nombre": "ZOOM LAS PALMAS",
+    "codigo": "1625",
+    "direccion": "AV. LAS PALMAS, EDF. PALMA ALTA, TORRE A, LOCAL 4, PB.",
+    "latitud": "10.504300",
+    "longitud": "-66.880400",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 245,
+    "estado_id": 2,
+    "nombre": "ZOOM LOS CHAGUARAMOS",
+    "codigo": "1127",
+    "direccion": "CALLE RAZETTI, URB. LOS CHAGUARAMOS, QUINTA CENTRO PROFESIONAL LOS CHAGUARAMOS PB.",
+    "latitud": "10.485040",
+    "longitud": "-66.886920",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 246,
+    "estado_id": 2,
+    "nombre": "ZOOM LOS CORTIJOS",
+    "codigo": "1193",
+    "direccion": "AV. FRANCISCO DE MIRANDA EDIFICIO CENTRO EMPRESARIAL DON BOSCO PISO P.B LOCAL 2. LOS CORTIJOS DE LOURDES",
+    "latitud": "10.488800",
+    "longitud": "-66.825500",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 247,
+    "estado_id": 2,
+    "nombre": "ZOOM LOS DOS CAMINOS",
+    "codigo": "4122",
+    "direccion": "AV SUCRE ENTRE CUARTA Y QUINTA TRANSVERSAL CONJUNTO CENTRO PARQUE BOYACA LOCAL PLANTA BAJA  NRO 11,URB LOS DOS CAMINOS",
+    "latitud": "10.499978",
+    "longitud": "-66.834230",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 248,
+    "estado_id": 23,
+    "nombre": "ZOOM LOS GUAYOS",
+    "codigo": "1250",
+    "direccion": "CALLE PAEZ ENTRE BRUZUAL Y NEGRO PRIMERO, LOCAL A-01.",
+    "latitud": "10.190256",
+    "longitud": "-67.940298",
+    "estado": "CARABOBO"
+  },
+  {
+    "agencia_id": 249,
+    "estado_id": 2,
+    "nombre": "ZOOM LOS NARANJOS",
+    "codigo": "779",
+    "direccion": "AV. EL PAUJI, C.C. GALERIAS LOS NARANJOS, PISO 2, LOCAL C2-53.",
+    "latitud": "10.440400",
+    "longitud": "-66.835400",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 250,
+    "estado_id": 7,
+    "nombre": "ZOOM LOS PROCERES",
+    "codigo": "4059",
+    "direccion": "AV LOS PRÓCERES EDIF LONGIMAR PISO PB LOCAL 2 Y 3, SECTOR ALDEA SANTA BARBARA",
+    "latitud": "8.584070",
+    "longitud": "-71.177022",
+    "estado": "MERIDA"
+  },
+  {
+    "agencia_id": 251,
+    "estado_id": 10,
+    "nombre": "ZOOM LOS ROBLES",
+    "codigo": "1555",
+    "direccion": "AV JOVITO VILLALBA C.C. CENTRO ARTESANAL LOS ROBLES NIVEL P.B",
+    "latitud": "10.992480",
+    "longitud": "-63.833200",
+    "estado": "NUEVA ESPARTA"
+  },
+  {
+    "agencia_id": 252,
+    "estado_id": 2,
+    "nombre": "ZOOM LOS RUICES",
+    "codigo": "4134",
+    "direccion": "AV FRANCISCO DE MIRANDA, ENTRE CALLE C Y CALLE GUANCHEZ CC LOS RUICES NIVEL PB LOCAL 11 URB LOS RUICES",
+    "latitud": "10.492790",
+    "longitud": "-66.828790",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 253,
+    "estado_id": 9,
+    "nombre": "ZOOM LOS SAMANES",
+    "codigo": "1580",
+    "direccion": "CALLE PRINCIPAL, CENTRO COMERCIAL LOS SAMANES, LOCAL 1, PLANTA BAJA, SECTOR LOS SAMANES.",
+    "latitud": "9.682400",
+    "longitud": "-63.232300",
+    "estado": "MONAGAS"
+  },
+  {
+    "agencia_id": 254,
+    "estado_id": 16,
+    "nombre": "ZOOM MACHIQUES",
+    "codigo": "4025",
+    "direccion": "AV ARTES ENTRE CALLE LA MARINA Y CALLE EL CARMEN CASA NRO S/N, MACHIQUES",
+    "latitud": "10.033380",
+    "longitud": "-72.333020",
+    "estado": "ZULIA"
+  },
+  {
+    "agencia_id": 255,
+    "estado_id": 2,
+    "nombre": "ZOOM MANZANARES",
+    "codigo": "1313",
+    "direccion": "AV. PRINCIPAL C.C MANZANARES II NIVEL MIRADOR LOCAL M104",
+    "latitud": "10.433400",
+    "longitud": "-66.883300",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 256,
+    "estado_id": 8,
+    "nombre": "ZOOM MENCA DE LEONI",
+    "codigo": "2945",
+    "direccion": "URB. NRO 27 DE FEBRERO,CTRA NACIONAL, LOCAL ESTACIONAMIENTO  Y MULTISERVICIOS SOUTO NRO. S/N.",
+    "latitud": "10.471059",
+    "longitud": "-66.610073",
+    "estado": "MIRANDA"
+  },
+  {
+    "agencia_id": 257,
+    "estado_id": 16,
+    "nombre": "ZOOM MENE GRANDE",
+    "codigo": "4099",
+    "direccion": "MENE GRANDE - LA LINEA",
+    "latitud": "9.817108",
+    "longitud": "-70.930588",
+    "estado": "ZULIA"
+  },
+  {
+    "agencia_id": 258,
+    "estado_id": 7,
+    "nombre": "ZOOM MERCADO MURACHI",
+    "codigo": "1475",
+    "direccion": "SECTOR LOS SAUZALES, AV. LAS AMERICAS, CENTRO COMERCIAL MERCADO MURACHI, NIVEL UNICO LOCAL 44.",
+    "latitud": "8.591800",
+    "longitud": "-71.158200",
+    "estado": "MERIDA"
+  },
+  {
+    "agencia_id": 259,
+    "estado_id": 23,
+    "nombre": "ZOOM MONTALBAN",
+    "codigo": "1826",
+    "direccion": "AV. BOLIVAR LOCAL NRO. 2 SECTOR CENTRO MONTALBAN",
+    "latitud": "10.213360",
+    "longitud": "-68.327660",
+    "estado": "CARABOBO"
+  },
+  {
+    "agencia_id": 260,
+    "estado_id": 2,
+    "nombre": "ZOOM MONTALBAN I",
+    "codigo": "1885",
+    "direccion": "URB. MONTALBAN I, AV. NRO. 2, AV. MONTALBAN I, C.C. USLAR NIVEL MIRADOR, LOCAL NRO. 03, LA NRO. 21.",
+    "latitud": "10.475480",
+    "longitud": "-66.949683",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 261,
+    "estado_id": 2,
+    "nombre": "ZOOM MONTALBAN III",
+    "codigo": "4139",
+    "direccion": "C.C. CARACAS, PISO 1, LOCAL 01 15 GALERÍAS MAGIC CENTER (MINITIENDAS) MONTALBAN III, AV. TRANSVERSAL 3-E.",
+    "latitud": "10.472468",
+    "longitud": "-66.962692",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 262,
+    "estado_id": 7,
+    "nombre": "ZOOM MUCUCHIES",
+    "codigo": "4104",
+    "direccion": "AV INDEPENDENCIA ESQUINA CALLE SUCRE NRO 69, CENTRO MUCUCHIES",
+    "latitud": "8.746969",
+    "longitud": "-70.918180",
+    "estado": "MERIDA"
+  },
+  {
+    "agencia_id": 263,
+    "estado_id": 2,
+    "nombre": "ZOOM MULTICENTRO EMPRESARIAL DEL ESTE",
+    "codigo": "730",
+    "direccion": "AV. FRANCISCO DE MIRANDA MULTICENTRO EMPRESARIAL DEL ESTE, PLANTA BAJA TORRE MIRANDA. LOCAL PB 04, AL LADO DEL MESON DE PITA.",
+    "latitud": "10.491800",
+    "longitud": "-66.853800",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 264,
+    "estado_id": 23,
+    "nombre": "ZOOM NAGUANAGUA CC CRISTAL",
+    "codigo": "2723",
+    "direccion": "AV FEO LA CRUZ C.C CRISTAL PB, LOCAL PBA08,URB LAS QUINTAS",
+    "latitud": "10.242112",
+    "longitud": "-68.008010",
+    "estado": "CARABOBO"
+  },
+  {
+    "agencia_id": 265,
+    "estado_id": 8,
+    "nombre": "ZOOM OCUMARE DEL TUY",
+    "codigo": "4091",
+    "direccion": "CALLE PRINCIPAL LA ACEQUIA CC RESIDENCIA LA ACEQUIA NIVEL PB LOCAL NRO 7",
+    "latitud": "10.127146",
+    "longitud": "-66.777809",
+    "estado": "MIRANDA"
+  },
+  {
+    "agencia_id": 266,
+    "estado_id": 22,
+    "nombre": "ZOOM ORINOKIA MALL",
+    "codigo": "1809",
+    "direccion": "URB. ALTA VISTA, AV. PROLONGACION, AV. LAS AMERICAS, C.C. ORINOKIA MALL NIVEL PLAZA, SANTO TOME LOCAL PB-04.",
+    "latitud": "8.292180",
+    "longitud": "-62.743040",
+    "estado": "BOLIVAR"
+  },
+  {
+    "agencia_id": 267,
+    "estado_id": 13,
+    "nombre": "ZOOM PALMIRA",
+    "codigo": "1757",
+    "direccion": "SECTOR PALMIRA, CARRETERA 5, LOCAL NRO. 2.",
+    "latitud": "7.839400",
+    "longitud": "-72.227300",
+    "estado": "TACHIRA"
+  },
+  {
+    "agencia_id": 268,
+    "estado_id": 13,
+    "nombre": "ZOOM PARAMILLO",
+    "codigo": "3464",
+    "direccion": "AV 4 EDIF MINICENTRO PARAMILLO PISO 3 LOCAL 1 ETAPA,ZONA INDUSTRIAL PARAMILLO",
+    "latitud": "7.800434",
+    "longitud": "-72.206541",
+    "estado": "TACHIRA"
+  },
+  {
+    "agencia_id": 269,
+    "estado_id": 2,
+    "nombre": "ZOOM PARQUE CARACAS",
+    "codigo": "2402",
+    "direccion": "AV. ESTE NRO. 2, CON CALLE SUR NRO. 21, C.C. PARQUE CARACAS, NIVEL PB, LOCAL NRO. 36..",
+    "latitud": "10.503528",
+    "longitud": "-66.900458",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 270,
+    "estado_id": 16,
+    "nombre": "ZOOM PLAZA DE TOROS",
+    "codigo": "2068",
+    "direccion": "CALLE 52-A LOCAL NRO 1380000 URB LA TRINIDAD SECTOR PLAZA DE TORO.",
+    "latitud": "10.707150",
+    "longitud": "-71.638511",
+    "estado": "ZULIA"
+  },
+  {
+    "agencia_id": 271,
+    "estado_id": 2,
+    "nombre": "ZOOM PLAZA LAS AMERICAS",
+    "codigo": "4152",
+    "direccion": "AV RAUL LEONI CC PLAZA LAS AMERICAS NIVEL PB LOCAL 2 URB EL CAFETAL",
+    "latitud": "10.457980",
+    "longitud": "-66.828917",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 272,
+    "estado_id": 2,
+    "nombre": "ZOOM PLAZA MADARIAGA",
+    "codigo": "2704",
+    "direccion": "AV. LOS SAMANES, C.C. EURO, NIVEL PB, LOCAL NRO. 12.",
+    "latitud": "10.490583",
+    "longitud": "-66.924459",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 273,
+    "estado_id": 16,
+    "nombre": "ZOOM POMONA",
+    "codigo": "2718",
+    "direccion": "BARRIO SAN TRINO LA POMONA, CALLE NRO. 102 ENTRE AV. NRO. 18 Y CALLE NRO. 102A, LOCAL NRO. 18-26.",
+    "latitud": "10.637100",
+    "longitud": "-71.623700",
+    "estado": "ZULIA"
+  },
+  {
+    "agencia_id": 274,
+    "estado_id": 2,
+    "nombre": "ZOOM PRADOS DEL ESTE",
+    "codigo": "238",
+    "direccion": "AV. PPAL. DE PRADOS DEL ESTE. CTRO. COMERCIAL GALERIAS PRADOS DEL ESTE. NIVEL PA. LOCAL 39.",
+    "latitud": "10.449909",
+    "longitud": "-66.880577",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 275,
+    "estado_id": 2,
+    "nombre": "ZOOM PROPATRIA",
+    "codigo": "3952",
+    "direccion": "AV SIMON BOLIVAR CC PROPATRIA NIVEL 1 LOCAL A9 URB PROPATRIA",
+    "latitud": "10.504146",
+    "longitud": "-66.952899",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 276,
+    "estado_id": 4,
+    "nombre": "ZOOM PUEBLO NUEVO",
+    "codigo": "2590",
+    "direccion": "SECTOR PUEBLO NUEVO, AV. BOLIVAR CRUCE CON 1RO DE MAYO NRO. 41-D,",
+    "latitud": "9.911380",
+    "longitud": "-67.353600",
+    "estado": "GUARICO"
+  },
+  {
+    "agencia_id": 277,
+    "estado_id": 18,
+    "nombre": "ZOOM PUEBLO NUEVO NORTE",
+    "codigo": "2251",
+    "direccion": "CALLE 18 NORTE LOCAL NRO 04 SECTOR PUEBLO NUEVO NORTE",
+    "latitud": "8.896468",
+    "longitud": "-64.235532",
+    "estado": "ANZOATEGUI"
+  },
+  {
+    "agencia_id": 278,
+    "estado_id": 3,
+    "nombre": "ZOOM PUERTA MARAVEN",
+    "codigo": "1688",
+    "direccion": "URB. PUERTA MARAVEN, AV. OLLARVIDES, LOCAL NRO. 264.",
+    "latitud": "11.663400",
+    "longitud": "-70.193700",
+    "estado": "FALCON"
+  },
+  {
+    "agencia_id": 279,
+    "estado_id": 18,
+    "nombre": "ZOOM PUERTO PIRITU",
+    "codigo": "4077",
+    "direccion": "CALLE BOLIVAR CC ZEGHEN INVERSIONES GEORGINA NIVEL PB LOCAL 06, 08 Y 10,SECTOR CENTRO",
+    "latitud": "10.063333",
+    "longitud": "-65.045129",
+    "estado": "ANZOATEGUI"
+  },
+  {
+    "agencia_id": 280,
+    "estado_id": 9,
+    "nombre": "ZOOM PUNTA DE MATA",
+    "codigo": "1581",
+    "direccion": "AV BOLIVAR CC JUPITER CENTER NIVEL PB LOCAL 10,SECTOR CENTRO PUNTA DE MATA",
+    "latitud": "9.689287",
+    "longitud": "-63.611141",
+    "estado": "MONAGAS"
+  },
+  {
+    "agencia_id": 281,
+    "estado_id": 6,
+    "nombre": "ZOOM QUIBOR",
+    "codigo": "4118",
+    "direccion": "AV 5 ENTRE CALLES 12 Y 13 LOCAL NRO S/N",
+    "latitud": "9.922420",
+    "longitud": "-69.621500",
+    "estado": "LARA"
+  },
+  {
+    "agencia_id": 282,
+    "estado_id": 2,
+    "nombre": "ZOOM QUINTA CRESPO",
+    "codigo": "1108",
+    "direccion": "AV. BARALT ESQ EL CARMEN C.C. DORAL BARALT NIVEL 1 LOCAL 30. QUINTA CRESPO.",
+    "latitud": "10.497300",
+    "longitud": "-66.917400",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 283,
+    "estado_id": 10,
+    "nombre": "ZOOM RATTAN PLAZA",
+    "codigo": "1527",
+    "direccion": "AV JOVITO VILLALBA CC RATTAN HYPERPLAZA NIVEL MEZZANINA LOCAL E-43,SECTOR PLAYA EL ANGEL",
+    "latitud": "10.992313",
+    "longitud": "-63.826555",
+    "estado": "NUEVA ESPARTA"
+  },
+  {
+    "agencia_id": 284,
+    "estado_id": 13,
+    "nombre": "ZOOM RUBIO",
+    "codigo": "1104",
+    "direccion": "CALLE 14 ENTRE AV. 8 Y 9, CENTRO COMERCIAL DONA IVONNE, P.B. LOCAL 6 Y 7",
+    "latitud": "7.699900",
+    "longitud": "-72.350000",
+    "estado": "TACHIRA"
+  },
+  {
+    "agencia_id": 285,
+    "estado_id": 8,
+    "nombre": "ZOOM SAN ANTONIO",
+    "codigo": "1020",
+    "direccion": "CARRETERA PANAMERICANA KM 16 BAJANDO POR EL DISTRIBUIDOR DE LA ROSALEDA (SENTIDO CARACAS) A MANO DERECHA 100 MTS ANTES DEL C.C. LA CASONA I, LOCAL ZOOM.",
+    "latitud": "10.369846",
+    "longitud": "-66.984889",
+    "estado": "MIRANDA"
+  },
+  {
+    "agencia_id": 286,
+    "estado_id": 21,
+    "nombre": "ZOOM SANTA BARBARA",
+    "codigo": "1169",
+    "direccion": "SECTOR PUEBLO VIEJO, CARRERA 5, ENTRE CALLES 9 Y 10.",
+    "latitud": "7.812000",
+    "longitud": "-71.178700",
+    "estado": "BARINAS"
+  },
+  {
+    "agencia_id": 287,
+    "estado_id": 16,
+    "nombre": "ZOOM SANTA BARBARA DEL ZULIA",
+    "codigo": "4149",
+    "direccion": "AV BOLIVAR CC DORADO NIVEL P/B LOCAL 02",
+    "latitud": "9.000042",
+    "longitud": "-71.909905",
+    "estado": "ZULIA"
+  },
+  {
+    "agencia_id": 288,
+    "estado_id": 20,
+    "nombre": "ZOOM SANTA CRUZ DE ARAGUA",
+    "codigo": "3966",
+    "direccion": "AV 02 CASA PARCELA B-17-A Y B-17-B ZONA INDUSTRIAL SANTA CRUZ",
+    "latitud": "10.177606",
+    "longitud": "-67.497389",
+    "estado": "ARAGUA"
+  },
+  {
+    "agencia_id": 289,
+    "estado_id": 2,
+    "nombre": "ZOOM SANTA FE",
+    "codigo": "142",
+    "direccion": "AV. JOSE MARIA VARGAS. CTRO COMERCIAL SANTA FE. NIVEL C-3. LOCAL 68, URB SANTA FE NORTE.",
+    "latitud": "10.466564",
+    "longitud": "-66.871340",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 290,
+    "estado_id": 16,
+    "nombre": "ZOOM SANTA RITA",
+    "codigo": "704",
+    "direccion": "AV 8 ENTRE CALLLES 66A Y 67 EDIF EL GLOBO PISO PB LOCAL 3,SECTOR SANTA RITA",
+    "latitud": "10.664000",
+    "longitud": "-71.616800",
+    "estado": "ZULIA"
+  },
+  {
+    "agencia_id": 291,
+    "estado_id": 2,
+    "nombre": "ZOOM SANTA ROSALIA",
+    "codigo": "2984",
+    "direccion": "ESQ. MUERTO A PELAEZ, CASA NRO.  116,  ZONA PARROQUIA SANTA ROSALIA.",
+    "latitud": "10.498413",
+    "longitud": "-66.914296",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 292,
+    "estado_id": 13,
+    "nombre": "ZOOM SANTA TERESA",
+    "codigo": "4069",
+    "direccion": "CALLE PRINCIPAL CC CASA GRANDE NIVEL PLANTA BAJA LOCAL S/N, SECTOR SANTA TERESA",
+    "latitud": "7.797110",
+    "longitud": "-72.220690",
+    "estado": "TACHIRA"
+  },
+  {
+    "agencia_id": 293,
+    "estado_id": 8,
+    "nombre": "ZOOM SANTA TERESA DEL TUY",
+    "codigo": "1247",
+    "direccion": "CALLE SUCRE CON AV. AYACUCHO, LOCAL C. NRO. 3.",
+    "latitud": "10.233800",
+    "longitud": "-66.666700",
+    "estado": "MIRANDA"
+  },
+  {
+    "agencia_id": 294,
+    "estado_id": 23,
+    "nombre": "ZOOM SECTOR ROJAS QUEIPO",
+    "codigo": "1050",
+    "direccion": "CALLE ROJAS QUEIPO,NRO 102-25, LOCAL NRO 02,CON ANDRES ELOY BLANCO.",
+    "latitud": "10.198468",
+    "longitud": "-68.008933",
+    "estado": "CARABOBO"
+  },
+  {
+    "agencia_id": 295,
+    "estado_id": 20,
+    "nombre": "ZOOM SECTOR SAN MIGUEL",
+    "codigo": "720",
+    "direccion": "AV. MARINO SUR, CENTRO EMPRESARIAL UNIARAGUA, PLANTA BAJA, LOCAL 1.",
+    "latitud": "10.237728",
+    "longitud": "-67.604418",
+    "estado": "ARAGUA"
+  },
+  {
+    "agencia_id": 296,
+    "estado_id": 16,
+    "nombre": "ZOOM SIERRA MAESTRA",
+    "codigo": "3269",
+    "direccion": "CALLE 13 CC OASIS NIVEL PB LOCAL L-3 BARRIO SIERRA MAESTRA SIERRA MAESTRA",
+    "latitud": "10.586248",
+    "longitud": "-71.635540",
+    "estado": "ZULIA"
+  },
+  {
+    "agencia_id": 297,
+    "estado_id": 21,
+    "nombre": "ZOOM SOCOPO",
+    "codigo": "3096",
+    "direccion": "CR 9 ENTRE CALLES 3 Y 4 CC GALERIAS NIVEL PB LOCAL NRO 2 SECTOR CENTRO SOCOPO",
+    "latitud": "8.236310",
+    "longitud": "-70.817480",
+    "estado": "BARINAS"
+  },
+  {
+    "agencia_id": 298,
+    "estado_id": 20,
+    "nombre": "ZOOM TACITA DE PLATA",
+    "codigo": "4140",
+    "direccion": "AV BERMUDEZ CRUCE CON AVENIDA 10 DE DICIEMBRE EDIF DEL PINTO PISO LOCAL B",
+    "latitud": "10.246379",
+    "longitud": "-67.593443",
+    "estado": "ARAGUA"
+  },
+  {
+    "agencia_id": 299,
+    "estado_id": 13,
+    "nombre": "ZOOM TARIBA",
+    "codigo": "4020",
+    "direccion": "CALLE 6 CON CARRERA 6 CASA NRO 5-70, SECTOR TARIBA",
+    "latitud": "7.819513",
+    "longitud": "-72.224413",
+    "estado": "TACHIRA"
+  },
+  {
+    "agencia_id": 300,
+    "estado_id": 23,
+    "nombre": "ZOOM TEATRO MUNICIPAL DE VALENCIA",
+    "codigo": "1319",
+    "direccion": "CALLE COLOMBIA CON SOUBLETTE, CENTRO COMERCIAL FIERA MOSCA, NIVEL PB., LOCAL 2.",
+    "latitud": "10.181810",
+    "longitud": "-68.007210",
+    "estado": "CARABOBO"
+  },
+  {
+    "agencia_id": 301,
+    "estado_id": 9,
+    "nombre": "ZOOM TEMBLADOR",
+    "codigo": "4119",
+    "direccion": "CALLE SUCRE CASA NRO S/N SECTOR LA PLAZA TEMBLADOR",
+    "latitud": "9.004633",
+    "longitud": "-62.638338",
+    "estado": "MONAGAS"
+  },
+  {
+    "agencia_id": 302,
+    "estado_id": 18,
+    "nombre": "ZOOM TERMINAL PASAJEROS",
+    "codigo": "4120",
+    "direccion": "CALLE DEMOCRACIA CRUCE CON CALLE JUNCAL, LOCAL DENTRO DEL TERMINAL DE PASAJEROS DE PUERTO LA CRUZ NRO LOCAL 71 PASILLO 6.",
+    "latitud": "10.217598",
+    "longitud": "-64.634968",
+    "estado": "ANZOATEGUI"
+  },
+  {
+    "agencia_id": 303,
+    "estado_id": 9,
+    "nombre": "ZOOM TIPURO",
+    "codigo": "2944",
+    "direccion": "AV PRINCIPAL DE TIPURO, CENTRO COMERCIAL TIPURO NORTE (SAMBILITO).LOCAL PASILLO MIRAFLORES NRO 53, URB TIPURO",
+    "latitud": "9.781159",
+    "longitud": "-63.194863",
+    "estado": "MONAGAS"
+  },
+  {
+    "agencia_id": 304,
+    "estado_id": 22,
+    "nombre": "ZOOM TORRE CAURA",
+    "codigo": "3171",
+    "direccion": "CTRA TOCOMA, CON CALLE CAURA CC C.C TORRE CAURA NIVEL SOTANO LOCAL 4 SECTOR ALTA VISTA",
+    "latitud": "8.294999",
+    "longitud": "-62.728309",
+    "estado": "BOLIVAR"
+  },
+  {
+    "agencia_id": 305,
+    "estado_id": 2,
+    "nombre": "ZOOM TORRE EXA",
+    "codigo": "4003",
+    "direccion": "AV LIBERTADOR CC EXA NIVEL PB LOCAL 17 URB EL ROSAL",
+    "latitud": "10.490300",
+    "longitud": "-66.859300",
+    "estado": "DISTRITO CAPITAL"
+  },
+  {
+    "agencia_id": 306,
+    "estado_id": 7,
+    "nombre": "ZOOM TOVAR",
+    "codigo": "4017",
+    "direccion": "AV CRISTOBAL MENDOZA EDIF ECHEVERRIA PISO 1 LOCAL 3 Y 4",
+    "latitud": "8.329005",
+    "longitud": "-71.753288",
+    "estado": "MERIDA"
+  },
+  {
+    "agencia_id": 307,
+    "estado_id": 14,
+    "nombre": "ZOOM TRUJILLO",
+    "codigo": "4115",
+    "direccion": "AV BOLIVAR CENTRO COMERCIAL SOLUNTO, NIVEL 1 LOCAL 1, CENTRO DE TRUJILLO",
+    "latitud": "9.364750",
+    "longitud": "-70.437888",
+    "estado": "TRUJILLO"
+  },
+  {
+    "agencia_id": 308,
+    "estado_id": 26,
+    "nombre": "ZOOM TUCUPITA CENTRO",
+    "codigo": "1159",
+    "direccion": "CALLE LA PAZ LOCAL NRO S/N SECTOR CENTRO TUCUPITA",
+    "latitud": "9.059367",
+    "longitud": "-62.052411",
+    "estado": "DELTA AMACURO"
+  },
+  {
+    "agencia_id": 309,
+    "estado_id": 22,
+    "nombre": "ZOOM TUMEREMO CALLE BOLIVAR",
+    "codigo": "4096",
+    "direccion": "CALLE BOLIVAR CON CRUCE TRONCAL 10,EDIF ARABITO PIZZA LOCAL S/N",
+    "latitud": "7.180890",
+    "longitud": "-61.302350",
+    "estado": "BOLIVAR"
+  },
+  {
+    "agencia_id": 310,
+    "estado_id": 11,
+    "nombre": "ZOOM TUREN",
+    "codigo": "274",
+    "direccion": "AV. RICARDO PEREZ ZAMBRANO, EDIF. AGOSI. LOCAL NRO. 1. VILLA BRUZUAL",
+    "latitud": "9.328700",
+    "longitud": "-69.120400",
+    "estado": "PORTUGUESA"
+  },
+  {
+    "agencia_id": 311,
+    "estado_id": 20,
+    "nombre": "ZOOM TURMERO CENTRO",
+    "codigo": "2351",
+    "direccion": "SECTOR CENTRO TURMERO, CALLE URDANETA CASA NRO. 16 Y NRO. 1.",
+    "latitud": "10.226208",
+    "longitud": "-67.474255",
+    "estado": "ARAGUA"
+  },
+  {
+    "agencia_id": 312,
+    "estado_id": 20,
+    "nombre": "ZOOM TURMERO ENCRUCIJADA",
+    "codigo": "1221",
+    "direccion": "CARRETERA NACIONAL TURMERO - CAGUA CENTRO COMERCIAL PASEO LOS LAURELES NIVEL PB LOCAL 4. URB. LA ENCRUCIJADA.",
+    "latitud": "10.202740",
+    "longitud": "-67.471790",
+    "estado": "ARAGUA"
+  },
+  {
+    "agencia_id": 313,
+    "estado_id": 20,
+    "nombre": "ZOOM TURMERO INTERCOMUNAL",
+    "codigo": "2485",
+    "direccion": "AV INTERCOMUNAL MARACAY-TURMERO CC INTERCOMUNAL CENTER NIVEL LOCAL 1-7,SECTOR LA MORITA",
+    "latitud": "10.231673",
+    "longitud": "-67.548332",
+    "estado": "ARAGUA"
+  },
+  {
+    "agencia_id": 314,
+    "estado_id": 9,
+    "nombre": "ZOOM UGARTE PELAYO",
+    "codigo": "696",
+    "direccion": "AV. ALIRIO UGARTE PELAYO, EDIFICIO VESPA, LOCAL 6, SECTOR BAJO GUARAPICHE.",
+    "latitud": "9.758037",
+    "longitud": "-63.186397",
+    "estado": "MONAGAS"
+  },
+  {
+    "agencia_id": 315,
+    "estado_id": 22,
+    "nombre": "ZOOM UPATA  CC DATIL",
+    "codigo": "4015",
+    "direccion": "AV BICENTENARIO DIAGONAL CALLE 19 DE ABRIL CC EL DATIL NIVEL PB LOCAL S/N SECTOR CENTRO",
+    "latitud": "8.011440",
+    "longitud": "-6.224330",
+    "estado": "BOLIVAR"
+  },
+  {
+    "agencia_id": 316,
+    "estado_id": 13,
+    "nombre": "ZOOM UREÑA",
+    "codigo": "914",
+    "direccion": "CALLE 5, BARRIO LA GOAJIRA, CARRETERA 5, LOCAL 01.",
+    "latitud": "7.814600",
+    "longitud": "-72.440200",
+    "estado": "TACHIRA"
+  },
+  {
+    "agencia_id": 317,
+    "estado_id": 14,
+    "nombre": "ZOOM VALERA CENTRO",
+    "codigo": "4079",
+    "direccion": "CALLE 6, ENTRE AVENIDAS 10 Y 11 CC CANAIMA NIVEL P/B LOCAL L-20",
+    "latitud": "9.315660",
+    "longitud": "-70.607630",
+    "estado": "TRUJILLO"
+  },
+  {
+    "agencia_id": 318,
+    "estado_id": 21,
+    "nombre": "ZOOM VARYNÁ ALTO BARINAS SUR",
+    "codigo": "1904",
+    "direccion": "AV. VENEZUELA CON CALLE JUSTICIA LOCAL, NRO. 127 B-3, URB, ALTO BARINAS SUR BARINAS",
+    "latitud": "8.611100",
+    "longitud": "-70.244100",
+    "estado": "BARINAS"
+  },
+  {
+    "agencia_id": 319,
+    "estado_id": 18,
+    "nombre": "ZOOM VENECIA",
+    "codigo": "4090",
+    "direccion": "AV NUEVA ESPARTA C.C NASCAR NIVEL PB LOCAL 06, SECTOR VENECIA",
+    "latitud": "10.184696",
+    "longitud": "-64.662179",
+    "estado": "ANZOATEGUI"
+  },
+  {
+    "agencia_id": 320,
+    "estado_id": 22,
+    "nombre": "ZOOM VILLA   AFRICANA",
+    "codigo": "705",
+    "direccion": "C.C GIGIA LOCAL 1, URB VILLA AFRICANA ENTRE VIA ITALIA Y CALLE EGIPTO, DE LA CIUDAD DE PUERTO ORDAZ, MUNICIPIO",
+    "latitud": "8.281199",
+    "longitud": "-62.716777",
+    "estado": "BOLIVAR"
+  },
+  {
+    "agencia_id": 321,
+    "estado_id": 20,
+    "nombre": "ZOOM VILLA DE CURA",
+    "codigo": "1638",
+    "direccion": "CALLE SUCRE CON ADUANA, C.C. VILLA HERMOSA, LOCAL 39.",
+    "latitud": "10.030000",
+    "longitud": "-67.480000",
+    "estado": "ARAGUA"
+  }
+]
