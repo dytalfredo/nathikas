@@ -5,14 +5,15 @@ import { useCartStore } from '../store/cartStore';
 import type { Product } from '../store/cartStore';
 import { venezuelaData } from '../data/venezuela';
 import { getAgenciesForCity } from '../data/agencies';
-import mrwData from '../data/agenciasMrw.json';
-import { driver } from "driver.js";
+import mrwData from '../data/agenciasMrw2.json';
+import zoomData from '../data/zoom_venezuela_filtrado.json';
+// driver.js import moved to dynamic import to avoid SSR issues
 import "driver.js/dist/driver.css";
 import { db } from '../lib/firebase';
 import { collection, onSnapshot, addDoc, serverTimestamp, doc, updateDoc, writeBatch } from 'firebase/firestore';
 import { useAuthStore } from '../store/authStore';
 import { useAlertStore } from '../store/alertStore';
-import { loginAnonymously, loginWithGoogle, syncUserProfile } from '../lib/auth-service';
+import { loginAnonymously, loginWithGoogle, logout, syncUserProfile } from '../lib/auth-service';
 import { requestNotificationPermission } from '../lib/notification-service';
 import { getMessagingInstance } from '../lib/firebase';
 import { Bell } from 'lucide-react';
@@ -33,7 +34,7 @@ export default function OrderFlow({ data }: Props) {
     const [showSuccess, setShowSuccess] = useState(false);
 
     const [selectedState, setSelectedState] = useState('');
-    const [selectedCity, setSelectedCity] = useState('');
+    // const [selectedCity, setSelectedCity] = useState(''); // Removed as per new requirement
     const [shippingMethod, setShippingMethod] = useState('');
     const [selectedAgency, setSelectedAgency] = useState('');
     const [userName, setUserName] = useState('');
@@ -125,46 +126,6 @@ export default function OrderFlow({ data }: Props) {
         };
     }, []);
 
-    // Helper to find correct State name from veneuzelaData based on MRW key
-    const getStateNameFromMrwKey = (mrwKey: string) => {
-        const cleanName = mrwKey.replace('ESTADO ', ''); // "ARAGUA" or "DISTRITO CAPITAL"
-        // Find match in venezuelaData
-        const match = venezuelaData.find(d => normalizeText(d.estado) === cleanName);
-        return match ? match.estado : cleanName; // Fail gracefully to just the name
-    };
-
-    const handleMrwAgencyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const agencyCode = e.target.value;
-        setSelectedAgency(agencyCode);
-
-        if (!agencyCode) return;
-
-        // Find the agency and its parent state key
-        let foundAgency: any = null;
-        let foundStateKey: string = '';
-
-        Object.entries(mrwData).forEach(([key, agencies]) => {
-            const match = (agencies as any[]).find(a => a.codigo === agencyCode);
-            if (match) {
-                foundAgency = match;
-                foundStateKey = key;
-            }
-        });
-
-        if (foundAgency && foundStateKey) {
-            // Auto-fill State and City
-            const stateName = getStateNameFromMrwKey(foundStateKey);
-            setSelectedState(stateName);
-            setSelectedCity(foundAgency.ciudad); // MRW data has city name, usually uppercase. 
-            // Might need casing adjustment if we want to be perfect, but input is text/select. 
-            // If strictly select, we'd need to match filteredCities. 
-            // For now assuming existing flow handles value setting fine even if not in options perfectly (it will verify later).
-        }
-    };
-
-
-    const filteredCities = venezuelaData.find(d => d.estado === selectedState)?.ciudades || [];
-
     // Normalize text helper
     const normalizeText = (text: string) => text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
 
@@ -173,29 +134,17 @@ export default function OrderFlow({ data }: Props) {
 
         if (shippingMethod === 'MRW') {
             const normalizedState = normalizeText(selectedState);
-            // Construct key: DISTRITO CAPITAL or ESTADO X
-            const key = normalizedState === 'DISTRITO CAPITAL' ? 'DISTRITO CAPITAL' : `ESTADO ${normalizedState}`;
-            // Handle some edge cases if needed, e.g., LA GUAIRA Might be just "LA GUAIRA" or "ESTADO LA GUAIRA"
-            // Checking logic:
-            let agencies = (mrwData as any)[key];
-            if (!agencies) {
-                // Fallback for names that might not match "ESTADO " prefix exactly in filtered keys
-                const foundKey = Object.keys(mrwData).find(k => k.includes(normalizedState));
-                if (foundKey) agencies = (mrwData as any)[foundKey];
-            }
 
-            if (!agencies) return [];
-
-            // Filter by city if selected, otherwise show all in state (or empty if filteredCities logic requires it)
-            // MRW JSON has 'ciudad' field.
-            if (selectedCity) {
-                const normalizedCity = normalizeText(selectedCity);
-                return agencies.filter((a: any) => normalizeText(a.ciudad) === normalizedCity);
-            }
-            return agencies;
+            // Filter flat list by 'estado'
+            return (mrwData as any[]).filter((a: any) => normalizeText(a.estado) === normalizedState);
         }
 
-        return selectedCity ? getAgenciesForCity(shippingMethod, selectedCity) : [];
+        if (shippingMethod === 'Zoom') {
+            const normalizedState = normalizeText(selectedState);
+            return (zoomData as any[]).filter((a: any) => normalizeText(a.estado) === normalizedState);
+        }
+
+        return []; // Simple fallback for now
     })();
 
     // Derived state
@@ -214,33 +163,18 @@ export default function OrderFlow({ data }: Props) {
 
     // Auto-fill address when agency changes (MRW)
     // Auto-fill address when agency changes (MRW)
+    // Auto-fill address when agency changes (MRW)
     useEffect(() => {
         if (shippingMethod === 'MRW' && selectedAgency) {
-            // Need to find agency across ALL states if we don't rely on availableAgencies being set first
-            let agency: any = null;
-
-            // Try finding in available first (optimization)
-            if (availableAgencies.length > 0) {
-                agency = availableAgencies.find((a: any) => (a.codigo || a.id) === selectedAgency);
-            }
-
-            // If not found (e.g. loaded from top-level list), search everywhere
-            if (!agency) {
-                for (const agencies of Object.values(mrwData)) {
-                    const found = (agencies as any[]).find(a => a.codigo === selectedAgency);
-                    if (found) {
-                        agency = found;
-                        break;
-                    }
-                }
-            }
+            const agency = (mrwData as any[]).find(a => a.codigo === selectedAgency);
 
             if (agency) {
-                const newAddress = `Agencia MRW ${agency.codigo} - ${agency.nombre}\n${agency.direccion}\n${agency.ciudad}${selectedState ? `, ${selectedState}` : ''}\nTelf: ${agency.telefonos.join(', ')}`;
+                // Format: Agencia MRW CODE - NAME \n ADDRESS \n STATE
+                const newAddress = `Agencia MRW ${agency.codigo} - ${agency.nombre}\n${agency.direccion}\n${agency.estado}`;
                 setAddress(newAddress);
             }
         }
-    }, [selectedAgency, shippingMethod, selectedState]); // Removed availableAgencies dependency to avoid loops if that changes
+    }, [selectedAgency, shippingMethod]);
 
     // Calculate volume discount
     let discountPercent = 0;
@@ -267,7 +201,10 @@ export default function OrderFlow({ data }: Props) {
         }
     }, [step]);
 
-    const startTour = () => {
+    const startTour = async () => {
+        // Dynamically import driver.js to avoid SSR 'window is not defined' error
+        const { driver } = await import("driver.js");
+
         const wrapDesc = (textValue: string, imgNum: number) => `
             <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px;">
                 <img src="${(resources.recursos as any)[`r${imgNum}`]}" style="width: 100px; height: auto; margin-bottom: 5px;" class="animate-bounce-slow" />
@@ -340,7 +277,7 @@ export default function OrderFlow({ data }: Props) {
 
         // Shipping Info
         if (!selectedState) missingFields.push("Estado de Envío");
-        if (!selectedCity) missingFields.push("Ciudad de Envío");
+
         if (shippingMethod !== 'retiro' && !selectedAgency) missingFields.push("Agencia de Envío");
 
         // Payment Info (Specific to method)
@@ -393,7 +330,7 @@ export default function OrderFlow({ data }: Props) {
 
         message += `📍 *ENVÍO:*\n`;
         message += `- Estado: ${selectedState}\n`;
-        message += `- Ciudad: ${selectedCity}\n`;
+
         message += `- Método: ${shippingMethod}\n`;
         if (selectedAgency) {
             const agency = availableAgencies.find(a => a.id === selectedAgency);
@@ -466,7 +403,7 @@ export default function OrderFlow({ data }: Props) {
                     subtotal,
                     total,
                     selectedState,
-                    selectedCity,
+
                     shippingMethod,
                     selectedAgency,
                     paymentBank,
@@ -545,6 +482,15 @@ export default function OrderFlow({ data }: Props) {
         saveOrder();
     };
 
+    const handleAuthClick = () => {
+        if (user && !user.isAnonymous) {
+            logout();
+        } else {
+            // If anonymous or not logged in at all, try google login
+            handleGoogleLogin();
+        }
+    };
+
     const handleGoogleLogin = async () => {
         setIsSubmitting(true);
         try {
@@ -618,11 +564,35 @@ export default function OrderFlow({ data }: Props) {
     }, [user]);
 
     useEffect(() => {
-        // Short delay to ensure sections are rendered
-        const timer = setTimeout(() => {
-            startTour();
-        }, 800);
-        return () => clearTimeout(timer);
+        // Function to initiate tour safely
+        const initiateTour = () => {
+            // Check if user is logging in or interacting with auth
+            // The user mentioned: "si se activa el login no deberia lanzarse el helper de drive si aun no se ha salido de la pagina de loading"
+            // This logic already waits for loading screen to clear.
+            // If user clicks login immediately after loading, we might want to delay tour?
+            // For now, let's just solve the loading screen overlap.
+
+            // Short delay to ensure sections are rendered and visual stability
+            setTimeout(() => {
+                startTour();
+            }, 800);
+        };
+
+        const hasSeenLoading = sessionStorage.getItem('hasSeenLoadingScreen');
+        if (hasSeenLoading) {
+            initiateTour();
+        } else {
+            // Wait for loading screen to finish
+            const handleLoadingComplete = () => {
+                initiateTour();
+                window.removeEventListener('loading-completed', handleLoadingComplete);
+            };
+            window.addEventListener('loading-completed', handleLoadingComplete);
+
+            return () => {
+                window.removeEventListener('loading-completed', handleLoadingComplete);
+            };
+        }
     }, []);
 
     return (
@@ -1052,67 +1022,57 @@ export default function OrderFlow({ data }: Props) {
 
                                         {/* State Selection */}
                                         {shippingMethod && (
-                                            <div className="animate-fade-in mb-6">
-                                                <CustomSelect
-                                                    label="Estado"
-                                                    value={selectedState}
-                                                    onChange={(val) => {
-                                                        setSelectedState(val);
-                                                        setSelectedCity('');
-                                                        setSelectedAgency('');
-                                                    }}
-                                                    options={venezuelaData.map(s => ({ value: s.estado, label: s.estado }))}
-                                                    placeholder="Selecciona un Estado"
-                                                    searchable
-                                                />
-                                            </div>
+                                            <motion.div
+                                                initial={{ opacity: 0, height: 0 }}
+                                                animate={{ opacity: 1, height: "auto" }}
+                                                className="space-y-2"
+                                            >
+                                                <label className={labelClass}>Estado</label>
+                                                <div className="relative">
+                                                    <CustomSelect
+                                                        options={venezuelaData.map(s => s.estado).sort().map(state => ({ value: state, label: state }))}
+                                                        value={selectedState}
+                                                        onChange={(val) => {
+                                                            setSelectedState(val);
+                                                            setSelectedAgency('');
+                                                        }}
+                                                        placeholder="Selecciona tu Estado"
+                                                        searchPlaceholder="Buscar estado..."
+                                                        emptyMessage="Estado no encontrado"
+                                                    />
+                                                </div>
+                                            </motion.div>
                                         )}
 
-                                        {/* City Selection */}
+                                        {/* Agency Select - Shows after State */}
                                         {selectedState && (
-                                            <div className="animate-fade-in mb-6">
-                                                <CustomSelect
-                                                    label="Ciudad"
-                                                    value={selectedCity}
-                                                    onChange={(val) => {
-                                                        setSelectedCity(val);
-                                                        setSelectedAgency('');
-                                                    }}
-                                                    options={filteredCities.map(c => ({ value: c, label: c }))}
-                                                    placeholder="Selecciona una Ciudad"
-                                                    disabled={!selectedState}
-                                                    searchable
-                                                />
-                                            </div>
-                                        )}
-
-                                        {/* Agency Selection */}
-                                        {selectedCity && (
-                                            <div className="animate-fade-in mb-6">
-                                                <CustomSelect
-                                                    label={`Agencia ${shippingMethod}`}
-                                                    value={selectedAgency}
-                                                    onChange={(val) => setSelectedAgency(val)}
-                                                    options={availableAgencies.map((agency: any) => ({
-                                                        value: agency.id || agency.codigo,
-                                                        label: agency.codigo ? `${agency.codigo} - ${agency.name || agency.nombre}` : (agency.name || agency.nombre),
-                                                        description: agency.address || agency.direccion
-                                                    }))}
-                                                    placeholder={availableAgencies.length > 0 ? "Selecciona una Agencia" : "No hay agencias disponibles"}
-                                                    disabled={availableAgencies.length === 0}
-                                                    searchable
-                                                />
+                                            <motion.div
+                                                initial={{ opacity: 0, height: 0 }}
+                                                animate={{ opacity: 1, height: "auto" }}
+                                                className="space-y-2"
+                                            >
+                                                <label className={labelClass}>Agencia {shippingMethod}</label>
+                                                <div className="relative">
+                                                    <CustomSelect
+                                                        options={availableAgencies.map((a: any) => ({
+                                                            value: a.codigo,
+                                                            label: `${a.codigo} - ${a.nombre} (${a.direccion.substring(0, 30)}...)`
+                                                        }))}
+                                                        value={selectedAgency}
+                                                        onChange={setSelectedAgency}
+                                                        placeholder="Selecciona la Agencia"
+                                                        searchPlaceholder="Buscar agencia..."
+                                                        emptyMessage="No hay agencias disponibles en esta zona"
+                                                        disabled={availableAgencies.length === 0}
+                                                    />
+                                                </div>
                                                 {availableAgencies.length === 0 && (
-                                                    <p className="text-sm text-[#D91A2A] mt-2 font-medium">
-                                                        ⚠️ No hay agencias registradas en esta ciudad.
+                                                    <p className="text-sm text-red-500 mt-1">
+                                                        No encontramos agencias en este estado. Intenta otro.
                                                     </p>
                                                 )}
-                                            </div>
+                                            </motion.div>
                                         )}
-
-
-
-
                                         <div>
                                             <label className="block text-sm font-bold mb-1 text-gray-700">Dirección Exacta</label>
                                             <textarea

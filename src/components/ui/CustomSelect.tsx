@@ -19,6 +19,8 @@ interface CustomSelectProps {
     disabled?: boolean;
     searchable?: boolean;
     error?: string;
+    searchPlaceholder?: string;
+    emptyMessage?: string;
 }
 
 export function CustomSelect({
@@ -29,7 +31,9 @@ export function CustomSelect({
     label,
     disabled = false,
     searchable = false,
-    error
+    error,
+    searchPlaceholder = "Buscar...",
+    emptyMessage = "No se encontraron resultados"
 }: CustomSelectProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
@@ -71,7 +75,7 @@ export function CustomSelect({
             <div
                 onClick={() => !disabled && setIsOpen(!isOpen)}
                 className={`w-full px-4 py-3 rounded-xl border-2 bg-white flex items-center justify-between cursor-pointer transition-all ${error ? 'border-red-500' :
-                        isOpen ? 'border-[#F2A900] ring-2 ring-[#F2A900]/20' : 'border-[#F2A900]/30 hover:border-[#F2A900]'
+                    isOpen ? 'border-[#F2A900] ring-2 ring-[#F2A900]/20' : 'border-[#F2A900]/30 hover:border-[#F2A900]'
                     }`}
             >
                 <span className={`block truncate ${!selectedOption ? 'text-gray-400' : 'text-[#3E2723] font-medium'}`}>
@@ -98,7 +102,7 @@ export function CustomSelect({
                                 <input
                                     type="text"
                                     className="w-full bg-transparent outline-none text-sm text-[#3E2723] placeholder:text-gray-400"
-                                    placeholder="Buscar..."
+                                    placeholder={searchPlaceholder}
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                     autoFocus
@@ -143,7 +147,7 @@ export function CustomSelect({
                             ))}
                             {filteredOptions.length === 0 && (
                                 <div className="p-4 text-center text-gray-400 text-sm">
-                                    No se encontraron resultados
+                                    {emptyMessage}
                                 </div>
                             )}
                         </div>

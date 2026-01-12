@@ -30,7 +30,7 @@ export default function HeroSection({ scrollToStore }: { scrollToStore: () => vo
         <section
             className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-cover bg-center"
             style={{
-                backgroundImage: `url('${window.innerWidth < 768 ? resources.backgrounds.heroMobile : resources.backgrounds.heroDesktop}')`
+                backgroundImage: `url('${(typeof window !== 'undefined' && window.innerWidth < 768) ? resources.backgrounds.heroMobile : resources.backgrounds.heroDesktop}')`
             }}
         >
             {/* Gummy Rain Particles (Layered) */}

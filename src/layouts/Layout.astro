@@ -40,9 +40,44 @@ const { title, showLoading = true, enablePWA = false } = Astro.props;
         }
     </head>
     <body class="bg-[#FDF6E3] text-[#3E2723] min-h-screen relative">
+        <!-- Static Loader for SSR (prevents FOUC) -->
+        <div
+            id="static-loader"
+            class="fixed inset-0 z-[20] bg-[#FDF6E3] flex flex-col items-center justify-center p-4 overflow-hidden gap-8 transition-opacity duration-500"
+        >
+            <div
+                class="absolute inset-0 opacity-10 pointer-events-none"
+                style="background-image: url('/recursos/papel-picado-bottom.png'); background-size: cover;"
+            >
+            </div>
+            <div
+                class="w-64 h-64 flex items-center justify-center flex-none relative"
+            >
+                <div
+                    class="w-16 h-16"
+                    style="background-image: url('/images/AnimacionLoginSprite.png'); background-size: 512px 64px; background-repeat: no-repeat; transform: scale(4);"
+                >
+                </div>
+            </div>
+            <h1
+                class="text-3xl md:text-5xl font-heading text-[#D91A2A] text-center drop-shadow-md z-10 font-bold"
+            >
+                Gomitas Enchiladas
+            </h1>
+            <!-- Placeholder for loading bar -->
+            <div
+                class="w-64 h-4 bg-gray-200 rounded-full overflow-hidden border-2 border-[#D91A2A]/20 flex-none z-10"
+            >
+                <div class="h-full bg-[#F2A900] w-0"></div>
+            </div>
+        </div>
+
         <script is:inline>
-            // Anti-flash script: hide content immediately if loading screen should show
-            if (!sessionStorage.getItem("hasSeenLoadingScreen")) {
+            // Immediately check if we should even show the loader
+            if (sessionStorage.getItem("hasSeenLoadingScreen")) {
+                const loader = document.getElementById("static-loader");
+                if (loader) loader.style.display = "none";
+            } else {
                 document.documentElement.classList.add("app-loading");
             }
         </script>

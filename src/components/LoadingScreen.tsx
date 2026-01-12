@@ -9,6 +9,17 @@ export default function LoadingScreen() {
     const handleEnter = () => {
         sessionStorage.setItem('hasSeenLoadingScreen', 'true');
         document.documentElement.classList.remove('app-loading');
+
+        // Remove static loader if it exists
+        const staticLoader = document.getElementById('static-loader');
+        if (staticLoader) {
+            staticLoader.style.opacity = '0';
+            setTimeout(() => staticLoader.remove(), 500);
+        }
+
+        // Dispatch event for other components to know loading is done
+        window.dispatchEvent(new CustomEvent('loading-completed'));
+
         setIsVisible(false);
     };
 
@@ -17,8 +28,26 @@ export default function LoadingScreen() {
         const hasSeen = sessionStorage.getItem('hasSeenLoadingScreen');
         if (hasSeen) {
             document.documentElement.classList.remove('app-loading');
+            // Remove static loader immediately if already seen
+            const staticLoader = document.getElementById('static-loader');
+            if (staticLoader) staticLoader.remove();
+
             setIsVisible(false);
             return;
+        } else {
+            // If we are showing the loader, we can hide the static one now that React has hydrated 
+            // BUT only if we want the React one to take over. 
+            // Actually, the static one looks identical (mostly), so we can just let React overlay it.
+            // OR better: remove static loader as soon as React mounts to let React handle animations?
+            // No, that might cause a flicker. Best is to keep static loader until we are sure React is rendered.
+            // Since this component uses AnimatePresence and is visible, it will cover the static loader.
+            // We can safely remove the static loader now to avoid duplicate DOM elements, 
+            // but let's do it gently or just wait until exit.
+
+            // Strategy: Let static loader stay until User clicks Enter, OR remove/hide it now if React is perfectly aligned.
+            // Safest: Hide static loader immediately upon mount to prevent double-rendering artifacts if alignment is off.
+            const staticLoader = document.getElementById('static-loader');
+            if (staticLoader) staticLoader.style.display = 'none';
         }
 
         if (isVisible) {
