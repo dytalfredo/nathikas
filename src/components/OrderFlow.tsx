@@ -622,7 +622,7 @@ export default function OrderFlow({ data }: Props) {
                 </div>
                 <div className="flex items-center gap-3">
                     {/* Notification Request Button */}
-                    {hasMessaging && typeof window !== 'undefined' && Notification.permission !== 'granted' && user && !user.isAnonymous && (
+                    {hasMessaging && typeof window !== 'undefined' && Notification.permission !== 'granted' && user && (
                         <button
                             onClick={() => user.uid && requestNotificationPermission(user.uid)}
                             className="w-10 h-10 flex items-center justify-center text-[#F2A900] hover:bg-[#FDF6E3] hover:shadow-md rounded-full transition-all"
@@ -647,7 +647,7 @@ export default function OrderFlow({ data }: Props) {
                             </>
                         ) : (
                             <>
-                                <img src={resources.ui.userPlaceholder} alt="" className="w-4 h-4 sm:w-5 sm:h-5 object-contain filter brightness-0 invert" />
+                                <User size={16} className="text-white" />
                                 <span className="hidden sm:inline">Entrar</span>
                             </>
                         )}
