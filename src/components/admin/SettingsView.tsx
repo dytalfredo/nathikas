@@ -190,33 +190,27 @@ export default function SettingsView() {
 
         setIsCreatingUser(true);
         try {
-            const firebaseConfig = {
-                apiKey: import.meta.env.PUBLIC_FIREBASE_API_KEY,
-                authDomain: import.meta.env.PUBLIC_FIREBASE_AUTH_DOMAIN,
-                projectId: import.meta.env.PUBLIC_FIREBASE_PROJECT_ID,
-                storageBucket: import.meta.env.PUBLIC_FIREBASE_STORAGE_BUCKET,
-                messagingSenderId: import.meta.env.PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-                appId: import.meta.env.PUBLIC_FIREBASE_APP_ID
-            };
-
-            const { initializeApp, deleteApp } = await import('firebase/app');
-            const { getAuth, createUserWithEmailAndPassword } = await import('firebase/auth');
-
-            const secondaryApp = initializeApp(firebaseConfig, "Secondary");
-            const secondaryAuth = getAuth(secondaryApp);
-
-            const userCredential = await createUserWithEmailAndPassword(secondaryAuth, newUserEmail, newUserPassword);
-            const uid = userCredential.user.uid;
-
-            await setDoc(doc(db, "users", uid), {
-                email: newUserEmail,
-                role: newUserRole,
-                name: newUserEmail.split('@')[0],
-                createdAt: new Date(),
-                isAnonymous: false
+            // Llamamos a la función Serverless para crear el usuario con privilegios de administrador
+            // Esto evita problemas de permisos de Firestore y la necesidad de "Secondary Apps" en el cliente
+            const response = await fetch('/.netlify/functions/create_user', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: newUserEmail,
+                    password: newUserPassword,
+                    role: newUserRole,
+                    name: newUserEmail.split('@')[0]
+                })
             });
 
-            await deleteApp(secondaryApp);
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Error desconocido al crear usuario.');
+            }
+
             showAlert("¡Éxito!", `Usuario ${newUserEmail} creado con rol ${newUserRole}`, "success");
             setNewUserEmail('');
             setNewUserPassword('');
