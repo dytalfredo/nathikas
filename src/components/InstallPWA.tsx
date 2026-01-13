@@ -1,50 +1,64 @@
 import { useState, useEffect } from 'react';
 import { Download } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuthStore } from '../store/authStore';
+import { requestNotificationPermission } from '../lib/notification-service';
 
 export default function InstallPWA() {
-    const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+    const { user } = useAuthStore();
     const [isIOS, setIsIOS] = useState(false);
     const [showIOSPrompt, setShowIOSPrompt] = useState(false);
 
     useEffect(() => {
-        // Check if iOS
+        console.log("🔍 [InstallPWA] Checking Notification requirements...");
+        console.log("🔍 [InstallPWA] User:", user ? `Logged in (UID: ${user.uid})` : "No user");
+        console.log("🔍 [InstallPWA] Window.Notification supported:", 'Notification' in window);
+        console.log("🔍 [InstallPWA] Current Permission:", 'Notification' in window ? Notification.permission : 'N/A');
+
+        // 1. Notifications: Auto-request on mount if user exists
+        if (user && 'Notification' in window && Notification.permission === 'default') {
+            console.log("🔍 [InstallPWA] Conditions met. Scheduling request in 800ms...");
+            // Request immediately (small buffer for auth sync)
+            const timer = setTimeout(() => {
+                if (user.uid) {
+                    console.log("🔍 [InstallPWA] Triggering requestNotificationPermission now.");
+                    requestNotificationPermission(user.uid);
+                }
+            }, 800); // reduced from 3000ms to 800ms
+            return () => clearTimeout(timer);
+        } else {
+            console.log("🔍 [InstallPWA] Skipping auto-request. Either no user, not supported, or already handled (granted/denied).");
+        }
+    }, [user]);
+
+    useEffect(() => {
+        // 2. PWA: Check iOS
         const isIosDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
         setIsIOS(isIosDevice);
 
         // Check if already in standalone mode
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
 
+        console.log("🔍 [InstallPWA] Device Info:", { isIosDevice, isStandalone, userAgent: navigator.userAgent });
+
         if (isIosDevice && !isStandalone) {
-            // Logic to show IOS prompt could go here, maybe once per session
             const hasSeenPrompt = sessionStorage.getItem('iosPwaPromptSeen');
+            console.log("🔍 [InstallPWA] iOS Prompt eligible. Has seen?", hasSeenPrompt);
             if (!hasSeenPrompt) {
                 setShowIOSPrompt(true);
             }
         }
 
-        const handler = (e: any) => {
-            e.preventDefault();
-            setDeferredPrompt(e);
+        // 3. PWA: Android/Desktop default behavior
+        // We DO NOT preventDefault() here, allowing the browser to show its native install prompt.
+        // Debug listener to see if browser even fires the event
+        const debugHandler = (e: any) => {
+            console.log("🔍 [InstallPWA] 'beforeinstallprompt' event FIRED! Browser is ready to install.");
         };
+        window.addEventListener('beforeinstallprompt', debugHandler);
+        return () => window.removeEventListener('beforeinstallprompt', debugHandler);
 
-        window.addEventListener('beforeinstallprompt', handler);
-
-        return () => {
-            window.removeEventListener('beforeinstallprompt', handler);
-        };
     }, []);
-
-    const handleInstallClick = async () => {
-        if (!deferredPrompt) return;
-
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-
-        if (outcome === 'accepted') {
-            setDeferredPrompt(null);
-        }
-    };
 
     const closeIOSPrompt = () => {
         setShowIOSPrompt(false);
@@ -53,21 +67,7 @@ export default function InstallPWA() {
 
     return (
         <AnimatePresence>
-            {/* Android / Desktop Install Button */}
-            {deferredPrompt && (
-                <motion.button
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    exit={{ scale: 0, opacity: 0 }}
-                    onClick={handleInstallClick}
-                    className="fixed bottom-4 left-4 z-50 bg-[#D91A2A] text-white px-4 py-3 rounded-full shadow-lg font-bold flex items-center gap-2 hover:bg-[#B71524] transition-all border-2 border-white"
-                >
-                    <Download size={20} />
-                    <span>Instalar App</span>
-                </motion.button>
-            )}
-
-            {/* iOS Instructions Prompt */}
+            {/* iOS Instructions Prompt - Only custom UI we keep since iOS has no native prompt */}
             {showIOSPrompt && (
                 <motion.div
                     initial={{ y: 100, opacity: 0 }}
