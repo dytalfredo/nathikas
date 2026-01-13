@@ -89,7 +89,7 @@ export default function InstallPWA() {
                         <div className="flex items-center gap-4 text-sm font-bold text-[#3E2723]">
                             <div className="flex flex-col items-center gap-1">
                                 <span>1. Toca</span>
-                                <img src="/images/ios-share.svg" alt="Share" className="w-6 h-6" />
+                                <img src="/recursos/recurso10.png" alt="Share" className="w-6 h-6" />
                             </div>
                             <span>→</span>
                             <div className="flex flex-col items-center gap-1">
