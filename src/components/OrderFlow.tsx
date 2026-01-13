@@ -62,9 +62,26 @@ export default function OrderFlow({ data }: Props) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [dynamicSettings, setDynamicSettings] = useState<any>(null);
     const [hasMessaging, setHasMessaging] = useState(!!getMessagingInstance());
+    const [gridCols, setGridCols] = useState(2);
+
     // Custom style classes
     const inputClass = "w-full px-4 py-3 rounded-xl border-2 border-[#F2A900]/30 focus:border-[#F2A900] bg-white outline-none transition-all text-[#3E2723] placeholder:text-gray-400 font-medium disabled:opacity-70 disabled:bg-gray-50";
     const labelClass = "block text-[#3E2723] font-bold mb-2 ml-1";
+
+    useEffect(() => {
+        const updateGridCols = () => {
+            const width = window.innerWidth;
+            if (width >= 1280) setGridCols(4); // xl
+            else if (width >= 1024) setGridCols(3); // lg
+            else if (width >= 768) setGridCols(4); // md
+            else if (width >= 640) setGridCols(3); // sm
+            else setGridCols(2); // default
+        };
+
+        updateGridCols();
+        window.addEventListener('resize', updateGridCols);
+        return () => window.removeEventListener('resize', updateGridCols);
+    }, []);
 
     useEffect(() => {
         // Update messaging presence if it loads after mount
