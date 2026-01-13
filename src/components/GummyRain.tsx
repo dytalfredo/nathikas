@@ -39,32 +39,32 @@ export default function GummyRain({ id = "tsparticles", zIndex = "z-0", count = 
                 type: "image",
                 image: [
                     {
-                        src: "/particulas/g1.png",
+                        src: "/particulas/g1.webp",
                         width: 100,
                         height: 100,
                     },
                     {
-                        src: "/particulas/g2.png",
+                        src: "/particulas/g2.webp",
                         width: 100,
                         height: 100,
                     },
                     {
-                        src: "/particulas/g3.png",
+                        src: "/particulas/g3.webp",
                         width: 100,
                         height: 100,
                     },
                     {
-                        src: "/particulas/g4.png",
+                        src: "/particulas/g4.webp",
                         width: 100,
                         height: 100,
                     },
                     {
-                        src: "/particulas/g5.png",
+                        src: "/particulas/g5.webp",
                         width: 100,
                         height: 100,
                     },
                     {
-                        src: "/particulas/g6.png",
+                        src: "/particulas/g6.webp",
                         width: 100,
                         height: 100,
                     },

@@ -81,14 +81,14 @@ export default function LoadingScreen() {
                     suppressHydrationWarning
                 >
                     {/* Background Pattern */}
-                    <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'url("/recursos/papel-picado-bottom.png")', backgroundSize: 'cover' }}></div>
+                    <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'url("/recursos/papel-picado-bottom.webp")', backgroundSize: 'cover' }}></div>
 
                     {/* Animated Sprite - Reserved space for scaled item */}
                     <div className="w-64 h-64 flex items-center justify-center flex-none relative">
                         <div
                             className="w-16 h-16 animate-sprite"
                             style={{
-                                backgroundImage: "url('/images/AnimacionLoginSprite.png')",
+                                backgroundImage: "url('/images/AnimacionLoginSprite.webp')",
                                 backgroundSize: "512px 64px",
                                 backgroundRepeat: "no-repeat",
                                 animationDuration: "5s",

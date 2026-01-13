@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ShoppingCart, CreditCard, Minus, Plus, Trash2, ArrowLeft, ArrowRight, Loader2, HelpCircle, AlertTriangle, Percent, CheckCircle, LogIn, User, Sparkles } from 'lucide-react';
+import { ChevronDown, ShoppingCart, CreditCard, Minus, Plus, Trash2, ArrowLeft, ArrowRight, Loader2, HelpCircle, AlertTriangle, Percent, CheckCircle, LogIn, User, Sparkles, X } from 'lucide-react';
 import { useCartStore } from '../store/cartStore';
 import type { Product } from '../store/cartStore';
 import { venezuelaData } from '../data/venezuela';
@@ -57,6 +57,8 @@ export default function OrderFlow({ data }: Props) {
     // Zelle-specific verification
     const [zelleEmail, setZelleEmail] = useState('');
     const [zelleSenderName, setZelleSenderName] = useState('');
+    const [acceptedTerms, setAcceptedTerms] = useState(false);
+    const [showTermsModal, setShowTermsModal] = useState(false);
 
     const [stocks, setStocks] = useState<Record<string, number>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -190,16 +192,20 @@ export default function OrderFlow({ data }: Props) {
     }, [selectedAgency, shippingMethod]);
 
     // Calculate volume discount
-    let discountPercent = 0;
-    if (dynamicSettings?.discounts) {
-        if (totalItems > 12) {
-            discountPercent = dynamicSettings.discounts.tier2;
-        } else if (totalItems > 6) {
-            discountPercent = dynamicSettings.discounts.tier1;
+    // Calculate volume discount per item
+    const getDiscountForItem = (quantity: number) => {
+        if (!dynamicSettings?.discounts) return 0;
+        // User requested "6 o mas" (6 or more)
+        if (quantity >= 6) {
+            return dynamicSettings.discounts.tier1;
         }
-    }
+        return 0;
+    };
 
-    const discountAmount = baseSubtotal * (discountPercent / 100);
+    const discountAmount = items.reduce((acc, item) => {
+        const percent = getDiscountForItem(item.quantity);
+        return acc + (item.price * item.quantity * (percent / 100));
+    }, 0);
     const subtotal = baseSubtotal - discountAmount;
     const shippingCost = 5.00; // Example fixed shipping
     const total = subtotal + shippingCost;
@@ -315,6 +321,15 @@ export default function OrderFlow({ data }: Props) {
                 "Información Faltante",
                 `Por favor completa los siguientes campos: ${missingFields.join(', ')}`,
                 "warning"
+            );
+            return;
+        }
+
+        if (!acceptedTerms) {
+            useAlertStore.getState().showAlert(
+                "Términos incompletos",
+                "Debes aceptar los términos y condiciones para continuar.",
+                "error"
             );
             return;
         }
@@ -752,8 +767,9 @@ export default function OrderFlow({ data }: Props) {
                                             return (
                                                 <motion.div
                                                     key={product.id}
-                                                    className={`bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all border-2 flex flex-col group ${inCart ? 'border-[#F2A900]' : 'border-gray-100 hover:border-[#F2A900]'}`}
+                                                    className={`bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all border-2 flex flex-col group cursor-pointer ${inCart ? 'border-[#F2A900]' : 'border-gray-100 hover:border-[#F2A900]'}`}
                                                     whileHover={{ y: -5 }}
+                                                    onClick={() => addToCart(product, 1)}
                                                 >
                                                     <div className="aspect-square bg-[#FDF6E3]/30 flex items-center justify-center p-3 relative overflow-hidden rounded-t-2xl">
                                                         <img
@@ -770,6 +786,9 @@ export default function OrderFlow({ data }: Props) {
                                                     <div className="p-3 md:p-4 text-center flex-grow flex flex-col justify-between gap-2">
                                                         <div>
                                                             <h3 className="font-bold text-xs md:text-sm leading-tight text-[#3E2723] line-clamp-2 h-10 flex items-center justify-center">{product.name}</h3>
+                                                            {product.description && (
+                                                                <p className="text-gray-500 text-xs leading-relaxed px-2 mb-2">{product.description}</p>
+                                                            )}
                                                             <p className="text-[#D91A2A] font-bold text-lg md:text-xl mt-1">${product.price.toFixed(2)}</p>
                                                         </div>
 
@@ -777,14 +796,14 @@ export default function OrderFlow({ data }: Props) {
                                                             <div className="flex flex-col gap-2 mt-auto">
                                                                 <div className="flex items-center justify-between gap-1 bg-[#FDF6E3] rounded-full p-1 border-2 border-[#F2A900] text-black w-full overflow-hidden">
                                                                     <button
-                                                                        onClick={() => updateQuantity(product.id, Math.max(0, inCart.quantity - 1))}
+                                                                        onClick={(e) => { e.stopPropagation(); updateQuantity(product.id, Math.max(0, inCart.quantity - 1)); }}
                                                                         className="w-8 h-8 shrink-0 flex items-center justify-center bg-white rounded-full text-[#D91A2A] shadow-sm hover:bg-red-50 transition-colors"
                                                                     >
                                                                         <Minus size={14} />
                                                                     </button>
                                                                     <span className="font-bold text-sm min-w-[20px]">{inCart.quantity}</span>
                                                                     <button
-                                                                        onClick={() => updateQuantity(product.id, inCart.quantity + 1)}
+                                                                        onClick={(e) => { e.stopPropagation(); updateQuantity(product.id, inCart.quantity + 1); }}
                                                                         className="w-8 h-8 shrink-0 flex items-center justify-center bg-[#F2A900] text-[#3E2723] rounded-full shadow-sm hover:bg-[#d99700] transition-colors"
                                                                     >
                                                                         <Plus size={14} />
@@ -798,7 +817,7 @@ export default function OrderFlow({ data }: Props) {
                                                             </div>
                                                         ) : (
                                                             <button
-                                                                onClick={() => addToCart(product, 1)}
+                                                                onClick={(e) => { e.stopPropagation(); addToCart(product, 1); }}
                                                                 className="w-full py-2.5 rounded-xl font-bold text-sm shadow-md mt-auto transition-all bg-[#D91A2A] text-white hover:bg-[#B71524] hover:shadow-lg active:scale-95"
                                                             >
                                                                 {(stocks[product.id] || 0) <= 0 ? 'PEDIR (EN PROD.)' : 'AGREGAR'}
@@ -817,7 +836,7 @@ export default function OrderFlow({ data }: Props) {
                                             >
                                                 <div className="w-20 h-20 mb-4 group-hover:scale-110 transition-transform duration-500 flex items-center justify-center bg-white/50 rounded-full p-4 border-2 border-gray-100">
                                                     <img
-                                                        src="/images/logo.png"
+                                                        src="/images/logo.webp"
                                                         alt="Nathikas Logo"
                                                         className="w-full h-full object-contain mix-blend-luminosity opacity-40"
                                                     />
@@ -859,7 +878,18 @@ export default function OrderFlow({ data }: Props) {
                                                             </div>
                                                         </div>
                                                         <div className="flex items-center gap-3">
-                                                            <span className="font-bold">${(item.price * item.quantity).toFixed(2)}</span>
+                                                            <div className="flex flex-col items-end">
+                                                                {getDiscountForItem(item.quantity) > 0 ? (
+                                                                    <>
+                                                                        <span className="text-xs text-gray-400 line-through">${(item.price * item.quantity).toFixed(2)}</span>
+                                                                        <span className="font-bold text-green-600">
+                                                                            ${((item.price * item.quantity) * (1 - getDiscountForItem(item.quantity) / 100)).toFixed(2)}
+                                                                        </span>
+                                                                    </>
+                                                                ) : (
+                                                                    <span className="font-bold text-[#D91A2A]">${(item.price * item.quantity).toFixed(2)}</span>
+                                                                )}
+                                                            </div>
                                                             <button
                                                                 onClick={() => removeFromCart(item.id)}
                                                                 className="text-gray-400 hover:text-[#D91A2A]"
@@ -875,11 +905,11 @@ export default function OrderFlow({ data }: Props) {
                                                     <span>Subtotal:</span>
                                                     <span>${baseSubtotal.toFixed(2)}</span>
                                                 </div>
-                                                {discountPercent > 0 && (
+                                                {discountAmount > 0 && (
                                                     <div className="flex justify-between items-center text-sm text-green-600 font-bold">
                                                         <div className="flex items-center gap-1">
                                                             <Percent size={14} />
-                                                            <span>Descuento por Volumen ({discountPercent}%):</span>
+                                                            <span>Descuento por Volumen:</span>
                                                         </div>
                                                         <span>-${discountAmount.toFixed(2)}</span>
                                                     </div>
@@ -895,6 +925,15 @@ export default function OrderFlow({ data }: Props) {
 
                                 {/* Step 2: ¿A Dónde lo Enviamos? */}
                                 <section className={`transition-opacity duration-500 bg-white rounded-3xl shadow-xl p-6 md:p-8 border-4 border-[#F2A900] scroll-mt-24 ${items.length === 0 ? 'opacity-50 pointer-events-none grayscale' : 'opacity-100'}`} id="step-shipping">
+                                    <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 mb-6 flex items-start gap-3">
+                                        <div className="bg-blue-100 p-1.5 rounded-full shrink-0 mt-0.5">
+                                            <Sparkles size={16} className="text-blue-600" />
+                                        </div>
+                                        <p className="text-sm text-blue-800">
+                                            <span className="font-bold">Tip:</span> Al finalizar tu compra podrás <span className="font-bold">iniciar sesión con Google</span> para que tus datos se guarden y tus próximos pedidos sean mucho más rápidos.
+                                        </p>
+                                    </div>
+
                                     <div className="flex items-center gap-4 mb-8">
                                         <div className="bg-[#F2A900] text-[#3E2723] w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl font-heading shadow-lg border-2 border-white shrink-0">2</div>
                                         <div>
@@ -1336,6 +1375,23 @@ export default function OrderFlow({ data }: Props) {
                                             </div>
                                         </div>
 
+                                        <div className="mb-4">
+                                            <label className="flex items-start gap-3 p-3 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors">
+                                                <div className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 mt-0.5 ${acceptedTerms ? 'bg-[#007A33] border-[#007A33]' : 'border-gray-300 bg-white'}`}>
+                                                    {acceptedTerms && <CheckCircle size={14} className="text-white" />}
+                                                </div>
+                                                <input
+                                                    type="checkbox"
+                                                    className="hidden"
+                                                    checked={acceptedTerms}
+                                                    onChange={(e) => setAcceptedTerms(e.target.checked)}
+                                                />
+                                                <span className="text-xs text-gray-500">
+                                                    He leído y acepto los <button type="button" className="font-bold text-[#D91A2A] underline hover:text-[#B71523]" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowTermsModal(true); }}>Términos y Condiciones</button>, incluyendo las políticas de envío y reembolso.
+                                                </span>
+                                            </label>
+                                        </div>
+
                                         <button
                                             onClick={handleConfirmOrder}
                                             className="w-full bg-[#007A33] text-white py-4 rounded-xl font-bold text-xl shadow-[0_4px_14px_0_rgba(0,122,51,0.39)] hover:bg-[#006028] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
@@ -1377,7 +1433,16 @@ export default function OrderFlow({ data }: Props) {
                                                 </div>
                                             </div>
                                             <div className="flex flex-col items-end gap-1 shrink-0">
-                                                <span className="font-bold text-sm text-[#D91A2A]">${(item.price * item.quantity).toFixed(2)}</span>
+                                                {getDiscountForItem(item.quantity) > 0 ? (
+                                                    <>
+                                                        <span className="text-xs text-gray-400 line-through">${(item.price * item.quantity).toFixed(2)}</span>
+                                                        <span className="font-bold text-sm text-green-600">
+                                                            ${((item.price * item.quantity) * (1 - getDiscountForItem(item.quantity) / 100)).toFixed(2)}
+                                                        </span>
+                                                    </>
+                                                ) : (
+                                                    <span className="font-bold text-sm text-[#D91A2A]">${(item.price * item.quantity).toFixed(2)}</span>
+                                                )}
                                                 <button
                                                     onClick={() => removeFromCart(item.id)}
                                                     className="text-gray-300 hover:text-[#D91A2A] transition-colors"
@@ -1394,7 +1459,7 @@ export default function OrderFlow({ data }: Props) {
                                         <span>Subtotal:</span>
                                         <span className="font-semibold">${baseSubtotal.toFixed(2)}</span>
                                     </div>
-                                    {discountPercent > 0 && (
+                                    {discountAmount > 0 && (
                                         <div className="flex justify-between items-center text-sm text-green-600 font-bold bg-green-50 p-2 rounded-lg">
                                             <div className="flex items-center gap-1">
                                                 <Percent size={14} />
@@ -1433,21 +1498,37 @@ export default function OrderFlow({ data }: Props) {
                                             <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                                         </button>
                                     ) : (
-                                        <button
-                                            onClick={handleConfirmOrder}
-                                            disabled={isSubmitting}
-                                            className="w-full bg-[#007A33] text-white py-4 rounded-2xl font-bold text-lg shadow-lg hover:bg-[#006028] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-                                        >
-                                            {isSubmitting ? <Loader2 className="animate-spin" /> : 'Finalizar Pedido'}
-                                            <CheckCircle size={20} />
-                                        </button>
+                                        <div className="space-y-3">
+                                            <label className="flex items-start gap-3 p-3 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors text-left">
+                                                <div className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 mt-0.5 ${acceptedTerms ? 'bg-[#007A33] border-[#007A33]' : 'border-gray-300 bg-white'}`}>
+                                                    {acceptedTerms && <CheckCircle size={14} className="text-white" />}
+                                                </div>
+                                                <input
+                                                    type="checkbox"
+                                                    className="hidden"
+                                                    checked={acceptedTerms}
+                                                    onChange={(e) => setAcceptedTerms(e.target.checked)}
+                                                />
+                                                <span className="text-xs text-gray-500">
+                                                    Acepto los <button type="button" className="font-bold text-[#D91A2A] underline hover:text-[#B71523]" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowTermsModal(true); }}>Términos y Condiciones</button>
+                                                </span>
+                                            </label>
+                                            <button
+                                                onClick={handleConfirmOrder}
+                                                disabled={isSubmitting}
+                                                className="w-full bg-[#007A33] text-white py-4 rounded-2xl font-bold text-lg shadow-lg hover:bg-[#006028] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                                            >
+                                                {isSubmitting ? <Loader2 className="animate-spin" /> : 'Finalizar Pedido'}
+                                                <CheckCircle size={20} />
+                                            </button>
+                                        </div>
                                     )}
-                                </div>
 
-                                <div className="text-center">
-                                    <p className="text-[10px] text-gray-400">
-                                        Seguro y rápido vía WhatsApp 🛡️
-                                    </p>
+                                    <div className="text-center">
+                                        <p className="text-[10px] text-gray-400">
+                                            Seguro y rápido vía WhatsApp 🛡️
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         ) : (
@@ -1463,8 +1544,81 @@ export default function OrderFlow({ data }: Props) {
             </main>
 
             <div className="fixed bottom-0 left-0 w-full pointer-events-none z-0 md:hidden">
-                <img src="/recursos/papel-picado-bottom.png" className="w-full opacity-100" alt="" />
+                <img src="/recursos/papel-picado-bottom.webp" className="w-full opacity-100" alt="" />
             </div>
+
+            {/* Terms Modal */}
+            <AnimatePresence>
+                {showTermsModal && (
+                    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setShowTermsModal(false)}
+                            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col relative z-10 border-4 border-[#F2A900]"
+                        >
+                            <div className="p-6 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white z-20">
+                                <h3 className="font-heading font-bold text-xl text-[#D91A2A]">Términos y Condiciones</h3>
+                                <button
+                                    onClick={() => setShowTermsModal(false)}
+                                    className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-red-50 hover:text-[#D91A2A] transition-colors"
+                                >
+                                    <X size={20} />
+                                </button>
+                            </div>
+                            <div className="p-6 overflow-y-auto custom-scrollbar space-y-6 text-sm text-gray-600">
+                                <section>
+                                    <h4 className="font-bold text-[#3E2723] mb-2">1. Introducción</h4>
+                                    <p>Bienvenido a Nathikas. Al acceder y realizar compras en nuestro sitio web, aceptas los siguientes términos y condiciones. Nos reservamos el derecho de actualizar esta información en cualquier momento.</p>
+                                </section>
+
+                                <section>
+                                    <h4 className="font-bold text-[#3E2723] mb-2">2. Envíos y Entregas</h4>
+                                    <p className="mb-2">Realizamos envíos a nivel nacional a través de nuestros aliados comerciales (MRW, Zoom).</p>
+                                    <ul className="list-disc pl-5 space-y-1">
+                                        <li>Los tiempos de entrega son estimados y dependen de la empresa de encomiendas.</li>
+                                        <li>No nos hacemos responsables por retrasos fuera de nuestro control (clima, fallas viales).</li>
+                                        <li>Es responsabilidad del cliente proporcionar datos exactos. No nos hacemos responsables por direcciones, incorrectas.</li>
+                                    </ul>
+                                </section>
+
+                                <section>
+                                    <h4 className="font-bold text-[#3E2723] mb-2">3. Pagos y Reembolsos</h4>
+                                    <ul className="list-disc pl-5 space-y-1">
+                                        <li>Aceptamos Pago Móvil, Zelle y Transferencias.</li>
+                                        <li><strong>No aceptamos devoluciones</strong> una vez el producto (alimento perecedero) ha sido entregado.</li>
+                                        <li>Reportar cualquier desperfecto en un plazo máximo de 24 horas con evidencia fotográfica.</li>
+                                    </ul>
+                                </section>
+
+                                <section>
+                                    <h4 className="font-bold text-[#3E2723] mb-2">4. Privacidad</h4>
+                                    <p>Tus datos son utilizados únicamente para el procesamiento y envío de tu pedido. Puedes optar por vincular tu cuenta Google para facilitar futuras compras.</p>
+                                </section>
+                            </div>
+                            <div className="p-4 border-t border-gray-100 bg-gray-50 flex justify-end">
+                                <button
+                                    onClick={() => {
+                                        setAcceptedTerms(true);
+                                        setShowTermsModal(false);
+                                    }}
+                                    className="bg-[#007A33] text-white px-6 py-2 rounded-xl font-bold shadow-md hover:bg-[#006028] transition-colors flex items-center gap-2"
+                                >
+                                    <CheckCircle size={16} />
+                                    Aceptar y Cerrar
+                                </button>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

@@ -57,7 +57,7 @@ export default function Dashboard() {
                     className={`bg-white shadow-xl z-50 transition-all duration-300 hidden md:flex flex-col h-screen sticky top-0 ${isSidebarOpen ? 'w-64' : 'w-20'}`}
                 >
                     <div className="p-6 flex items-center gap-4 border-b">
-                        <img src="/images/logo.png" alt="Logo" className="w-10 h-10 flex-shrink-0" />
+                        <img src="/images/logo.webp" alt="Logo" className="w-10 h-10 flex-shrink-0" />
                         {isSidebarOpen && <span className="font-heading text-2xl text-[#D91A2A]">Admin</span>}
                     </div>
 
@@ -111,7 +111,7 @@ export default function Dashboard() {
                     {/* Header (Mobile) */}
                     <header className="bg-white shadow-sm p-4 flex items-center justify-between md:hidden sticky top-0 z-40">
                         <div className="flex items-center gap-2">
-                            <img src="/images/logo.png" alt="Logo" className="w-8 h-8" />
+                            <img src="/images/logo.webp" alt="Logo" className="w-8 h-8" />
                             <span className="font-heading text-xl text-[#D91A2A]">Admin</span>
                         </div>
                         <div className="flex items-center gap-3">

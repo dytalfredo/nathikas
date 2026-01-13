@@ -5,28 +5,55 @@ import CustomAlert from "../components/ui/CustomAlert";
 import AuthInitializer from "../components/AuthInitializer";
 import InstallPWA from "../components/InstallPWA";
 import { pwaInfo } from "virtual:pwa-info";
+import appData from "../data/app-config.json";
 
 interface Props {
-    title: string;
+    title?: string;
+    description?: string;
+    image?: string;
+    type?: string;
     showLoading?: boolean;
     enablePWA?: boolean;
 }
 
-const { title, showLoading = true, enablePWA = false } = Astro.props;
+const {
+    title = appData.seo.defaultTitle,
+    description = appData.seo.defaultDescription,
+    image = appData.seo.defaultImage,
+    type = "website",
+    showLoading = true,
+    enablePWA = false,
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, appData.seo.url);
+const resolvedImage = new URL(image, appData.seo.url).toString();
 ---
 
 <!doctype html>
 <html lang="es">
     <head>
         <meta charset="UTF-8" />
-        <meta
-            name="description"
-            content="Nathikas - Gomitas Enchiladas y Dulces Mexicanos"
-        />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="icon" type="image/webp" href="/images/logo.webp" />
         <meta name="generator" content={Astro.generator} />
+        <link rel="canonical" href={canonicalURL} />
         <title>{title}</title>
+        <meta name="description" content={description} />
+
+        {/* Open Graph / Facebook / WhatsApp */}
+        <meta property="og:type" content={type} />
+        <meta property="og:url" content={Astro.url} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={resolvedImage} />
+        <meta property="og:site_name" content={appData.seo.siteName} />
+
+        {/* Twitter */}
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content={Astro.url} />
+        <meta property="twitter:title" content={title} />
+        <meta property="twitter:description" content={description} />
+        <meta property="twitter:image" content={resolvedImage} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link

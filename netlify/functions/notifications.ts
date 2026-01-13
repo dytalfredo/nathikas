@@ -21,18 +21,28 @@ export const handler: Handler = async (event) => {
     console.log('--- Función de Notificación Unificada Iniciada ---');
 
     if (event.httpMethod !== 'POST') {
+        console.warn('⚠️ [NotificationWorker] Método no permitido:', event.httpMethod);
         return { statusCode: 405, body: 'Método no permitido' };
     }
 
     try {
+        console.log('📦 [NotificationWorker] Payload recibido crude:', event.body);
         const payload = JSON.parse(event.body || '{}');
         const { to, userName, orderId, customerId, status, reason } = payload;
+
+        console.log(`🔍 [NotificationWorker] Procesando para Orden #${orderId} - Estado: ${status}`);
+        console.log(`👤 [NotificationWorker] Cliente: ${userName} (${to})`);
 
         if (!to || !status) {
             return { statusCode: 400, body: JSON.stringify({ error: 'Faltan campos (to, status)' }) };
         }
 
         const resendKey = process.env.RESEND_API_KEY || process.env.RESEND_APY_KEY;
+        if (!resendKey) {
+            console.error('❌ [NotificationWorker] FALTA API KEY DE RESEND. No se enviará correo.');
+        } else {
+            console.log('✅ [NotificationWorker] API Key de Resend detectada.');
+        }
         const resend = new Resend(resendKey);
 
         // 1. Definir Contenido HTML Basado en el Estatus (Templates Consolidados)
@@ -129,24 +139,37 @@ export const handler: Handler = async (event) => {
 
         // 3. Enviar Correo Electrónico
         try {
-            console.log(`Enviando email a ${to}...`);
-            const { data, error } = await resend.emails.send({
-                from: 'Nathikas <notificaciones@nathikas.com>',
-                to: [to],
-                subject: `Actualización de tu pedido Nathikas #${shortId} - ${status}`,
-                html: htmlContent,
-            });
-            results.email = { data, error };
+            console.log(`📧 [NotificationWorker] INTENTANDO enviar email a ${to}...`);
+            if (!resendKey) {
+                console.warn('⚠️ [NotificationWorker] Saltando envío de email por falta de API Key');
+            } else {
+                const { data, error } = await resend.emails.send({
+                    from: 'Nathikas <notificaciones@nathikas.com>',
+                    to: [to],
+                    subject: `Actualización de tu pedido Nathikas #${shortId} - ${status}`,
+                    html: htmlContent,
+                });
+
+                if (error) {
+                    console.error('❌ [NotificationWorker] Resend devolvió error:', error);
+                    results.email = { error: error };
+                } else {
+                    console.log('✅ [NotificationWorker] Email enviado exitosamente. ID:', data?.id);
+                    results.email = { data, error: null };
+                }
+            }
         } catch (err: any) {
-            console.error("Error con Resend:", err);
+            console.error("❌ [NotificationWorker] Excepción en envío de email:", err);
             results.email = { error: err.message };
         }
 
         // 4. Enviar Notificación Push
         if (admin.apps.length && customerId) {
+            console.log(`🔔 [NotificationWorker] Buscando tokens Push para cliente ${customerId}...`);
             try {
                 const userDoc = await admin.firestore().doc(`users/${customerId}`).get();
                 const tokens = userDoc.data()?.fcmTokens || [];
+                console.log(`📱 [NotificationWorker] Tokens encontrados: ${tokens.length}`);
 
                 if (tokens.length > 0) {
                     const message = {
@@ -157,12 +180,17 @@ export const handler: Handler = async (event) => {
                         tokens: tokens,
                     };
                     const response = await admin.messaging().sendEachForMulticast(message);
+                    console.log(`🚀 [NotificationWorker] Push enviado. Éxitos: ${response.successCount}, Fallos: ${response.failureCount}`);
                     results.push = { successCount: response.successCount, failureCount: response.failureCount };
+                } else {
+                    console.log('⚠️ [NotificationWorker] El usuario no tiene tokens FCM registrados.');
                 }
             } catch (err: any) {
-                console.error("Error enviando Push:", err);
+                console.error("❌ [NotificationWorker] Error enviando Push:", err);
                 results.push = { error: err.message };
             }
+        } else {
+            console.log('ℹ️ [NotificationWorker] Saltando Push (Sni Admin SDK o sin Customer ID)');
         }
 
         return {

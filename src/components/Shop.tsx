@@ -58,7 +58,7 @@ const Shop = memo(function Shop({ data }: Props) {
                         transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
                         className="w-12 md:w-16 mb-[-10px] pointer-events-none drop-shadow-xl z-20"
                     >
-                        <img src="/recursos/recurso1.png" alt="Mascota" className="w-full h-auto" />
+                        <img src="/recursos/recurso1.webp" alt="Mascota" className="w-full h-auto" />
                     </motion.div>
 
                     <a

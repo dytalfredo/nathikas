@@ -146,7 +146,7 @@ ${items.map(item => `- ${item.quantity}x ${item.name} ($${item.price * item.quan
                             <p>ID: {data.payment.pagoMovil.id}</p>
 
                             <div className="my-6 mx-auto w-48 h-48 bg-gray-200 flex items-center justify-center rounded-lg border-2 border-dashed border-[#D91A2A]">
-                                <img src={data.payment.qrImage || "/placeholder-qr.png"} alt="QR Pago" className="w-full h-full object-contain" />
+                                <img src={data.payment.qrImage || "/images/qr-placeholder.webp"} alt="QR Pago" className="w-full h-full object-contain" />
                             </div>
 
                             <p className="text-sm text-gray-500">Escanea o usa los datos para transferir.</p>

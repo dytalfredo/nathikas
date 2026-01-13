@@ -93,33 +93,48 @@ export default function SettingsView() {
         const loadSettings = async () => {
             try {
                 const settingsDoc = await getDoc(doc(db, "settings", "global"));
-                if (settingsDoc.exists()) {
-                    setSettings(settingsDoc.data() as GlobalSettings);
-                } else {
-                    // Default settings if none exist
-                    const defaultSettings: GlobalSettings = {
-                        pagoMovil: { bank: '0102 - Banco de Venezuela', phone: '0414-1234567', id: '12345678' },
-                        discounts: { tier1: 5, tier2: 10 },
-                        bot: { apiUrl: '', apiKey: '', enabled: false },
-                        zelle: { name: '', email: '' },
-                        paymentMethods: [
-                            { id: 'pago-movil', name: 'Pago Móvil', enabled: true },
-                            { id: 'zelle', name: 'Zelle', enabled: false },
-                            { id: 'binance', name: 'Binance', enabled: false }
-                        ],
-                        notifications: {
-                            email: {
-                                pagado: { subject: '¡Pago confirmado! Nathikas #{{orderId}}', body: 'Hola {{userName}}, hemos verificado tu pago.' },
-                                despachado: { subject: '¡Envío en camino! Nathikas #{{orderId}}', body: 'Hola {{userName}}, tu pedido va en camino.' },
-                                cancelado: { subject: 'Tu pedido Nathikas #{{orderId}} ha sido cancelado', body: 'Hola {{userName}}, tu pedido ha sido cancelado.' }
-                            },
-                            push: {
-                                pagado: { title: '¡Pago Confirmado! ✅', body: 'Hola {{userName}}, estamos preparando tu pedido #{{orderId}}' },
-                                despachado: { title: '¡Pedido en Camino! 🚚', body: 'Tus Nathikas van volando a su destino.' },
-                                cancelado: { title: 'Pedido Cancelado ❌', body: 'Tu orden #{{orderId}} ha sido cancelada.' }
-                            }
+                // Default settings definition
+                const defaultSettings: GlobalSettings = {
+                    pagoMovil: { bank: '0102 - Banco de Venezuela', phone: '0414-1234567', id: '12345678' },
+                    discounts: { tier1: 5, tier2: 10 },
+                    bot: { apiUrl: '', apiKey: '', enabled: false },
+                    zelle: { name: '', email: '' },
+                    paymentMethods: [
+                        { id: 'pago-movil', name: 'Pago Móvil', enabled: true },
+                        { id: 'zelle', name: 'Zelle', enabled: false },
+                        { id: 'binance', name: 'Binance', enabled: false }
+                    ],
+                    notifications: {
+                        email: {
+                            pagado: { subject: '¡Pago confirmado! Nathikas #{{orderId}}', body: 'Hola {{userName}}, hemos verificado tu pago.' },
+                            despachado: { subject: '¡Envío en camino! Nathikas #{{orderId}}', body: 'Hola {{userName}}, tu pedido va en camino.' },
+                            cancelado: { subject: 'Tu pedido Nathikas #{{orderId}} ha sido cancelado', body: 'Hola {{userName}}, tu pedido ha sido cancelado.' }
+                        },
+                        push: {
+                            pagado: { title: '¡Pago Confirmado! ✅', body: 'Hola {{userName}}, estamos preparando tu pedido #{{orderId}}' },
+                            despachado: { title: '¡Pedido en Camino! 🚚', body: 'Tus Nathikas van volando a su destino.' },
+                            cancelado: { title: 'Pedido Cancelado ❌', body: 'Tu orden #{{orderId}} ha sido cancelada.' }
                         }
+                    }
+                };
+
+                if (settingsDoc.exists()) {
+                    // Merge defaults with existing data to ensure all structure exists (Deep merge for notifications)
+                    const data = settingsDoc.data() as Partial<GlobalSettings>;
+                    const mergedSettings = {
+                        ...defaultSettings,
+                        ...data,
+                        notifications: {
+                            ...defaultSettings.notifications,
+                            ...(data.notifications || {})
+                        },
+                        // Ensure other nested objects are also safe if they exist partially
+                        pagoMovil: { ...defaultSettings.pagoMovil, ...(data.pagoMovil || {}) },
+                        discounts: { ...defaultSettings.discounts, ...(data.discounts || {}) },
+                        bot: { ...defaultSettings.bot, ...(data.bot || {}) }
                     };
+                    setSettings(mergedSettings);
+                } else {
                     setSettings(defaultSettings);
                     await setDoc(doc(db, "settings", "global"), defaultSettings);
                 }

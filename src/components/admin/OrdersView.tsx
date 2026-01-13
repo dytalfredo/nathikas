@@ -184,6 +184,7 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
             // Enviar Notificación por Correo (Netlify Function)
             if (order.userEmail && ['pagado', 'despachado', 'cancelado'].includes(newStatus)) {
                 try {
+                    console.log(`📤 [Admin] Iniciando petición de notificación a ${order.userEmail} para estado ${newStatus}...`);
                     const response = await fetch('/.netlify/functions/notifications', {
                         method: 'POST',
                         headers: {
@@ -201,13 +202,16 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
 
                     if (!response.ok) {
                         const errData = await response.json().catch(() => ({ error: 'Error desconocido' }));
-                        console.error("❌ Error en función de email (HTTP " + response.status + "):", errData);
+                        console.error("❌ [Admin] Error en función de email (HTTP " + response.status + "):", errData);
                     } else {
-                        console.log("✅ Email enviado correctamente");
+                        const resData = await response.json().catch(() => ({}));
+                        console.log("✅ [Admin] Función de notificación completada:", resData);
                     }
                 } catch (emailErr) {
-                    console.error("❌ Error de red al enviar correo:", emailErr);
+                    console.error("❌ [Admin] Error de red al invocar función de notificaciones:", emailErr);
                 }
+            } else {
+                console.log("ℹ️ [Admin] No se envió notificación (Sin email o estado no relevante).");
             }
 
             if (selectedOrder?.id === orderId) {

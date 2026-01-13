@@ -1,0 +1,122 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { ArrowLeft } from "lucide-react";
+---
+
+<Layout title="Términos y Condiciones - Nathikas" enablePWA={true}>
+    <div
+        class="min-h-screen bg-[#FDF6E3] font-sans text-[#3E2723] pb-20 relative"
+    >
+        {/* Header */}
+        <header
+            class="sticky top-0 z-50 bg-[#FDF6E3]/95 backdrop-blur-sm shadow-sm border-b-4 border-[#F2A900] px-4 py-3 flex items-center gap-4"
+        >
+            <a
+                href="/"
+                class="flex items-center gap-2 shrink-0 text-[#D91A2A] hover:text-[#B71523] transition-colors"
+            >
+                <ArrowLeft size={24} />
+                <span class="font-bold hidden sm:inline"
+                    >Volver a la tienda</span
+                >
+            </a>
+            <h1
+                class="font-heading font-bold text-xl md:text-2xl text-[#D91A2A] flex-grow text-center pr-8"
+            >
+                Términos y Condiciones
+            </h1>
+        </header>
+
+        <main class="container mx-auto max-w-4xl px-4 py-8 md:py-12 space-y-8">
+            <section
+                class="bg-white rounded-3xl shadow-xl p-6 md:p-10 border-4 border-[#F2A900]"
+            >
+                <h2
+                    class="font-heading text-2xl md:text-3xl text-[#D91A2A] mb-6 border-b-2 border-gray-100 pb-2"
+                >
+                    1. Introducción
+                </h2>
+                <p class="text-gray-600 mb-4 leading-relaxed">
+                    Bienvenido a Nathikas. Al acceder y realizar compras en
+                    nuestro sitio web, aceptas los siguientes términos y
+                    condiciones. Nos reservamos el derecho de actualizar esta
+                    información en cualquier momento sin previo aviso.
+                </p>
+
+                <h2
+                    class="font-heading text-2xl md:text-3xl text-[#D91A2A] mt-10 mb-6 border-b-2 border-gray-100 pb-2"
+                >
+                    2. Envíos y Entregas
+                </h2>
+                <div class="space-y-4 text-gray-600 leading-relaxed">
+                    <p>
+                        Realizamos envíos a nivel nacional a través de nuestros
+                        aliados comerciales (MRW, Zoom).
+                    </p>
+                    <ul class="list-disc pl-5 space-y-2">
+                        <li>
+                            Los tiempos de entrega son estimados y dependen
+                            directamente de la empresa de encomiendas.
+                        </li>
+                        <li>
+                            No nos hacemos responsables por retrasos ocasionados
+                            por situaciones fuera de nuestro control (fallas en
+                            vías, situaciones climáticas, etc.).
+                        </li>
+                        <li>
+                            Es responsabilidad del cliente proporcionar datos
+                            exactos para el envío. Nathikas no se hace
+                            responsable por paquetes devueltos o extraviados por
+                            direcciones incorrectas.
+                        </li>
+                    </ul>
+                </div>
+
+                <h2
+                    class="font-heading text-2xl md:text-3xl text-[#D91A2A] mt-10 mb-6 border-b-2 border-gray-100 pb-2"
+                >
+                    3. Pagos y Reembolsos
+                </h2>
+                <div class="space-y-4 text-gray-600 leading-relaxed">
+                    <p>
+                        Aceptamos pagos vía Pago Móvil, Transferencias y Zelle.
+                        El pedido solo se procesará una vez confirmado el pago
+                        en nuestras cuentas.
+                    </p>
+                    <ul class="list-disc pl-5 space-y-2">
+                        <li>
+                            Debido a la naturaleza perecedera de nuestros
+                            productos (alimentos), <strong
+                                >no aceptamos devoluciones</strong
+                            > una vez el producto ha sido entregado.
+                        </li>
+                        <li>
+                            En caso de recibir un producto en mal estado o
+                            incorrecto, debes notificarlo en un plazo máximo de
+                            24 horas tras la recepción, adjuntando fotos como
+                            evidencia.
+                        </li>
+                    </ul>
+                </div>
+
+                <h2
+                    class="font-heading text-2xl md:text-3xl text-[#D91A2A] mt-10 mb-6 border-b-2 border-gray-100 pb-2"
+                >
+                    4. Privacidad y Datos
+                </h2>
+                <p class="text-gray-600 mb-4 leading-relaxed">
+                    Tus datos personales (nombre, teléfono, dirección) son
+                    utilizados únicamente para procesar tu pedido y envío. No
+                    compartimos tu información con terceros salvo con las
+                    empresas de logística para completar la entrega.
+                </p>
+                <p class="text-gray-600 leading-relaxed">
+                    Podrás optar por vincular tu cuenta de Google para agilizar
+                    futuras compras. Esta información se almacena de forma
+                    segura y puedes solicitar su eliminación en cualquier
+                    momento.
+                </p>
+            </section>
+        </main>
+    </div>
+</Layout>

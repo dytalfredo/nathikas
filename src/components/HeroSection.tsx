@@ -145,7 +145,7 @@ const HeroSection = memo(function HeroSection({ scrollToStore }: { scrollToStore
                                     </>
                                 ) : (
                                     <>
-                                        <img src="/recursos/recurso5.png" alt="" className="w-8 h-8 object-contain filter brightness-0 invert" />
+                                        <img src="/recursos/recurso5.webp" alt="" className="w-8 h-8 object-contain filter brightness-0 invert" />
                                         <span>Entrar</span>
                                     </>
                                 )}
@@ -182,8 +182,8 @@ const HeroSection = memo(function HeroSection({ scrollToStore }: { scrollToStore
                 className="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-10 w-80 md:w-[500px]"
             >
                 <picture>
-                    <source media="(max-width: 767px)" srcSet="/recursos/recurso2m.png" />
-                    <img src="/recursos/recurso2.png" alt="Decoración Mexicana" className="w-full h-auto" />
+                    <source media="(max-width: 767px)" srcSet="/recursos/recurso2m.webp" />
+                    <img src="/recursos/recurso2.webp" alt="Decoración Mexicana" className="w-full h-auto" />
                 </picture>
             </motion.div>
 
@@ -218,7 +218,7 @@ const HeroSection = memo(function HeroSection({ scrollToStore }: { scrollToStore
                     >
                         QUIERO MIS GOMITAS
                         <img
-                            src="/recursos/recurso10.png"
+                            src="/recursos/recurso10.webp"
                             alt="Mascota"
                             className="w-10 h-10 md:w-12 md:h-12 object-contain drop-shadow-md"
                         />

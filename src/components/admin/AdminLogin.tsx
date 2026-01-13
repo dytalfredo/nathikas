@@ -32,7 +32,7 @@ export default function AdminLogin() {
                 className="bg-white w-full max-w-md rounded-3xl shadow-2xl p-8 border-4 border-[#F2A900]"
             >
                 <div className="text-center mb-8">
-                    <img src="/images/logo.png" alt="Nathikas Logo" className="w-24 h-24 mx-auto mb-4" />
+                    <img src="/images/logo.webp" alt="Nathikas Logo" className="w-24 h-24 mx-auto mb-4" />
                     <h1 className="text-4xl font-heading text-[#D91A2A]">Panel Admin</h1>
                     <p className="text-gray-600 font-bold">Ingresa tus credenciales</p>
                 </div>

@@ -1,12 +1,20 @@
 {
     "company": {
         "name": "Nathikas",
-        "logo": "/images/logo.png",
+        "logo": "/images/logo.webp",
         "description": "¡Sabor mexicano que explota! Gomitas enchiladas y chamoy auténtico.",
         "videoCTA": {
             "title": "Cómpralas ya, antes que se acaben",
-            "videoUrl": "/videos/promo-bg.mp4"
+            "videoUrl": "/videos/chamoybol.mp4"
         }
+    },
+    "seo": {
+        "siteName": "Nathikas",
+        "defaultTitle": "Nathikas - Gomitas Enchiladas y Chamoy Auténtico",
+        "defaultDescription": "¡Sabor mexicano que explota! Prueba nuestras gomitas enchiladas y chamoy auténtico. Envíos a toda Venezuela.",
+        "defaultImage": "/images/opengraph.webp",
+        "url": "https://nathikas.com",
+        "twitterHandle": "@nathikas"
     },
     "contact": {
         "phone": "+58 414-1234567",
@@ -131,11 +139,19 @@
     ],
     "products": [
         {
-            "id": "kit-fuego",
-            "name": "Kit Fuego",
-            "description": "El pack definitivo para los amantes del picante. Incluye gomitas variadas y nuestra salsa especial.",
-            "price": 15.00,
-            "image": "/images/ref1.jpg",
+            "id": "Enchiladas",
+            "name": "Enchiladas",
+            "description": "Gomitas cubiertas con chamoy, chile y tajin.",
+            "price": 2.5,
+            "image": "/productos/Enchiladas.webp",
+            "category": "kits"
+        },
+        {
+            "id": "Ahogadas",
+            "name": "Ahogadas",
+            "description": "Gomitas cubiertas con chamoy, chile y tajin.",
+            "price": 2.5,
+            "image": "/productos/ahogadas.webp",
             "category": "kits"
         },
         {
@@ -143,7 +159,7 @@
             "name": "Chamoy 1 Litro",
             "description": "Un litro de puro sabor mexicano. Ideal para compartir o para los muy viciosos.",
             "price": 12.00,
-            "image": "/images/ref2.jpg",
+            "image": "/productos/grandeChamoy.webp",
             "category": "salsas"
         },
         {
@@ -151,7 +167,7 @@
             "name": "Chamoy 1/2 Litro",
             "description": "La medida perfecta para tus antojos personales.",
             "price": 7.00,
-            "image": "/images/ref3.jpg",
+            "image": "/productos/medianoChamoy.webp",
             "category": "salsas"
         }
     ],
@@ -160,7 +176,7 @@
             "id": "promo-1",
             "title": "2x1 en Gomitas",
             "description": "¡Lleva 2 paquetes de gomitas enchiladas y paga solo 1! Solo por hoy.",
-            "image": "/images/ref4.jpg"
+            "image": "/images/ref4.webp"
         }
     ],
     "shipping": {
@@ -201,6 +217,6 @@
             "phone": "0414-1234567",
             "id": "12345678"
         },
-        "qrImage": "/images/qr-placeholder.png"
+        "qrImage": "/images/qr-placeholder.webp"
     }
 }
