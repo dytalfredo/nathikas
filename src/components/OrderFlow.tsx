@@ -907,14 +907,7 @@ export default function OrderFlow({ data }: Props) {
 
                                         {/* Name, Phone and Cedula */}
                                         {/* DEBUG BLOCK */}
-                                        <div className="hidden">
-                                            {console.log("🔍 [ORDERFLOW DEBUG] User State for Button:", user)}
-                                            {console.log("🔍 [ORDERFLOW DEBUG] Condition Check:", {
-                                                exists: !!user,
-                                                isAnonymous: user?.isAnonymous,
-                                                showButton: user && !user.isAnonymous
-                                            })}
-                                        </div>
+
 
                                         {/* User Data Recovery (Debug/Manual) */}
                                         {user && !user.isAnonymous && (
