@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { ShoppingCart } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useCartStore } from '../store/cartStore';
@@ -14,7 +14,7 @@ interface Props {
     data: any;
 }
 
-export default function Shop({ data }: Props) {
+const Shop = memo(function Shop({ data }: Props) {
     const cartItems = useCartStore((state) => state.items);
     const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -73,4 +73,6 @@ export default function Shop({ data }: Props) {
             )}
         </div>
     );
-}
+});
+
+export default Shop;

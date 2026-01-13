@@ -1,13 +1,12 @@
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
+import resources from '../data/resources.json';
 
 interface Step {
     id: number;
     title: string;
     description: string;
 }
-
-import resources from '../data/resources.json';
 
 const resourceMap: { [key: number]: string } = {
     1: resources.recursos.r9,
@@ -115,17 +114,12 @@ export default function RitualSteps({ steps }: { steps: Step[] }) {
             </div>
 
             {/* Decorative elements - Larger and more prominent */}
-            <div className="absolute bottom-[-10%] left-[-5%] w-72 h-72 opacity-25 pointer-events-none">
-                <img src={resources.recursos.r2} className="w-full h-full object-contain" alt="" />
-            </div>
+
             <div className="absolute top-1/2 right-[-10%] transform -translate-y-1/2 w-96 h-96 opacity-30 pointer-events-none -rotate-12">
                 <img src={resources.recursos.r2} className="w-full h-full object-contain" alt="" />
             </div>
 
-            {/* Decorative Papel Picado Bottom */}
-            <div className="absolute bottom-0 left-0 w-full h-12 z-20 pointer-events-none overflow-hidden">
-                <img src={resources.ui.papelPicadoBottom} className="w-full h-full object-cover opacity-100" alt="" />
-            </div>
+
         </section>
     );
 }

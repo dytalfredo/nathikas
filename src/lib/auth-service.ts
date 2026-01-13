@@ -1,5 +1,5 @@
-import { onAuthStateChanged, signInWithEmailAndPassword, signOut, signInAnonymously, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
+import { onAuthStateChanged, signInWithEmailAndPassword, signOut, signInAnonymously, GoogleAuthProvider, signInWithPopup, linkWithPopup } from "firebase/auth";
+import { doc, getDoc, setDoc, serverTimestamp, onSnapshot } from "firebase/firestore";
 import { auth, db, initMessaging } from "./firebase";
 import { useAuthStore, type UserRole } from "../store/authStore";
 import { requestNotificationPermission } from "./notification-service";
@@ -11,13 +11,31 @@ export const initAuth = () => {
         return;
     }
 
+    let unsubscribeDoc: (() => void) | null = null;
+
     console.log("Iniciando escucha de estado de sesión...");
     initMessaging(); // Inicializar mensajería asíncronamente
     onAuthStateChanged(auth, async (user) => {
-        console.log("Cambio de estado de Auth:", user ? (user.isAnonymous ? "Cliente Anónimo" : "Usuario Registrado") : "Sin sesión");
+        console.log("🔥 [AUTH DEBUG]AuthState Changed:", user ? `UID: ${user.uid} | Anon: ${user.isAnonymous}` : "No User");
+        if (user) {
+            console.log("🔥 [AUTH DEBUG] User details:", {
+                uid: user.uid,
+                email: user.email,
+                displayName: user.displayName,
+                phoneNumber: user.phoneNumber,
+                isAnonymous: user.isAnonymous
+            });
+        }
+
+        // Cleanup previous doc listener
+        if (unsubscribeDoc) {
+            unsubscribeDoc();
+            unsubscribeDoc = null;
+        }
+
         if (user) {
             try {
-                // Si es anónimo, no buscamos rol en Firestore
+                // Si es anónimo, no buscamos rol en Firestore ni escuchamos cambios
                 if (user.isAnonymous) {
                     useAuthStore.getState().setUser({
                         uid: user.uid,
@@ -38,36 +56,50 @@ export const initAuth = () => {
                     return;
                 }
 
-                const userDoc = await getDoc(doc(db, "users", user.uid));
-                if (userDoc.exists()) {
-                    const data = userDoc.data();
-                    const role = data.role as UserRole;
-                    console.log("Rol obtenido del perfil:", role);
-                    useAuthStore.getState().setUser({
-                        uid: user.uid,
-                        email: user.email,
-                        role: role,
-                        name: data.name,
-                        phone: data.phone,
-                        cedula: data.cedula,
-                        isAnonymous: false
-                    });
+                // Listen to real-time changes on the user profile
+                unsubscribeDoc = onSnapshot(doc(db, "users", user.uid), (userDoc) => {
+                    if (userDoc.exists()) {
+                        const data = userDoc.data();
+                        const role = data.role as UserRole;
+                        console.log("🔥 [FIRESTORE DEBUG] Perfil actualizado:", data);
+                        useAuthStore.getState().setUser({
+                            uid: user.uid,
+                            email: user.email,
+                            role: role,
+                            name: data.name,
+                            phone: data.phone,
+                            cedula: data.cedula,
+                            isAnonymous: false
+                        });
 
-                    // Solicitar permisos de notificación para el Staff
-                    if (['administrator', 'asistente', 'vendedor'].includes(role) && user.uid) {
-                        requestNotificationPermission(user!.uid as string);
+                        // Solicitar permisos de notificación para el Staff (solo una vez o verificar lógica)
+                        if (role && ['administrator', 'asistente', 'vendedor'].includes(role) && user && user.uid) {
+                            requestNotificationPermission(user.uid as string);
+                        }
+                    } else {
+                        // Doc doesn't exist yet (maybe just created auth but not profile)
+                        console.warn("⚠️ [FIRESTORE DEBUG] Perfil NO encontrado en DB para UID:", user.uid);
+                        console.log("🔥 [FALLBACK DEBUG] Usando datos del provider:", {
+                            name: user.displayName,
+                            phone: user.phoneNumber
+                        });
+
+                        useAuthStore.getState().setUser({
+                            uid: user.uid,
+                            email: user.email,
+                            role: null,
+                            // Fallback to auth provider data if firestore is empty
+                            name: user.displayName || undefined,
+                            phone: user.phoneNumber || undefined,
+                            isAnonymous: false
+                        });
                     }
-                } else {
-                    console.warn("⚠️ Perfil de Firestore no encontrado para UID:", user.uid);
-                    useAuthStore.getState().setUser({
-                        uid: user.uid,
-                        email: user.email,
-                        role: null,
-                        isAnonymous: false
-                    });
-                }
+                }, (error: any) => {
+                    console.error("❌ Error escuchando perfil de usuario:", error);
+                });
+
             } catch (err: any) {
-                console.error("❌ Error al obtener perfil de usuario:", err.message);
+                console.error("❌ Error al inicializar listener de usuario:", err.message);
                 useAuthStore.getState().setUser({
                     uid: user.uid,
                     email: user.email,
@@ -93,10 +125,32 @@ export const loginAnonymously = async () => {
 
 export const loginWithGoogle = async () => {
     if (!auth) return null;
+    const provider = new GoogleAuthProvider();
+
     try {
-        const provider = new GoogleAuthProvider();
-        const result = await signInWithPopup(auth, provider);
-        return result.user;
+        const currentUser = auth.currentUser;
+
+        // If we are currently anonymous, try to link the credential first
+        if (currentUser && currentUser.isAnonymous) {
+            try {
+                console.log("Intentando vincular cuenta Google a sesión anónima actual...");
+                const result = await linkWithPopup(currentUser, provider);
+                console.log("Cuenta vinculada con éxito");
+                return result.user;
+            } catch (linkError: any) {
+                // If credential already used, we must sign in normally (switching accounts)
+                if (linkError.code === 'auth/credential-already-in-use') {
+                    console.log("La cuenta ya existe, cambiando de usuario...");
+                    const result = await signInWithPopup(auth, provider);
+                    return result.user;
+                }
+                throw linkError; // Throw other errors
+            }
+        } else {
+            // Standard login
+            const result = await signInWithPopup(auth, provider);
+            return result.user;
+        }
     } catch (err) {
         console.error("Error en Google Login:", err);
         return null;

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { ArrowRight, Menu, X, User as UserIcon, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import GummyRain from './GummyRain';
@@ -6,8 +6,8 @@ import { useAuthStore } from '../store/authStore';
 import { loginWithGoogle, logout } from '../lib/auth-service';
 import resources from '../data/resources.json';
 
-export default function HeroSection({ scrollToStore }: { scrollToStore: () => void }) {
-    const { user } = useAuthStore();
+const HeroSection = memo(function HeroSection({ scrollToStore }: { scrollToStore: () => void }) {
+    const user = useAuthStore((state) => state.user);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isLoggingIn, setIsLoggingIn] = useState(false);
 
@@ -26,11 +26,23 @@ export default function HeroSection({ scrollToStore }: { scrollToStore: () => vo
             setIsLoggingIn(false);
         }
     };
+
+    const [bgImage, setBgImage] = useState(resources.backgrounds.heroDesktop);
+
+    useEffect(() => {
+        const updateBg = () => {
+            setBgImage(window.innerWidth < 768 ? resources.backgrounds.heroMobile : resources.backgrounds.heroDesktop);
+        };
+        updateBg(); // Initial check
+        window.addEventListener('resize', updateBg);
+        return () => window.removeEventListener('resize', updateBg);
+    }, []);
+
     return (
         <section
             className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-cover bg-center"
             style={{
-                backgroundImage: `url('${(typeof window !== 'undefined' && window.innerWidth < 768) ? resources.backgrounds.heroMobile : resources.backgrounds.heroDesktop}')`
+                backgroundImage: `url('${bgImage}')`
             }}
         >
             {/* Gummy Rain Particles (Layered) */}
@@ -187,24 +199,6 @@ export default function HeroSection({ scrollToStore }: { scrollToStore: () => vo
                 {/* CTA Button Group - Character + Text */}
                 <div className="flex flex-col items-center justify-center relative z-50 mb-8">
                     {/* Character sitting on button */}
-                    <motion.div
-                        animate={{
-                            y: [0, -10, 0],
-                        }}
-                        transition={{
-                            duration: 2,
-                            repeat: Infinity,
-                            ease: "easeInOut"
-                        }}
-                        className="mb-[-20px] md:mb-[-30px] z-10 pointer-events-none"
-                    >
-                        <img
-                            src="/recursos/recurso16.png"
-                            alt="Mascota"
-                            className="w-32 md:w-48 h-auto drop-shadow-lg"
-                        />
-                    </motion.div>
-
                     {/* Button */}
                     <motion.a
                         href="/shop"
@@ -220,9 +214,14 @@ export default function HeroSection({ scrollToStore }: { scrollToStore: () => vo
                         }}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
-                        className="bg-[#F2A900] text-[#3E2723] px-8 py-3 md:px-12 md:py-5 rounded-full text-xl md:text-3xl font-bold font-heading shadow-[0_0_20px_rgba(242,169,0,0.6)] border-4 border-white hover:bg-[#ffb700] transition-colors relative"
+                        className="bg-[#F2A900] text-white px-8 py-3 md:px-12 md:py-5 rounded-full text-2xl md:text-4xl font-bold font-heading tracking-widest shadow-[0_0_20px_rgba(242,169,0,0.6)] border-4 border-white hover:bg-[#ffb700] transition-colors relative flex items-center gap-4"
                     >
-                        QUIERO MIS GOMITAS 🍬
+                        QUIERO MIS GOMITAS
+                        <img
+                            src="/recursos/recurso10.png"
+                            alt="Mascota"
+                            className="w-10 h-10 md:w-12 md:h-12 object-contain drop-shadow-md"
+                        />
                     </motion.a>
                 </div>
 
@@ -244,4 +243,6 @@ export default function HeroSection({ scrollToStore }: { scrollToStore: () => vo
             </div>
         </section>
     );
-}
+});
+
+export default HeroSection;

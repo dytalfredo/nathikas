@@ -8,6 +8,9 @@ import AstroPWA from "@vite-pwa/astro";
 // https://astro.build/config
 export default defineConfig({
     adapter: netlify(),
+    devToolbar: {
+        enabled: false
+    },
     integrations: [
         react(),
         AstroPWA({
@@ -20,7 +23,7 @@ export default defineConfig({
                 theme_color: "#FDF6E3",
                 background_color: "#FDF6E3",
                 display: "standalone",
-                start_url: "/shop",
+                start_url: "/",
                 icons: [
                     {
                         src: "/images/logo.png",

@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, Flame } from 'lucide-react';
+import resources from '../data/resources.json';
 
 interface Props {
     title: string;
@@ -20,7 +21,7 @@ export default function VideoCTA({ title, videoUrl, onCtaClick }: Props) {
             >
                 <source src={videoUrl} type="video/mp4" />
                 {/* Fallback image if video fails or not provided */}
-                <img src="https://images.unsplash.com/photo-1541599540903-216a46ca1dc0?q=80&w=2671&auto=format&fit=crop" alt="Spicy Background" className="w-full h-full object-cover" />
+                <img src={resources.placeholders.ref1} alt="Spicy Background" className="w-full h-full object-cover" />
             </video>
 
             {/* Overlay Gradient */}

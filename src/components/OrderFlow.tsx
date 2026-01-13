@@ -153,11 +153,24 @@ export default function OrderFlow({ data }: Props) {
 
     useEffect(() => {
         if (user && !user.isAnonymous) {
-            // Solo auto-completamos si el campo está vacío para no sobreescribir edición manual
-            if (!userName && user.name) setUserName(user.name);
-            if (!userPhone && user.phone) setUserPhone(user.phone);
-            if (!userCedula && user.cedula) setUserCedula(user.cedula);
-            if (!userEmail && user.email) setUserEmail(user.email);
+            console.log("Checking auto-fill for user:", user);
+            // Prioritize user profile data if local state is empty
+            if (user.name && !userName) {
+                console.log("Auto-filling Name:", user.name);
+                setUserName(user.name);
+            }
+            if (user.phone && !userPhone) {
+                console.log("Auto-filling Phone:", user.phone);
+                setUserPhone(user.phone);
+            }
+            if (user.cedula && !userCedula) {
+                console.log("Auto-filling Cedula:", user.cedula);
+                setUserCedula(user.cedula);
+            }
+            if (user.email && !userEmail) {
+                console.log("Auto-filling Email:", user.email);
+                setUserEmail(user.email);
+            }
         }
     }, [user, userName, userPhone, userCedula, userEmail]);
 
@@ -511,6 +524,15 @@ export default function OrderFlow({ data }: Props) {
                     "Tu sesión se ha iniciado correctamente.",
                     "success"
                 );
+
+                // Only redirect if we are in the success/post-order flow (linking account)
+                if (showSuccess) {
+                    setTimeout(() => {
+                        window.location.href = '/shop';
+                    }, 1500);
+                }
+                // If logging in from header/normal flow, we verify if we need to auto-fill immediately
+                // The useEffect [user] will handle the auto-fill naturally as 'user' updates
             }
         } catch (err) {
             console.error("Error linking google profile:", err);
@@ -553,27 +575,18 @@ export default function OrderFlow({ data }: Props) {
         setZelleSenderName('');
     };
 
-    useEffect(() => {
-        // Auto-fill from user profile if logged in
-        if (user && !user.isAnonymous && user.role) {
-            if (!userName && user.name) setUserName(user.name);
-            if (!userPhone && user.phone) setUserPhone(user.phone);
-            if (!userCedula && user.cedula) setUserCedula(user.cedula);
-            if (!userEmail && user.email) setUserEmail(user.email);
-        }
-    }, [user]);
+
 
     useEffect(() => {
         // Function to initiate tour safely
         const initiateTour = () => {
-            // Check if user is logging in or interacting with auth
-            // The user mentioned: "si se activa el login no deberia lanzarse el helper de drive si aun no se ha salido de la pagina de loading"
-            // This logic already waits for loading screen to clear.
-            // If user clicks login immediately after loading, we might want to delay tour?
-            // For now, let's just solve the loading screen overlap.
-
             // Short delay to ensure sections are rendered and visual stability
             setTimeout(() => {
+                // Check if user is logged in (not anonymous) to skip tour
+                const currentUser = useAuthStore.getState().user;
+                if (currentUser && !currentUser.isAnonymous) {
+                    return;
+                }
                 startTour();
             }, 800);
         };
@@ -608,6 +621,17 @@ export default function OrderFlow({ data }: Props) {
                     <img src={resources.logo} alt="Nathikas Logo" className="h-8 w-auto" />
                 </div>
                 <div className="flex items-center gap-3">
+                    {/* Notification Request Button */}
+                    {hasMessaging && typeof window !== 'undefined' && Notification.permission !== 'granted' && user && !user.isAnonymous && (
+                        <button
+                            onClick={() => user.uid && requestNotificationPermission(user.uid)}
+                            className="w-10 h-10 flex items-center justify-center text-[#F2A900] hover:bg-[#FDF6E3] hover:shadow-md rounded-full transition-all"
+                            title="Activar Notificaciones"
+                        >
+                            <Bell size={24} className="animate-pulse" />
+                        </button>
+                    )}
+
                     {/* Auth Status / Login Trigger */}
                     <button
                         onClick={handleAuthClick}
@@ -703,7 +727,7 @@ export default function OrderFlow({ data }: Props) {
                                 )}
 
                                 <button
-                                    onClick={handleResetFlow}
+                                    onClick={() => window.location.href = '/shop'}
                                     className="w-full bg-[#D91A2A] text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#B71524] transition-all"
                                 >
                                     <span>VOLVER A LA TIENDA</span>
@@ -882,6 +906,36 @@ export default function OrderFlow({ data }: Props) {
                                     <div className="bg-white rounded-2xl shadow-lg p-6 space-y-4">
 
                                         {/* Name, Phone and Cedula */}
+                                        {/* DEBUG BLOCK */}
+                                        <div className="hidden">
+                                            {console.log("🔍 [ORDERFLOW DEBUG] User State for Button:", user)}
+                                            {console.log("🔍 [ORDERFLOW DEBUG] Condition Check:", {
+                                                exists: !!user,
+                                                isAnonymous: user?.isAnonymous,
+                                                showButton: user && !user.isAnonymous
+                                            })}
+                                        </div>
+
+                                        {/* User Data Recovery (Debug/Manual) */}
+                                        {user && !user.isAnonymous && (
+                                            <div className="mb-4 flex justify-end">
+                                                <button
+                                                    onClick={() => {
+                                                        console.log("Forcing data recovery from user profile:", user);
+                                                        if (user.name) setUserName(user.name);
+                                                        if (user.phone) setUserPhone(user.phone);
+                                                        if (user.cedula) setUserCedula(user.cedula);
+                                                        if (user.email) setUserEmail(user.email);
+                                                    }}
+                                                    className="text-xs font-bold text-[#D91A2A] underline hover:text-[#B71524] flex items-center gap-1 bg-[#FDF6E3] px-3 py-1 rounded-full border border-[#D91A2A]/20"
+                                                >
+                                                    <Sparkles size={12} />
+                                                    Recuperar mis datos guardados
+                                                </button>
+                                            </div>
+                                        )}
+
+                                        {/* Name, Phone and Cedula Grid */}
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                             <div>
                                                 <label className="block text-sm font-bold mb-1 text-gray-700">Nombre Completo</label>
@@ -1303,6 +1357,7 @@ export default function OrderFlow({ data }: Props) {
                                         </p>
                                     </div>
                                 </section>
+
                             </>
                         )}
                     </div>

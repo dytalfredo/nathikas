@@ -1,4 +1,5 @@
 import { Facebook, Instagram, Twitter, MessageCircle } from 'lucide-react';
+import resources from '../data/resources.json';
 
 export default function Footer({ companyData }: { companyData: any }) {
     return (
@@ -10,7 +11,7 @@ export default function Footer({ companyData }: { companyData: any }) {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
                     {/* Brand */}
                     <div className="text-center md:text-left">
-                        <img src={companyData.logo} alt="Nathikas Logo" className="w-24 h-24 mx-auto md:mx-0 mb-4 object-contain filter brightness-100" />
+                        <img src={resources.logo} alt="Nathikas Logo" className="w-24 h-24 mx-auto md:mx-0 mb-4 object-contain filter brightness-100" />
                         <h3 className="text-2xl font-bold text-[#F2A900] font-heading mb-4">Nathikas</h3>
                         <p className="max-w-xs mx-auto md:mx-0 text-sm opacity-80">
                             Llevando el auténtico sabor del chamoy y las gomitas enchiladas a tu paladar. ¡Sabor que explota!
