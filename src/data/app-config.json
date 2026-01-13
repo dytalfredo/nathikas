@@ -8,6 +8,17 @@
             "videoUrl": "/videos/promo-bg.mp4"
         }
     },
+    "contact": {
+        "phone": "+58 414-1234567",
+        "email": "hola@nathikas.com",
+        "address": "Caracas, Venezuela",
+        "whatsapp": "+58 414-1234567"
+    },
+    "social": {
+        "facebook": "#",
+        "instagram": "#",
+        "twitter": "#"
+    },
     "ritualSteps": [
         {
             "id": 1,

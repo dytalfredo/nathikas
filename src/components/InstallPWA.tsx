@@ -6,6 +6,7 @@ import { requestNotificationPermission } from '../lib/notification-service';
 
 export default function InstallPWA() {
     const { user } = useAuthStore();
+    const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
     const [isIOS, setIsIOS] = useState(false);
     const [showIOSPrompt, setShowIOSPrompt] = useState(false);
 
@@ -49,16 +50,28 @@ export default function InstallPWA() {
             }
         }
 
-        // 3. PWA: Android/Desktop default behavior
-        // We DO NOT preventDefault() here, allowing the browser to show its native install prompt.
-        // Debug listener to see if browser even fires the event
-        const debugHandler = (e: any) => {
-            console.log("🔍 [InstallPWA] 'beforeinstallprompt' event FIRED! Browser is ready to install.");
+        // 3. PWA: Android/Desktop Custom Button
+        const handler = (e: any) => {
+            console.log("🔍 [InstallPWA] 'beforeinstallprompt' fired. Preventing default and stashing event.");
+            e.preventDefault(); // Prevent native prompt
+            setDeferredPrompt(e);
         };
-        window.addEventListener('beforeinstallprompt', debugHandler);
-        return () => window.removeEventListener('beforeinstallprompt', debugHandler);
+        window.addEventListener('beforeinstallprompt', handler);
+        return () => window.removeEventListener('beforeinstallprompt', handler);
 
     }, []);
+
+    const handleInstallClick = async () => {
+        if (!deferredPrompt) return;
+
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log("🔍 [InstallPWA] Install choice:", outcome);
+
+        if (outcome === 'accepted') {
+            setDeferredPrompt(null);
+        }
+    };
 
     const closeIOSPrompt = () => {
         setShowIOSPrompt(false);
@@ -67,6 +80,20 @@ export default function InstallPWA() {
 
     return (
         <AnimatePresence>
+            {/* Android / Desktop Install Button - Restored */}
+            {deferredPrompt && (
+                <motion.button
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0, opacity: 0 }}
+                    onClick={handleInstallClick}
+                    className="fixed bottom-4 left-4 z-50 bg-[#D91A2A] text-white px-4 py-3 rounded-full shadow-lg font-bold flex items-center gap-2 hover:bg-[#B71524] transition-all border-2 border-white"
+                >
+                    <Download size={20} />
+                    <span>Instalar App</span>
+                </motion.button>
+            )}
+
             {/* iOS Instructions Prompt - Only custom UI we keep since iOS has no native prompt */}
             {showIOSPrompt && (
                 <motion.div

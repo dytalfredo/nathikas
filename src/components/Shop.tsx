@@ -37,12 +37,16 @@ const Shop = memo(function Shop({ data }: Props) {
             {data.testimonials && <TestimonialCarousel testimonials={data.testimonials} />}
 
             {/* 7. FAQ Section (New) */}
-            {data.faq && <FAQSection faqs={data.faq} />}
+            {data.faq && <FAQSection faqs={data.faq} contact={data.contact} />}
 
             {/* 8. Video CTA Removed */}
 
             {/* 9. Footer */}
-            <Footer companyData={data.company} />
+            <Footer
+                companyData={data.company}
+                contact={data.contact}
+                social={data.social}
+            />
 
 
             {/* Floating Cart Button & Mascot */}

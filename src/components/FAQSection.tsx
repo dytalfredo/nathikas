@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, HelpCircle, MessageCircle } from 'lucide-react';
-import faqs from '../data/faqs.json';
+// import faqs from '../data/faqs.json'; // Deprecated in favor of props
 import resources from '../data/resources.json';
 
-export default function FAQSection() {
+export default function FAQSection({ faqs, contact }: { faqs: any[], contact?: any }) {
     // Only allow one open at a time for cleaner UI
     const [activeIndex, setActiveIndex] = useState<number | null>(null);
     const [showAll, setShowAll] = useState(false);
@@ -119,7 +119,7 @@ export default function FAQSection() {
                     <h3 className="text-2xl font-bold text-white mb-2">¿No encontraste tu respuesta?</h3>
                     <p className="text-[#FDF6E3]/80 mb-6">Estamos aquí para ayudarte. Escríbenos directamente y te responderemos al instante.</p>
                     <a
-                        href="https://wa.me/584241234567" // Placeholder number
+                        href={`https://wa.me/${contact?.whatsapp?.replace(/\D/g, '') || '584241234567'}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold py-3 px-8 rounded-full transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1"

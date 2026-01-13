@@ -1,7 +1,7 @@
 import { Facebook, Instagram, Twitter, MessageCircle } from 'lucide-react';
 import resources from '../data/resources.json';
 
-export default function Footer({ companyData }: { companyData: any }) {
+export default function Footer({ companyData, contact, social }: { companyData: any, contact: any, social: any }) {
     return (
         <footer className="bg-[#3E2723] text-[#FDF6E3] relative overflow-hidden">
             {/* Decorative Top Border */}
@@ -36,15 +36,15 @@ export default function Footer({ companyData }: { companyData: any }) {
                         <ul className="space-y-3 text-sm">
                             <li className="flex items-center justify-center md:justify-start gap-2">
                                 <MessageCircle size={16} className="text-[#F2A900]" />
-                                +58 414-1234567
+                                {contact.phone}
                             </li>
                             <li className="flex items-center justify-center md:justify-start gap-2">
                                 <span>📧</span>
-                                hola@nathikas.com
+                                {contact.email}
                             </li>
                             <li className="flex items-center justify-center md:justify-start gap-2">
                                 <span>📍</span>
-                                Caracas, Venezuela
+                                {contact.address}
                             </li>
                         </ul>
                     </div>
@@ -53,8 +53,12 @@ export default function Footer({ companyData }: { companyData: any }) {
                     <div className="text-center md:text-left">
                         <h4 className="text-xl font-bold text-[#D91A2A] mb-6 font-heading">Síguenos</h4>
                         <div className="flex justify-center md:justify-start gap-4">
-                            {[Facebook, Instagram, Twitter].map((Icon, i) => (
-                                <a key={i} href="#" className="bg-[#5D4037] p-3 rounded-full hover:bg-[#D91A2A] transition-colors shadow-lg group">
+                            {[
+                                { Icon: Facebook, url: social.facebook },
+                                { Icon: Instagram, url: social.instagram },
+                                { Icon: Twitter, url: social.twitter }
+                            ].map(({ Icon, url }, i) => (
+                                <a key={i} href={url} className="bg-[#5D4037] p-3 rounded-full hover:bg-[#D91A2A] transition-colors shadow-lg group">
                                     <Icon size={20} className="group-hover:text-white" />
                                 </a>
                             ))}
