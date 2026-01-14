@@ -5,10 +5,13 @@ import { useCartStore } from '../store/cartStore';
 import HeroSection from './HeroSection';
 import RitualSteps from './RitualSteps';
 import TestimonialCarousel from './TestimonialCarousel';
+import TikTokSection from './TikTokSection';
 import VideoCTA from './VideoCTA';
 import Footer from './Footer';
 import BenefitsSection from './BenefitsSection';
 import FAQSection from './FAQSection';
+import ProductInfoSection from './ProductInfoSection';
+import B2BSection from './B2BSection';
 
 interface Props {
     data: any;
@@ -29,12 +32,19 @@ const Shop = memo(function Shop({ data }: Props) {
             {/* 3. Benefits Section (New) */}
             <BenefitsSection />
 
+            {/* 3.5 Product Info Section */}
+            <ProductInfoSection />
+
             <div className="container mx-auto px-4 py-12">
                 {/* 5. The Store (Products) - Moved to /shop */}
             </div>
 
-            {/* 6. Testimonials */}
-            {data.testimonials && <TestimonialCarousel testimonials={data.testimonials} />}
+            {/* 6. TikTok Section ( Replaces Testimonials ) */}
+            {/* {data.testimonials && <TestimonialCarousel testimonials={data.testimonials} />} */}
+            <TikTokSection />
+
+            {/* 6.5 B2B Partnership Section */}
+            <B2BSection />
 
             {/* 7. FAQ Section (New) */}
             {data.faq && <FAQSection faqs={data.faq} contact={data.contact} />}
