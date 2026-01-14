@@ -18,7 +18,14 @@ service cloud.firestore {
     // PERFILES DE USUARIO
     match /users/{userId} {
       allow read: if request.auth != null && (request.auth.uid == userId || isStaff());
-      allow write: if request.auth != null && request.auth.uid == userId;
+      // Permitir escribir el propio perfil SOLO SI NO SE ESTÁ INTENTANDO CAMBIAR EL ROL
+      allow write: if request.auth != null && request.auth.uid == userId && (
+        !('role' in request.resource.data) || 
+        resource.data.role == request.resource.data.role ||
+        // Permitir creación inicial si el rol es 'cliente' (o por defecto) pero esto se maneja usualmente en backend o con reglas más complejas.
+        // Asumimos que la creación inicial crítica (con roles) la hace el Admin SDK.
+        !exists(/databases/$(database)/documents/users/$(userId))
+      );
     }
 
     // PRODUCTOS (Inventario)

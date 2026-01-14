@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { db } from '../../lib/firebase';
+import { db, auth } from '../../lib/firebase';
 import { doc, getDoc, setDoc, collection, onSnapshot, query, writeBatch, getDocs } from 'firebase/firestore';
 import { useAuthStore } from '../../store/authStore';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -210,10 +210,16 @@ export default function SettingsView() {
         try {
             // Llamamos a la función Serverless para crear el usuario con privilegios de administrador
             // Esto evita problemas de permisos de Firestore y la necesidad de "Secondary Apps" en el cliente
+
+            const currentUser = auth.currentUser;
+            if (!currentUser) throw new Error("No hay usuario autenticado en Firebase.");
+            const token = await currentUser.getIdToken();
+
             const response = await fetch('/.netlify/functions/create_user', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
                     email: newUserEmail,
@@ -282,12 +288,16 @@ export default function SettingsView() {
 
         setSaving(true);
         try {
-            const currentUser = useAuthStore.getState().user;
-            if (!currentUser || !currentUser.uid) throw new Error("No authenticado");
+            const currentUser = auth.currentUser;
+            if (!currentUser) throw new Error("No authenticado en Firebase");
+            const token = await currentUser.getIdToken();
 
             const response = await fetch('/.netlify/functions/delete_users', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
                 body: JSON.stringify({ exceptUid: currentUser.uid })
             });
 

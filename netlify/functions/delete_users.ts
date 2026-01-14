@@ -64,7 +64,26 @@ export const handler: Handler = async (event) => {
         };
     }
 
+    // AUTHENTICATION CHECK
+    const authHeader = event.headers.authorization || event.headers.Authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return { statusCode: 401, body: JSON.stringify({ error: 'No autorizado: Falta token' }) };
+    }
+    const idToken = authHeader.split('Bearer ')[1];
+
     try {
+        const decodedToken = await getAuth().verifyIdToken(idToken);
+        const requestUid = decodedToken.uid;
+
+        // Verify Admin Role in Firestore
+        const db = getFirestore();
+        const requestUserDoc = await db.collection('users').doc(requestUid).get();
+        if (!requestUserDoc.exists || requestUserDoc.data()?.role !== 'administrator') {
+            return { statusCode: 403, body: JSON.stringify({ error: 'Prohibido: Requiere rol de administrador.' }) };
+        }
+
+        console.log(`🛡️ [DeleteUsersWorker] Acceso autorizado para admin: ${requestUserDoc.data()?.email}`);
+
         const payload = JSON.parse(event.body || '{}');
         const { exceptUid } = payload;
 
@@ -96,7 +115,7 @@ export const handler: Handler = async (event) => {
         }
 
         // 2. DELETE FROM FIRESTORE (users collection)
-        const db = getFirestore();
+        // db is already initialized above
         const usersSnapshot = await db.collection('users').get();
         const batch = db.batch();
         let firestoreCount = 0;
