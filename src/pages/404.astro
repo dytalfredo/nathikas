@@ -1,0 +1,62 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Página no encontrada - Nathikas" showLoading={false}>
+    <main
+        class="min-h-[80vh] flex flex-col items-center justify-center p-4 text-center relative overflow-hidden"
+    >
+        {/* Background decorative elements */}
+        <div
+            class="absolute top-1/4 left-10 w-32 h-32 bg-[#F2A900] rounded-full opacity-10 blur-3xl animate-pulse"
+        >
+        </div>
+        <div
+            class="absolute bottom-1/4 right-10 w-48 h-48 bg-[#D91A2A] rounded-full opacity-10 blur-3xl animate-pulse delay-700"
+        >
+        </div>
+
+        <div class="relative z-10 space-y-6 max-w-2xl mx-auto">
+            <h1
+                class="text-9xl md:text-[12rem] font-heading text-[#D91A2A] leading-none select-none drop-shadow-sm"
+            >
+                404
+            </h1>
+
+            <div class="space-y-4">
+                <h2 class="text-3xl md:text-4xl font-bold text-[#3E2723]">
+                    ¡Ups! Se nos perdió esta página
+                </h2>
+                <p class="text-lg text-gray-600 font-medium max-w-md mx-auto">
+                    Parece que intentaste entrar a un lugar que no existe en
+                    nuestro menú. ¡Pero no te quedes con hambre!
+                </p>
+            </div>
+
+            <div class="pt-8">
+                <a
+                    href="/"
+                    class="inline-flex items-center gap-2 bg-[#D91A2A] text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-[#B71524] transition-all shadow-lg hover:shadow-red-500/25 hover:-translate-y-1 active:scale-95"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-home"
+                        ><path
+                            d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+                        ></path><polyline points="9 22 9 12 15 12 15 22"
+                        ></polyline></svg
+                    >
+                    VOLVER AL INICIO
+                </a>
+            </div>
+        </div>
+    </main>
+</Layout>
