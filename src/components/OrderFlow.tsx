@@ -381,7 +381,8 @@ export default function OrderFlow({ data }: Props) {
             return;
         }
 
-        const businessPhone = "+584141234567"; // Adjust as needed
+        // Clean number for link (remove spaces, symbols)
+        const businessPhone = appConfig.contact.whatsapp.replace(/[^\d+]/g, '');
 
         let message = `*NUEVO PEDIDO - NATHIKAS*\n\n`;
         message += `👤 *Comprador:* ${userName}\n`;

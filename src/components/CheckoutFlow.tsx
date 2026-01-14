@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { X, Upload, Truck, CheckCircle } from 'lucide-react';
 import { useCartStore } from '../store/cartStore';
 import LocationMap from './LocationMap';
+import appConfig from '../data/app-config.json';
 
 interface Props {
     data: any;
@@ -56,7 +57,9 @@ ${items.map(item => `- ${item.quantity}x ${item.name} ($${item.price * item.quan
     `.trim();
 
         const encodedMessage = encodeURIComponent(message);
-        window.open(`https://wa.me/?text=${encodedMessage}`, '_blank');
+        // Clean number for link (remove spaces, symbols)
+        const businessPhone = appConfig.contact.whatsapp.replace(/[^\d+]/g, '');
+        window.open(`https://wa.me/${businessPhone}?text=${encodedMessage}`, '_blank');
     };
 
     return (
