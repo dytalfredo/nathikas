@@ -5,7 +5,7 @@ import { doc, setDoc, arrayUnion } from "firebase/firestore";
 const VAPID_KEY = import.meta.env.PUBLIC_FIREBASE_VAPID_KEY;
 
 export const requestNotificationPermission = async (userId: string) => {
-    console.log("🔍 [NotifService] Requesting permission for User:", userId);
+
 
     const messaging = getMessagingInstance();
     if (!messaging) {
@@ -14,34 +14,33 @@ export const requestNotificationPermission = async (userId: string) => {
     }
 
     if (Notification.permission === 'granted') {
-        console.log("🔍 [NotifService] Permission already GRANTED. Skipping request UI.");
+
         // We can still try to refresh token here if needed, but for now just return or proceed
         // If we want to ensure token is fresh:
     }
 
     try {
-        console.log("🔍 [NotifService] Calling Notification.requestPermission()...");
+
         const permission = await Notification.requestPermission();
-        console.log("🔍 [NotifService] Permission Result:", permission);
+
 
         if (permission === 'granted') {
-            console.log('Permiso de notificación concedido.');
+
 
             // Register service worker explicitly for more control
-            console.log("🔍 [NotifService] Registering SW /firebase-messaging-sw.js...");
             const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', {
                 scope: '/'
             });
-            console.log("🔍 [NotifService] SW Registration:", registration);
 
-            console.log("🔍 [NotifService] Getting Token...");
+
+
             const token = await getToken(messaging, {
                 vapidKey: VAPID_KEY,
                 serviceWorkerRegistration: registration
             });
 
             if (token) {
-                console.log('Token FCM obtenido:', token);
+
                 await saveTokenToUser(userId, token);
             } else {
                 console.warn('No se pudo obtener el token FCM.');
@@ -61,7 +60,7 @@ const saveTokenToUser = async (userId: string, token: string) => {
         await setDoc(userRef, {
             fcmTokens: arrayUnion(token)
         }, { merge: true });
-        console.log('Token guardado en el perfil del usuario.');
+
     } catch (error) {
         console.error('Error al guardar el token en Firestore:', error);
     }

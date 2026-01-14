@@ -13,11 +13,7 @@ export default function AdminManager() {
 
     useEffect(() => {
         if (!loading) {
-            console.log("--- Diagnóstico de Admin ---");
-            console.log("UID:", user?.uid);
-            console.log("Rol Detectado:", user?.role);
-            console.log("Sesión activa:", !!user);
-            console.log("---------------------------");
+
         }
     }, [user, loading]);
 

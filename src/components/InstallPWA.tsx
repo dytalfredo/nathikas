@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Download } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuthStore } from '../store/authStore';
-import { requestNotificationPermission } from '../lib/notification-service';
 
 export default function InstallPWA() {
     const { user } = useAuthStore();
@@ -11,24 +10,18 @@ export default function InstallPWA() {
     const [showIOSPrompt, setShowIOSPrompt] = useState(false);
 
     useEffect(() => {
-        console.log("🔍 [InstallPWA] Checking Notification requirements...");
-        console.log("🔍 [InstallPWA] User:", user ? `Logged in (UID: ${user.uid})` : "No user");
-        console.log("🔍 [InstallPWA] Window.Notification supported:", 'Notification' in window);
-        console.log("🔍 [InstallPWA] Current Permission:", 'Notification' in window ? Notification.permission : 'N/A');
 
         // 1. Notifications: Auto-request on mount if user exists
         if (user && 'Notification' in window && Notification.permission === 'default') {
-            console.log("🔍 [InstallPWA] Conditions met. Scheduling request in 800ms...");
             // Request immediately (small buffer for auth sync)
-            const timer = setTimeout(() => {
+            const timer = setTimeout(async () => {
                 if (user.uid) {
-                    console.log("🔍 [InstallPWA] Triggering requestNotificationPermission now.");
+                    const { requestNotificationPermission } = await import('../lib/notification-service');
                     requestNotificationPermission(user.uid);
                 }
             }, 800); // reduced from 3000ms to 800ms
             return () => clearTimeout(timer);
         } else {
-            console.log("🔍 [InstallPWA] Skipping auto-request. Either no user, not supported, or already handled (granted/denied).");
         }
     }, [user]);
 
@@ -40,11 +33,9 @@ export default function InstallPWA() {
         // Check if already in standalone mode
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
 
-        console.log("🔍 [InstallPWA] Device Info:", { isIosDevice, isStandalone, userAgent: navigator.userAgent });
 
         if (isIosDevice && !isStandalone) {
             const hasSeenPrompt = sessionStorage.getItem('iosPwaPromptSeen');
-            console.log("🔍 [InstallPWA] iOS Prompt eligible. Has seen?", hasSeenPrompt);
             if (!hasSeenPrompt) {
                 setShowIOSPrompt(true);
             }
@@ -52,7 +43,6 @@ export default function InstallPWA() {
 
         // 3. PWA: Android/Desktop Custom Button
         const handler = (e: any) => {
-            console.log("🔍 [InstallPWA] 'beforeinstallprompt' fired. Preventing default and stashing event.");
             e.preventDefault(); // Prevent native prompt
             setDeferredPrompt(e);
         };
@@ -66,7 +56,7 @@ export default function InstallPWA() {
 
         deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
-        console.log("🔍 [InstallPWA] Install choice:", outcome);
+
 
         if (outcome === 'accepted') {
             setDeferredPrompt(null);

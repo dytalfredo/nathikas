@@ -166,22 +166,18 @@ export default function OrderFlow({ data }: Props) {
 
     useEffect(() => {
         if (user && !user.isAnonymous) {
-            console.log("Checking auto-fill for user:", user);
+
             // Prioritize user profile data if local state is empty
             if (user.name && !userName) {
-                console.log("Auto-filling Name:", user.name);
                 setUserName(user.name);
             }
             if (user.phone && !userPhone) {
-                console.log("Auto-filling Phone:", user.phone);
                 setUserPhone(user.phone);
             }
             if (user.cedula && !userCedula) {
-                console.log("Auto-filling Cedula:", user.cedula);
                 setUserCedula(user.cedula);
             }
             if (user.email && !userEmail) {
-                console.log("Auto-filling Email:", user.email);
                 setUserEmail(user.email);
             }
         }
@@ -401,7 +397,7 @@ export default function OrderFlow({ data }: Props) {
                 // 1. Asegurar Autenticación (Anónima)
                 let currentUser = useAuthStore.getState().user;
                 if (!currentUser) {
-                    console.log("Iniciando sesión anónima para el cliente...");
+
                     const anonUser = await loginAnonymously();
                     if (!anonUser) throw new Error("No se pudo crear sesión anónima");
                     currentUser = { uid: anonUser.uid, email: null, role: null };
@@ -1016,7 +1012,6 @@ export default function OrderFlow({ data }: Props) {
                                             <div className="mb-4 flex justify-end">
                                                 <button
                                                     onClick={() => {
-                                                        console.log("Forcing data recovery from user profile:", user);
                                                         if (user.name) setUserName(user.name);
                                                         if (user.phone) setUserPhone(user.phone);
                                                         if (user.cedula) setUserCedula(user.cedula);

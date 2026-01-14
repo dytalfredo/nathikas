@@ -13,20 +13,9 @@ export const initAuth = () => {
 
     let unsubscribeDoc: (() => void) | null = null;
 
-    console.log("Iniciando escucha de estado de sesión...");
+
     initMessaging(); // Inicializar mensajería asíncronamente
     onAuthStateChanged(auth, async (user) => {
-        console.log("🔥 [AUTH DEBUG]AuthState Changed:", user ? `UID: ${user.uid} | Anon: ${user.isAnonymous}` : "No User");
-        if (user) {
-            console.log("🔥 [AUTH DEBUG] User details:", {
-                uid: user.uid,
-                email: user.email,
-                displayName: user.displayName,
-                phoneNumber: user.phoneNumber,
-                isAnonymous: user.isAnonymous
-            });
-        }
-
         // Cleanup previous doc listener
         if (unsubscribeDoc) {
             unsubscribeDoc();
@@ -61,7 +50,7 @@ export const initAuth = () => {
                     if (userDoc.exists()) {
                         const data = userDoc.data();
                         const role = data.role as UserRole;
-                        console.log("🔥 [FIRESTORE DEBUG] Perfil actualizado:", data);
+
                         useAuthStore.getState().setUser({
                             uid: user.uid,
                             email: user.email,
@@ -79,10 +68,6 @@ export const initAuth = () => {
                     } else {
                         // Doc doesn't exist yet (maybe just created auth but not profile)
                         console.warn("⚠️ [FIRESTORE DEBUG] Perfil NO encontrado en DB para UID:", user.uid);
-                        console.log("🔥 [FALLBACK DEBUG] Usando datos del provider:", {
-                            name: user.displayName,
-                            phone: user.phoneNumber
-                        });
 
                         useAuthStore.getState().setUser({
                             uid: user.uid,
@@ -111,6 +96,7 @@ export const initAuth = () => {
             useAuthStore.getState().setUser(null);
         }
     });
+
 };
 
 export const loginAnonymously = async () => {
@@ -133,14 +119,12 @@ export const loginWithGoogle = async () => {
         // If we are currently anonymous, try to link the credential first
         if (currentUser && currentUser.isAnonymous) {
             try {
-                console.log("Intentando vincular cuenta Google a sesión anónima actual...");
                 const result = await linkWithPopup(currentUser, provider);
-                console.log("Cuenta vinculada con éxito");
                 return result.user;
             } catch (linkError: any) {
                 // If credential already used, we must sign in normally (switching accounts)
                 if (linkError.code === 'auth/credential-already-in-use') {
-                    console.log("La cuenta ya existe, cambiando de usuario...");
+
                     const result = await signInWithPopup(auth, provider);
                     return result.user;
                 }
@@ -175,7 +159,7 @@ export const syncUserProfile = async (uid: string, data: { name: string; phone: 
         }
 
         await setDoc(userRef, profileData, { merge: true });
-        console.log("Perfil de usuario sincronizado correctamente.");
+
     } catch (err) {
         console.error("Error al sincronizar perfil:", err);
     }

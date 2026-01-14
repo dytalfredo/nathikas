@@ -16,8 +16,6 @@ const isConfigValid = !!firebaseConfig.apiKey && firebaseConfig.apiKey !== "your
 
 if (!isConfigValid) {
     console.warn("Configuración de Firebase incompleta o inválida. Revisa tu archivo .env");
-} else {
-    console.log("Configuración de Firebase detectada correctamente.");
 }
 
 const app = isConfigValid
@@ -37,7 +35,6 @@ export const initMessaging = async () => {
             const supported = await isSupported();
             if (supported) {
                 messagingInstance = getMessaging(app);
-                console.log("Firebase Messaging inicializado correctamente.");
                 return messagingInstance;
             }
         } catch (e) {
