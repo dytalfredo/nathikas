@@ -50,7 +50,8 @@ export default function OrderFlow({ data }: Props) {
     const [recipientName, setRecipientName] = useState('');
     const [recipientPhone, setRecipientPhone] = useState('');
     const [recipientCedula, setRecipientCedula] = useState('');
-    const [paymentBank, setPaymentBank] = useState('Pago Móvil');
+    // Initial State - Set Zelle as default
+    const [paymentBank, setPaymentBank] = useState('Zelle');
     const [paymentReference, setPaymentReference] = useState('');
     const [paymentId, setPaymentId] = useState('');
     const [paymentPhone, setPaymentPhone] = useState('');
@@ -61,6 +62,11 @@ export default function OrderFlow({ data }: Props) {
     const [zelleSenderName, setZelleSenderName] = useState('');
     const [acceptedTerms, setAcceptedTerms] = useState(false);
     const [showTermsModal, setShowTermsModal] = useState(false);
+
+    // Currency Exchange State
+    const [exchangeRate, setExchangeRate] = useState<number | null>(null);
+    const [totalInBs, setTotalInBs] = useState<number>(0);
+    const [rateLoading, setRateLoading] = useState(false);
 
     const [stocks, setStocks] = useState<Record<string, number>>({});
     const [productConfig, setProductConfig] = useState<Record<string, { enabled: boolean, price?: number }>>({});
@@ -226,6 +232,33 @@ export default function OrderFlow({ data }: Props) {
             document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' });
         }
     }, [step]);
+
+    // Fetch Exchange Rate
+    useEffect(() => {
+        const fetchRate = async () => {
+            setRateLoading(true);
+            try {
+                const response = await fetch('https://ve.dolarapi.com/v1/dolares/oficial');
+                const data = await response.json();
+                if (data && data.promedio) {
+                    setExchangeRate(data.promedio);
+                }
+            } catch (error) {
+                console.error("Error fetching exchange rate:", error);
+            } finally {
+                setRateLoading(false);
+            }
+        };
+
+        fetchRate();
+    }, []);
+
+    // Calculate Total in Bs
+    useEffect(() => {
+        if (exchangeRate && total) {
+            setTotalInBs(total * exchangeRate);
+        }
+    }, [total, exchangeRate]);
 
     const startTour = async () => {
         // Dynamically import driver.js to avoid SSR 'window is not defined' error
@@ -1287,6 +1320,21 @@ export default function OrderFlow({ data }: Props) {
                                                             <span className="text-gray-600 shrink-0 text-[10px] sm:text-xs">Cédula:</span>
                                                             <span className="font-bold text-left sm:text-right break-words text-xs sm:text-sm">{dynamicSettings?.pagoMovil?.id || data.payment.pagoMovil.id}</span>
                                                         </div>
+
+                                                        <div className="mt-4 pt-4 border-t border-[#F2A900]/30">
+                                                            <div className="flex justify-between items-center mb-1">
+                                                                <span className="text-xs text-gray-600 font-bold uppercase">Tasa del día (BCV):</span>
+                                                                <span className="text-xs font-bold text-[#D91A2A]">
+                                                                    {rateLoading ? 'Cargando...' : exchangeRate ? `Bs. ${exchangeRate.toFixed(2)}` : 'No disponible'}
+                                                                </span>
+                                                            </div>
+                                                            <div className="flex justify-between items-center bg-white p-2 rounded-lg border border-[#F2A900]/50 shadow-sm">
+                                                                <span className="text-sm font-bold text-[#3E2723]">Monto a pagar en Bolívares:</span>
+                                                                <span className="text-lg font-bold text-[#D91A2A]">
+                                                                    {rateLoading ? '...' : totalInBs > 0 ? `Bs. ${totalInBs.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '---'}
+                                                                </span>
+                                                            </div>
+                                                        </div>
                                                     </>
                                                 ) : paymentBank === 'Zelle' ? (
                                                     <>
@@ -1609,7 +1657,7 @@ export default function OrderFlow({ data }: Props) {
                         )}
                     </aside>
                 </div>
-            </main>
+            </main >
 
             <div className="fixed bottom-0 left-0 w-full pointer-events-none z-0 md:hidden">
                 <img src="/recursos/papel-picado-bottom.webp" className="w-full opacity-100" alt="" />
@@ -1688,7 +1736,7 @@ export default function OrderFlow({ data }: Props) {
                 )}
             </AnimatePresence>
 
-        </div>
+        </div >
     );
 }
 
