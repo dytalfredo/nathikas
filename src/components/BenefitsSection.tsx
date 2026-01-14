@@ -81,24 +81,28 @@ export default function BenefitsSection() {
                     variants={float1}
                     animate="animate"
                     className="absolute top-[10%] left-[5%] w-24 h-24 object-contain opacity-40 blur-[1px]"
+                    alt=""
                 />
                 <motion.img
                     src={resources.recursos.r11}
                     variants={float2}
                     animate="animate"
                     className="absolute bottom-[15%] right-[5%] w-32 h-32 object-contain opacity-30 blur-[1px]"
+                    alt=""
                 />
                 <motion.img
                     src={resources.recursos.r12}
                     variants={float3}
                     animate="animate"
                     className="absolute top-[20%] right-[10%] w-24 h-24 object-contain opacity-35"
+                    alt=""
                 />
                 <motion.img
                     src={resources.recursos.r13}
                     variants={float4}
                     animate="animate"
                     className="absolute bottom-[20%] left-[15%] w-28 h-28 object-contain opacity-25 blur-[1px]"
+                    alt=""
                 />
                 {/* Adding a couple more for better dispersion per request "dispersen mas" */}
                 <motion.img
@@ -106,12 +110,14 @@ export default function BenefitsSection() {
                     variants={float2}
                     animate="animate"
                     className="absolute top-[50%] left-[45%] w-16 h-16 object-contain opacity-20"
+                    alt=""
                 />
                 <motion.img
                     src={resources.recursos.r10}
                     variants={float4}
                     animate="animate"
                     className="absolute top-[15%] left-[50%] w-20 h-20 object-contain opacity-25"
+                    alt=""
                 />
             </div>
         </section>

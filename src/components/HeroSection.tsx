@@ -126,6 +126,7 @@ const HeroSection = memo(function HeroSection({ scrollToStore }: { scrollToStore
                 <button
                     className="md:hidden text-[#FDF6E3] p-2 bg-black/20 rounded-full backdrop-blur-sm"
                     onClick={() => setIsMenuOpen(!isMenuOpen)}
+                    aria-label="Menú principal"
                 >
                     {isMenuOpen ? <X size={32} /> : <Menu size={32} />}
                 </button>

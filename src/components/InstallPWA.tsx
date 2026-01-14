@@ -96,6 +96,7 @@ export default function InstallPWA() {
                         <button
                             onClick={closeIOSPrompt}
                             className="absolute -top-2 -right-2 bg-gray-100 rounded-full p-1 text-gray-400"
+                            aria-label="Cerrar instrucciones de instalación"
                         >
                             ✕
                         </button>

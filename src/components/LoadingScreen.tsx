@@ -136,10 +136,10 @@ export default function LoadingScreen() {
 
                     {/* Social Links */}
                     <div className="flex gap-6 z-10">
-                        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-[#D91A2A] hover:text-[#F2A900] transition-colors p-3 bg-white/60 rounded-full shadow-sm hover:scale-110 transform duration-200">
+                        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-[#D91A2A] hover:text-[#F2A900] transition-colors p-3 bg-white/60 rounded-full shadow-sm hover:scale-110 transform duration-200" aria-label="Síguenos en Instagram">
                             <Instagram size={28} />
                         </a>
-                        <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" className="text-[#D91A2A] hover:text-[#F2A900] transition-colors p-3 bg-white/60 rounded-full shadow-sm hover:scale-110 transform duration-200">
+                        <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" className="text-[#D91A2A] hover:text-[#F2A900] transition-colors p-3 bg-white/60 rounded-full shadow-sm hover:scale-110 transform duration-200" aria-label="Síguenos en TikTok">
                             <Music size={28} />
                         </a>
                     </div>

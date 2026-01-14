@@ -85,10 +85,10 @@ export default function Footer({ companyData, contact, social }: { companyData: 
                         <h4 className="text-xl font-bold text-[#D91A2A] mb-6 font-heading">Síguenos</h4>
                         <div className="flex justify-center md:justify-start gap-4">
                             {[
-                                { Icon: Instagram, url: social.instagram },
-                                { Icon: TikTok, url: social.tiktok }
-                            ].map(({ Icon, url }, i) => (
-                                <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="bg-[#5D4037] p-3 rounded-full hover:bg-[#D91A2A] transition-colors shadow-lg group">
+                                { Icon: Instagram, url: social.instagram, label: "Síguenos en Instagram" },
+                                { Icon: TikTok, url: social.tiktok, label: "Síguenos en TikTok" }
+                            ].map(({ Icon, url, label }, i) => (
+                                <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="bg-[#5D4037] p-3 rounded-full hover:bg-[#D91A2A] transition-colors shadow-lg group" aria-label={label}>
                                     <Icon size={20} className="group-hover:text-white" />
                                 </a>
                             ))}
