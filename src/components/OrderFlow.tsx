@@ -166,9 +166,14 @@ export default function OrderFlow({ data }: Props) {
         return []; // Simple fallback for now
     })();
 
-    // Derived state
-    const totalItems = items.reduce((acc, item) => acc + item.quantity, 0);
-    const baseSubtotal = items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+    // Derived state with dynamic pricing
+    const cartItemsWithDynamicPrice = items.map(item => ({
+        ...item,
+        price: productConfig[item.id]?.price ?? item.price
+    }));
+
+    const totalItems = cartItemsWithDynamicPrice.reduce((acc, item) => acc + item.quantity, 0);
+    const baseSubtotal = cartItemsWithDynamicPrice.reduce((acc, item) => acc + (item.price * item.quantity), 0);
 
     useEffect(() => {
         if (user && !user.isAnonymous) {
@@ -215,7 +220,7 @@ export default function OrderFlow({ data }: Props) {
         return 0;
     };
 
-    const discountAmount = items.reduce((acc, item) => {
+    const discountAmount = cartItemsWithDynamicPrice.reduce((acc, item) => {
         const percent = getDiscountForItem(item.quantity);
         return acc + (item.price * item.quantity * (percent / 100));
     }, 0);
@@ -289,7 +294,7 @@ export default function OrderFlow({ data }: Props) {
                         description: wrapDesc('Explora nuestra selección de gomitas y agrega las que más te gusten a tu carrito.', 12)
                     }
                 },
-                ...(items.length > 0 ? [{
+                ...(cartItemsWithDynamicPrice.length > 0 ? [{
                     element: window.innerWidth < 1024 ? '#cart-summary-mobile' : '#cart-summary-desktop',
                     popover: {
                         title: '<span style="color:#D91A2A; font-weight:800; font-size:18px;">Resumen del Pedido</span>',
@@ -354,7 +359,7 @@ export default function OrderFlow({ data }: Props) {
             }
         }
 
-        if (items.length === 0) missingFields.push("Al menos un producto");
+        if (cartItemsWithDynamicPrice.length === 0) missingFields.push("Al menos un producto");
 
         if (missingFields.length > 0) {
             useAlertStore.getState().showAlert(
@@ -391,7 +396,7 @@ export default function OrderFlow({ data }: Props) {
         message += `\n`;
 
         message += `📦 *PRODUCTOS:*\n`;
-        items.forEach(item => {
+        cartItemsWithDynamicPrice.forEach(item => {
             message += `- ${item.name} (x${item.quantity}) - $${(item.price * item.quantity).toFixed(2)}\n`;
         });
         message += `\n💰 *Total:* $${subtotal.toFixed(2)}\n\n`;
@@ -437,13 +442,13 @@ export default function OrderFlow({ data }: Props) {
                 }
 
                 // 2. Determinar si hay ítems sin stock (backorders)
-                const backorders = items.filter(item => (stocks[item.id] || 0) < item.quantity);
+                const backorders = cartItemsWithDynamicPrice.filter(item => (stocks[item.id] || 0) < item.quantity);
                 const isBackorder = backorders.length > 0;
 
                 const batch = writeBatch(db);
 
                 // Deduct stock (solo lo que haya disponible, no ir a negativo)
-                items.forEach(item => {
+                cartItemsWithDynamicPrice.forEach(item => {
                     const available = stocks[item.id] || 0;
                     const toDeduct = Math.min(available, item.quantity);
                     if (toDeduct > 0) {
@@ -467,7 +472,7 @@ export default function OrderFlow({ data }: Props) {
                         phone: recipientPhone,
                         cedula: recipientCedula
                     } : null,
-                    items: items.map(i => ({ id: i.id, name: i.name, quantity: i.quantity, price: i.price })),
+                    items: cartItemsWithDynamicPrice.map(i => ({ id: i.id, name: i.name, quantity: i.quantity, price: i.price })),
                     subtotal,
                     total,
                     selectedState,
@@ -945,7 +950,7 @@ export default function OrderFlow({ data }: Props) {
 
                                 {/* Cart Summary (Visible on mobile or when items change) */}
                                 <AnimatePresence>
-                                    {items.length > 0 && (
+                                    {cartItemsWithDynamicPrice.length > 0 && (
                                         <motion.section
                                             initial={{ opacity: 0, height: 0 }}
                                             animate={{ opacity: 1, height: 'auto' }}
@@ -958,7 +963,7 @@ export default function OrderFlow({ data }: Props) {
                                                 Resumen del Pedido
                                             </h3>
                                             <div className="space-y-3 mb-4 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
-                                                {items.map((item) => (
+                                                {cartItemsWithDynamicPrice.map((item) => (
                                                     <div key={item.id} className="flex justify-between items-center text-sm border-b border-gray-100 pb-2">
                                                         <div className="flex items-center gap-3">
                                                             <div className="w-12 h-12 rounded-md overflow-hidden bg-gray-100 shrink-0">
@@ -1236,7 +1241,13 @@ export default function OrderFlow({ data }: Props) {
                                                             label: `${a.codigo} - ${a.nombre} (${a.direccion.substring(0, 30)}...)`
                                                         }))}
                                                         value={selectedAgency}
-                                                        onChange={setSelectedAgency}
+                                                        onChange={(val) => {
+                                                            setSelectedAgency(val);
+                                                            const agency = availableAgencies.find((a: any) => a.codigo === val);
+                                                            if (agency) {
+                                                                setAddress(`${agency.nombre} - ${agency.direccion}`);
+                                                            }
+                                                        }}
                                                         placeholder="Selecciona la Agencia"
                                                         searchPlaceholder="Buscar agencia..."
                                                         emptyMessage="No hay agencias disponibles en esta zona"
@@ -1519,7 +1530,7 @@ export default function OrderFlow({ data }: Props) {
 
                     {/* Desktop Sidebar Sticky Cart */}
                     <aside className="hidden lg:block sticky top-24">
-                        {items.length > 0 ? (
+                        {cartItemsWithDynamicPrice.length > 0 ? (
                             <div id="cart-summary-desktop" className="bg-white rounded-3xl shadow-2xl border-4 border-[#F2A900] p-6 space-y-6 overflow-hidden">
                                 <h3 className="font-bold text-xl flex items-center gap-3 text-[#3E2723]">
                                     <ShoppingCart className="text-[#D91A2A]" size={24} />
@@ -1527,7 +1538,7 @@ export default function OrderFlow({ data }: Props) {
                                 </h3>
 
                                 <div className="space-y-4 max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
-                                    {items.map((item) => (
+                                    {cartItemsWithDynamicPrice.map((item) => (
                                         <div key={item.id} className="flex justify-between items-start gap-3 border-b border-gray-100 pb-3 h-20">
                                             <div className="flex items-center gap-3 overflow-hidden">
                                                 <div className="w-14 h-14 rounded-xl overflow-hidden bg-[#FDF6E3] shrink-0 border border-gray-100">
