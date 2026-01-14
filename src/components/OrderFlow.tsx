@@ -20,6 +20,7 @@ import { Bell } from 'lucide-react';
 import { CustomSelect } from './ui/CustomSelect';
 import UserOrdersModal from './UserOrdersModal';
 import resources from '../data/resources.json';
+import appConfig from '../data/app-config.json';
 
 
 
@@ -331,6 +332,7 @@ export default function OrderFlow({ data }: Props) {
         if (!userName) missingFields.push("Tu Nombre");
         if (!userPhone) missingFields.push("Tu WhatsApp");
         if (!userCedula) missingFields.push("Cédula");
+        if (!userEmail) missingFields.push("Tu Correo");
 
         // Recipient Info (if gift)
         if (isGift) {
@@ -1366,8 +1368,17 @@ export default function OrderFlow({ data }: Props) {
                                             </div>
                                             {(!paymentBank || paymentBank === 'Pago Móvil') && (
                                                 <div className="w-24 h-24 bg-white p-2 rounded-lg shadow-sm shrink-0">
-                                                    {/* QR Code Placeholder */}
-                                                    <div className="w-full h-full bg-gray-900 flex items-center justify-center text-white text-xs text-center">QR CODE</div>
+                                                    {/* QR Code Image */}
+                                                    <img
+                                                        src={appConfig.payment.qrImage}
+                                                        alt="QR Pago Móvil"
+                                                        className="w-full h-full object-contain cursor-pointer hover:scale-105 transition-transform"
+                                                        onClick={() => window.open(appConfig.payment.qrImage, '_blank')}
+                                                        onError={(e) => {
+                                                            (e.target as HTMLImageElement).style.display = 'none';
+                                                            (e.target as HTMLImageElement).parentElement!.innerText = 'QR no disponible';
+                                                        }}
+                                                    />
                                                 </div>
                                             )}
                                         </div>

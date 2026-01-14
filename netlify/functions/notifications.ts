@@ -173,8 +173,9 @@ export const handler: Handler = async (event) => {
             if (!smtpHost || !smtpUser || !smtpPass) {
                 console.warn('⚠️ [NotificationWorker] Saltando envío de email por falta de configuración SMTP');
             } else {
+                const smtpFrom = process.env.SMTP_FROM || smtpUser;
                 const info = await transporter.sendMail({
-                    from: `"Nathikas" <${smtpUser}>`, // Use authenticated user as sender
+                    from: `"Nathikas" <${smtpFrom}>`, // Use authenticated user as sender
                     to: to,
                     subject: `Actualización de tu pedido Nathikas #${shortId} - ${status}`,
                     html: htmlContent,

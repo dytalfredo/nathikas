@@ -16,10 +16,12 @@ import {
     X,
     User,
     Package,
-    RotateCcw
+    RotateCcw,
+    Printer
 } from 'lucide-react';
 import mrwData from '../../data/agenciasMrw2.json';
 import zoomData from '../../data/zoom_venezuela_filtrado.json';
+import { jsPDF } from 'jspdf';
 
 interface OrderItem {
     id: string;
@@ -78,6 +80,117 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
     const [showCancelModal, setShowCancelModal] = useState(false);
     const [cancelReason, setCancelReason] = useState('');
     const [orderToCancel, setOrderToCancel] = useState<string | null>(null);
+
+    const generateShippingLabel = (order: Order) => {
+        // 1/4 Letter Size (approx 108mm x 140mm)
+        // Orientation: Portrait
+        const doc = new jsPDF({
+            orientation: 'p',
+            unit: 'mm',
+            format: [108, 140]
+        });
+
+        // Helper to center text
+        const centerText = (text: string, y: number, fontSize: number = 10, isBold: boolean = false) => {
+            doc.setFontSize(fontSize);
+            doc.setFont("helvetica", isBold ? "bold" : "normal");
+            const textWidth = doc.getTextWidth(text);
+            const x = (108 - textWidth) / 2;
+            doc.text(text, x, y);
+        };
+
+        // --- Header ---
+        doc.setLineWidth(0.5);
+        doc.rect(2, 2, 104, 136); // Border
+
+        centerText("NATHIKAS", 10, 16, true);
+        centerText("Spicy Gummies & Chamoy", 15, 8);
+
+        doc.line(2, 18, 106, 18); // Separator
+
+        // Determine Recipient (Gift vs Own)
+        const recipientName = (order.isGift && order.recipient?.name) ? order.recipient.name : order.userName;
+        const recipientPhone = (order.isGift && order.recipient?.phone) ? order.recipient.phone : order.userPhone;
+        const recipientCedula = (order.isGift && order.recipient?.cedula) ? order.recipient.cedula : (order.userCedula || 'N/A');
+
+        // --- Recipient Info ---
+        doc.setFontSize(8);
+        doc.setFont("helvetica", "bold");
+        doc.text("DESTINATARIO:", 5, 25);
+
+        doc.setFontSize(12);
+        doc.text(recipientName, 5, 32);
+
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        doc.text(`CI: ${recipientCedula}`, 5, 38);
+        doc.text(`Telf: ${recipientPhone}`, 5, 44);
+
+        doc.line(2, 48, 106, 48); // Separator
+
+        // --- Address Info ---
+        doc.setFontSize(8);
+        doc.setFont("helvetica", "bold");
+        doc.text("DIRECCIÓN DE ENVÍO:", 5, 55);
+
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        doc.text(`${order.selectedState}, ${order.selectedCity}`, 5, 62);
+
+        // Agency / Address Logic
+        let addressDetail = order.selectedAgency || 'Dirección no especificada';
+        let agencyLabel = "";
+
+        if (order.shippingMethod?.toLowerCase() === 'mrw' && order.selectedAgency) {
+            const agency = (mrwData as any[]).find(a => a.codigo === order.selectedAgency);
+            if (agency) {
+                agencyLabel = `MRW ${agency.codigo}`;
+                addressDetail = agency.direccion; // Full address
+            }
+        } else if (order.shippingMethod?.toLowerCase() === 'zoom' && order.selectedAgency) {
+            const agency = (zoomData as any[]).find(a => a.codigo === order.selectedAgency);
+            if (agency) {
+                agencyLabel = `ZOOM ${agency.codigo}`;
+                addressDetail = agency.direccion;
+            }
+        } else if (order.shippingMethod === 'retiro') {
+            addressDetail = "RETIRO EN TIENDA";
+        }
+
+        // Handle long address
+        if (agencyLabel) {
+            doc.setFont("helvetica", "bold");
+            doc.text(agencyLabel, 5, 68);
+            doc.setFont("helvetica", "normal");
+            const splitAddress = doc.splitTextToSize(addressDetail, 98);
+            doc.text(splitAddress, 5, 74);
+        } else {
+            const splitAddress = doc.splitTextToSize(addressDetail, 98);
+            doc.text(splitAddress, 5, 68);
+        }
+
+        doc.line(2, 95, 106, 95); // Separator
+
+        // --- Order Details ---
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "bold");
+        doc.text(`Pedido: #${order.id.slice(0, 8)}`, 5, 102);
+        doc.text(`Fecha: ${order.createdAt?.toDate ? order.createdAt.toDate().toLocaleDateString() : 'N/A'}`, 55, 102);
+
+        doc.setFont("helvetica", "normal");
+        doc.text(`Cant. Productos: ${order.items.reduce((acc, item) => acc + item.quantity, 0)}`, 5, 108);
+
+        // Fragile / Warning
+        doc.setLineWidth(0.8);
+        doc.rect(30, 115, 48, 15);
+        centerText("FRÁGIL / DELICADO", 124, 12, true);
+
+        // Footer
+        doc.setFontSize(7);
+        centerText("Generado desde Nathikas Admin", 135);
+
+        doc.save(`Etiqueta_${order.id.slice(0, 8)}.pdf`);
+    };
 
     // Computed Filtered Orders
     const filteredOrders = orders.filter(order => {
@@ -603,6 +716,13 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
                                         )}
                                     </div>
                                     <div className="flex items-center gap-2">
+                                        <button
+                                            onClick={() => selectedOrder && generateShippingLabel(selectedOrder)}
+                                            className="bg-white/20 hover:bg-white/30 p-2 rounded-lg transition-colors text-xs font-bold flex items-center gap-1"
+                                            title="Imprimir Etiqueta"
+                                        >
+                                            <Printer size={14} /> ETIQUETA
+                                        </button>
                                         {selectedOrder.isBackorder && ['pendiente', 'pagado'].includes(selectedOrder.status) && (
                                             <button
                                                 onClick={() => syncProductionNeeds(selectedOrder)}
@@ -663,9 +783,9 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
                                                             agencyDetails = `${agency.codigo} - ${agency.nombre} - ${agency.direccion}`;
                                                         }
                                                     } else if (method === 'zoom') {
-                                                        const agency = (zoomData as any[]).find(a => a.cod_agencia === agencyCode);
+                                                        const agency = (zoomData as any[]).find(a => a.codigo === agencyCode);
                                                         if (agency) {
-                                                            agencyDetails = `${agency.cod_agencia} - ${agency.nombre} - ${agency.direccion}`;
+                                                            agencyDetails = `${agency.codigo} - ${agency.nombre} - ${agency.direccion}`;
                                                         }
                                                     }
 
