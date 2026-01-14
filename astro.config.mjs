@@ -30,19 +30,19 @@ export default defineConfig({
                 start_url: "/",
                 icons: [
                     {
-                        src: "/images/logo.png",
+                        src: "/images/logo.webp",
                         sizes: "192x192",
-                        type: "image/png",
+                        type: "image/webp",
                     },
                     {
-                        src: "/images/logo.png",
+                        src: "/images/logo.webp",
                         sizes: "512x512",
-                        type: "image/png",
+                        type: "image/webp",
                     },
                     {
-                        src: "/images/logo.png",
+                        src: "/images/logo.webp",
                         sizes: "512x512",
-                        type: "image/png",
+                        type: "image/webp",
                         purpose: "any maskable",
                     },
                 ],

@@ -1,21 +1,23 @@
 import type { Handler } from '@netlify/functions';
-import * as admin from 'firebase-admin';
+import { initializeApp, cert, getApps } from 'firebase-admin/app';
+import { getAuth } from 'firebase-admin/auth';
+import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 
 // Initialize Firebase Admin if not already initialized
-if (!admin.apps.length) {
-    if (process.env.FIREBASE_SERVICE_ACCOUNT) {
-        try {
+try {
+    if (!getApps().length) {
+        if (process.env.FIREBASE_SERVICE_ACCOUNT) {
             const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-            admin.initializeApp({
-                credential: admin.credential.cert(serviceAccount)
+            initializeApp({
+                credential: cert(serviceAccount)
             });
             console.log("✅ [CreateUserWorker] Firebase Admin inicializado.");
-        } catch (e) {
-            console.error("❌ [CreateUserWorker] Error inicializando Firebase Admin:", e);
+        } else {
+            console.warn("⚠️ [CreateUserWorker] FIREBASE_SERVICE_ACCOUNT no configurado.");
         }
-    } else {
-        console.warn("⚠️ [CreateUserWorker] FIREBASE_SERVICE_ACCOUNT no configurado.");
     }
+} catch (e) {
+    console.error("❌ [CreateUserWorker] Error inicializando Firebase Admin:", e);
 }
 
 export const handler: Handler = async (event) => {
@@ -27,7 +29,7 @@ export const handler: Handler = async (event) => {
     }
 
     // Checking if Admin SDK is ready
-    if (!admin.apps.length) {
+    if (!getApps().length) {
         return {
             statusCode: 500,
             body: JSON.stringify({ error: 'Configuración de servidor incompleta (Falta Service Account)' })
@@ -48,7 +50,8 @@ export const handler: Handler = async (event) => {
         console.log(`👤 [CreateUserWorker] Intentando crear usuario: ${email} con rol ${role}...`);
 
         // 1. Create User in Firebase Authentication
-        const userRecord = await admin.auth().createUser({
+        const auth = getAuth();
+        const userRecord = await auth.createUser({
             email: email,
             password: password,
             displayName: name || email.split('@')[0],
@@ -58,11 +61,12 @@ export const handler: Handler = async (event) => {
 
         // 2. Create User Profile in Firestore
         // This bypasses client-side security rules because we are using Admin SDK
-        await admin.firestore().collection('users').doc(userRecord.uid).set({
+        const db = getFirestore();
+        await db.collection('users').doc(userRecord.uid).set({
             email: email,
             role: role, // 'administrator', 'asistente', 'vendedor'
             name: name || email.split('@')[0],
-            createdAt: admin.firestore.FieldValue.serverTimestamp(),
+            createdAt: FieldValue.serverTimestamp(),
             isAnonymous: false,
             // Add any other default fields here
         });

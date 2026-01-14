@@ -220,8 +220,8 @@ export default function OrderFlow({ data }: Props) {
         return acc + (item.price * item.quantity * (percent / 100));
     }, 0);
     const subtotal = baseSubtotal - discountAmount;
-    const shippingCost = 5.00; // Example fixed shipping
-    const total = subtotal + shippingCost;
+    const shippingCost = 0;
+    const total = subtotal;
 
     // Scroll to section on step change (if not handled by explicit click)
     useEffect(() => {
@@ -1574,6 +1574,10 @@ export default function OrderFlow({ data }: Props) {
                                             <span>-${discountAmount.toFixed(2)}</span>
                                         </div>
                                     )}
+                                    <div className="flex justify-between items-center text-sm text-gray-500 font-medium">
+                                        <span>Envío:</span>
+                                        <span className="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-xs font-bold uppercase">Cobro en Destino</span>
+                                    </div>
                                     <div className="flex justify-between items-center font-bold text-2xl text-[#D91A2A] pt-2">
                                         <span>Total:</span>
                                         <span>${subtotal.toFixed(2)}</span>

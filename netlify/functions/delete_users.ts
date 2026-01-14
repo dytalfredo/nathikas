@@ -1,21 +1,23 @@
 import type { Handler } from '@netlify/functions';
-import * as admin from 'firebase-admin';
+import { initializeApp, cert, getApps } from 'firebase-admin/app';
+import { getAuth } from 'firebase-admin/auth';
+import { getFirestore } from 'firebase-admin/firestore';
 
 // Initialize Firebase Admin if not already initialized
-if (!admin.apps.length) {
-    if (process.env.FIREBASE_SERVICE_ACCOUNT) {
-        try {
+try {
+    if (!getApps().length) {
+        if (process.env.FIREBASE_SERVICE_ACCOUNT) {
             const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-            admin.initializeApp({
-                credential: admin.credential.cert(serviceAccount)
+            initializeApp({
+                credential: cert(serviceAccount)
             });
             console.log("✅ [DeleteUsersWorker] Firebase Admin inicializado.");
-        } catch (e) {
-            console.error("❌ [DeleteUsersWorker] Error inicializando Firebase Admin:", e);
+        } else {
+            console.warn("⚠️ [DeleteUsersWorker] FIREBASE_SERVICE_ACCOUNT no configurado.");
         }
-    } else {
-        console.warn("⚠️ [DeleteUsersWorker] FIREBASE_SERVICE_ACCOUNT no configurado.");
     }
+} catch (e) {
+    console.error("❌ [DeleteUsersWorker] Error inicializando Firebase Admin:", e);
 }
 
 export const handler: Handler = async (event) => {
@@ -26,10 +28,11 @@ export const handler: Handler = async (event) => {
         return { statusCode: 405, body: 'Method Not Allowed' };
     }
 
-    if (!admin.apps.length) {
+    // Check initialization
+    if (!getApps().length) {
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: 'Configuración de servidor incompleta (Falta Service Account)' })
+            body: JSON.stringify({ error: 'Configuración de servidor incompleta (Falta Service Account o Error de Init)' })
         };
     }
 
@@ -47,13 +50,14 @@ export const handler: Handler = async (event) => {
         console.log(`⚠️ [DeleteUsersWorker] INICIANDO PROTOCOLO DE ELIMINACIÓN MASIVA. Excluyendo: ${exceptUid}`);
 
         // 1. DELETE FROM AUTHENTICATION
-        const listUsersResult = await admin.auth().listUsers(1000);
+        const auth = getAuth();
+        const listUsersResult = await auth.listUsers(1000);
         const usersToDelete = listUsersResult.users
             .filter(user => user.uid !== exceptUid)
             .map(user => user.uid);
 
         if (usersToDelete.length > 0) {
-            const deleteAuthResult = await admin.auth().deleteUsers(usersToDelete);
+            const deleteAuthResult = await auth.deleteUsers(usersToDelete);
             console.log(`✅ [DeleteUsersWorker] Eliminados ${deleteAuthResult.successCount} usuarios de Auth.`);
             if (deleteAuthResult.failureCount > 0) {
                 console.warn(`⚠️ [DeleteUsersWorker] Fallo al eliminar ${deleteAuthResult.failureCount} usuarios de Auth.`);
@@ -64,8 +68,9 @@ export const handler: Handler = async (event) => {
         }
 
         // 2. DELETE FROM FIRESTORE (users collection)
-        const usersSnapshot = await admin.firestore().collection('users').get();
-        const batch = admin.firestore().batch();
+        const db = getFirestore();
+        const usersSnapshot = await db.collection('users').get();
+        const batch = db.batch();
         let firestoreCount = 0;
 
         usersSnapshot.docs.forEach(doc => {
