@@ -1,17 +1,18 @@
-import { useState, memo } from 'react';
+import { useState, memo, lazy, Suspense } from 'react';
 import { ShoppingCart } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useCartStore } from '../store/cartStore';
 import HeroSection from './HeroSection';
-import RitualSteps from './RitualSteps';
-import TestimonialCarousel from './TestimonialCarousel';
-import TikTokSection from './TikTokSection';
-import VideoCTA from './VideoCTA';
-import Footer from './Footer';
-import BenefitsSection from './BenefitsSection';
-import FAQSection from './FAQSection';
-import ProductInfoSection from './ProductInfoSection';
-import B2BSection from './B2BSection';
+// Lazy load below-the-fold components
+const RitualSteps = lazy(() => import('./RitualSteps'));
+const TestimonialCarousel = lazy(() => import('./TestimonialCarousel'));
+const TikTokSection = lazy(() => import('./TikTokSection'));
+const VideoCTA = lazy(() => import('./VideoCTA'));
+const Footer = lazy(() => import('./Footer'));
+const BenefitsSection = lazy(() => import('./BenefitsSection'));
+const FAQSection = lazy(() => import('./FAQSection'));
+const ProductInfoSection = lazy(() => import('./ProductInfoSection'));
+const B2BSection = lazy(() => import('./B2BSection'));
 
 interface Props {
     data: any;
@@ -27,36 +28,38 @@ const Shop = memo(function Shop({ data }: Props) {
             <HeroSection scrollToStore={() => window.location.href = '/shop'} />
 
             {/* 2. The Ritual (Steps) */}
-            <RitualSteps steps={data.ritualSteps || []} />
+            <Suspense fallback={<div className="py-20 text-center"><span className="loader"></span></div>}>
+                <RitualSteps steps={data.ritualSteps || []} />
 
-            {/* 3. Benefits Section (New) */}
-            <BenefitsSection />
+                {/* 3. Benefits Section (New) */}
+                <BenefitsSection />
 
-            {/* 3.5 Product Info Section */}
-            <ProductInfoSection />
+                {/* 3.5 Product Info Section */}
+                <ProductInfoSection />
 
-            <div className="container mx-auto px-4 py-12">
-                {/* 5. The Store (Products) - Moved to /shop */}
-            </div>
+                <div className="container mx-auto px-4 py-12">
+                    {/* 5. The Store (Products) - Moved to /shop */}
+                </div>
 
-            {/* 6. TikTok Section ( Replaces Testimonials ) */}
-            {/* {data.testimonials && <TestimonialCarousel testimonials={data.testimonials} />} */}
-            <TikTokSection />
+                {/* 6. TikTok Section ( Replaces Testimonials ) */}
+                {/* {data.testimonials && <TestimonialCarousel testimonials={data.testimonials} />} */}
+                <TikTokSection />
 
-            {/* 6.5 B2B Partnership Section */}
-            <B2BSection />
+                {/* 6.5 B2B Partnership Section */}
+                <B2BSection />
 
-            {/* 7. FAQ Section (New) */}
-            {data.faq && <FAQSection faqs={data.faq} contact={data.contact} />}
+                {/* 7. FAQ Section (New) */}
+                {data.faq && <FAQSection faqs={data.faq} contact={data.contact} />}
 
-            {/* 8. Video CTA Removed */}
+                {/* 8. Video CTA Removed */}
 
-            {/* 9. Footer */}
-            <Footer
-                companyData={data.company}
-                contact={data.contact}
-                social={data.social}
-            />
+                {/* 9. Footer */}
+                <Footer
+                    companyData={data.company}
+                    contact={data.contact}
+                    social={data.social}
+                />
+            </Suspense>
 
 
             {/* Floating Cart Button & Mascot */}

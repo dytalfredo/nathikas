@@ -54,12 +54,25 @@ const resolvedImage = new URL(image, appData.seo.url).toString();
         <meta property="twitter:title" content={title} />
         <meta property="twitter:description" content={description} />
         <meta property="twitter:image" content={resolvedImage} />
+
+        {/* Performance Optimizations - Preconnects */}
+        <link rel="preconnect" href="https://nathikas.firebaseapp.com" />
+        <link rel="preconnect" href="https://www.transparenttextures.com" />
+
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
             href="https://fonts.googleapis.com/css2?family=Chicle&family=Nunito:wght@300;400;600;700;800&display=swap"
             rel="stylesheet"
+            media="print"
+            onload="this.media='all'"
         />
+        <noscript>
+            <link
+                href="https://fonts.googleapis.com/css2?family=Chicle&family=Nunito:wght@300;400;600;700;800&display=swap"
+                rel="stylesheet"
+            />
+        </noscript>
         {pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} />}
     </head>
     <body class="bg-[#FDF6E3] text-[#3E2723] min-h-screen relative">

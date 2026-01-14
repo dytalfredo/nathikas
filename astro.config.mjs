@@ -11,6 +11,10 @@ export default defineConfig({
     devToolbar: {
         enabled: false
     },
+    compressHTML: true,
+    build: {
+        inlineStylesheets: 'always'
+    },
     integrations: [
         react(),
         AstroPWA({
@@ -53,5 +57,8 @@ export default defineConfig({
     vite: {
         // @ts-ignore
         plugins: [tailwindcss()],
+        build: {
+            minify: true
+        }
     },
 });

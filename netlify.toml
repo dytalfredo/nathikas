@@ -52,3 +52,8 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

@@ -28,24 +28,26 @@ const HeroSection = memo(function HeroSection({ scrollToStore }: { scrollToStore
         }
     };
 
-    const [bgImage, setBgImage] = useState(resources.backgrounds.heroDesktop);
 
-    useEffect(() => {
-        const updateBg = () => {
-            setBgImage(window.innerWidth < 768 ? resources.backgrounds.heroMobile : resources.backgrounds.heroDesktop);
-        };
-        updateBg(); // Initial check
-        window.addEventListener('resize', updateBg);
-        return () => window.removeEventListener('resize', updateBg);
-    }, []);
 
     return (
         <section
-            className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-cover bg-center"
-            style={{
-                backgroundImage: `url('${bgImage}')`
-            }}
+            className="relative min-h-[90vh] flex items-center justify-center overflow-hidden"
         >
+            {/* Optimized LCP Background Image */}
+            <div className="absolute inset-0 z-0">
+                <picture>
+                    <source media="(max-width: 767px)" srcSet={resources.backgrounds.heroMobile} />
+                    <img
+                        src={resources.backgrounds.heroDesktop}
+                        alt="Fondo Nathikas"
+                        className="w-full h-full object-cover"
+                        // @ts-ignore
+                        fetchPriority="high"
+                    />
+                </picture>
+                <div className="absolute inset-0 bg-black/10"></div> {/* Optional overlay if needed for contrast */}
+            </div>
             {/* Gummy Rain Particles (Layered) */}
             <GummyRain id="tsparticles-back" zIndex="z-0" count={10} />
             <GummyRain id="tsparticles-mid" zIndex="z-10" count={10} />
@@ -60,7 +62,7 @@ const HeroSection = memo(function HeroSection({ scrollToStore }: { scrollToStore
                     initial="initial"
                     whileHover="hover"
                 >
-                    <img src={resources.logo} alt="Nathikas Logo" className="h-12 md:h-16 w-auto drop-shadow-md z-10" />
+                    <img src={resources.logo} alt="Nathikas Logo" className="h-12 md:h-16 w-auto drop-shadow-md z-10" width="160" height="64" />
                     <motion.div
                         variants={{
                             initial: { opacity: 0, x: -20, width: 0 },
@@ -183,8 +185,8 @@ const HeroSection = memo(function HeroSection({ scrollToStore }: { scrollToStore
                 className="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-10 w-80 md:w-[500px]"
             >
                 <picture>
-                    <source media="(max-width: 767px)" srcSet="/recursos/recurso2m.webp" />
-                    <img src="/recursos/recurso2.webp" alt="Decoración Mexicana" className="w-full h-auto" />
+                    <source media="(max-width: 767px)" srcSet="/recursos/recurso2m.webp" width="320" height="320" />
+                    <img src="/recursos/recurso2.webp" alt="Decoración Mexicana" className="w-full h-auto" width="800" height="auto" />
                 </picture>
             </motion.div>
 
