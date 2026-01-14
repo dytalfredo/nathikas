@@ -4,9 +4,11 @@ import react from "@astrojs/react";
 import netlify from "@astrojs/netlify";
 import tailwindcss from "@tailwindcss/vite";
 import AstroPWA from "@vite-pwa/astro";
+import sitemap from "@astrojs/sitemap";
 
 // https://astro.build/config
 export default defineConfig({
+    site: 'https://nathikas.com',
     adapter: netlify(),
     devToolbar: {
         enabled: false
@@ -17,6 +19,9 @@ export default defineConfig({
     },
     integrations: [
         react(),
+        sitemap({
+            filter: (page) => !page.includes('/admin'),
+        }),
         AstroPWA({
             registerType: "autoUpdate",
             includeAssets: ["favicon.svg", "robots.txt"],

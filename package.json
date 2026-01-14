@@ -13,6 +13,7 @@
     "dependencies": {
         "@astrojs/netlify": "^6.6.3",
         "@astrojs/react": "^4.1.0",
+        "@astrojs/sitemap": "^3.6.1",
         "@netlify/functions": "^5.1.2",
         "@tailwindcss/vite": "^4.0.0-beta.9",
         "@types/nodemailer": "^7.0.5",
