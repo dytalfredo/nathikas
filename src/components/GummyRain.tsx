@@ -102,7 +102,7 @@ export default function GummyRain({ id = "tsparticles", zIndex = "z-0", count = 
                 }
             }
         },
-        detectRetina: true,
+        detectRetina: false,
     }), [count]);
 
     if (!isMounted) return null;
