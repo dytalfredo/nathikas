@@ -2,18 +2,45 @@ import type { Handler } from '@netlify/functions';
 import { initializeApp, cert, getApps } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
+import { readFileSync, existsSync } from 'fs';
+import { resolve } from 'path';
 
 // Initialize Firebase Admin if not already initialized
 try {
     if (!getApps().length) {
+        let serviceAccount;
         if (process.env.FIREBASE_SERVICE_ACCOUNT) {
-            const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+            try {
+                serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+            } catch (e) {
+                console.error("❌ Error parsing FIREBASE_SERVICE_ACCOUNT env var");
+            }
+        }
+
+        if (!serviceAccount) {
+            try {
+                const localPath = resolve('./service-account.json');
+                if (existsSync(localPath)) {
+                    serviceAccount = JSON.parse(readFileSync(localPath, 'utf-8'));
+                    console.log("✅ Using local service-account.json");
+                }
+            } catch (e) {
+                console.error("❌ Error reading local service-account.json");
+            }
+        }
+
+        if (serviceAccount) {
+            // Fix for newline escaping issues in private key
+            if (serviceAccount.private_key) {
+                serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
+            }
+
             initializeApp({
                 credential: cert(serviceAccount)
             });
             console.log("✅ [CreateUserWorker] Firebase Admin inicializado.");
         } else {
-            console.warn("⚠️ [CreateUserWorker] FIREBASE_SERVICE_ACCOUNT no configurado.");
+            console.warn("⚠️ [CreateUserWorker] FIREBASE_SERVICE_ACCOUNT no configurado y no se encontró service-account.json.");
         }
     }
 } catch (e) {
