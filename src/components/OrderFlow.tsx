@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ShoppingCart, CreditCard, Minus, Plus, Trash2, ArrowLeft, ArrowRight, Loader2, HelpCircle, AlertTriangle, Percent, CheckCircle, LogIn, User, Sparkles, X } from 'lucide-react';
+import { ChevronDown, ShoppingCart, CreditCard, Minus, Plus, Trash2, ArrowLeft, ArrowRight, Loader2, HelpCircle, AlertTriangle, Percent, CheckCircle, LogIn, User, Sparkles, X, Package } from 'lucide-react';
 import { useCartStore } from '../store/cartStore';
 import type { Product } from '../store/cartStore';
 import { venezuelaData } from '../data/venezuela';
@@ -18,6 +18,7 @@ import { requestNotificationPermission } from '../lib/notification-service';
 import { getMessagingInstance } from '../lib/firebase';
 import { Bell } from 'lucide-react';
 import { CustomSelect } from './ui/CustomSelect';
+import UserOrdersModal from './UserOrdersModal';
 import resources from '../data/resources.json';
 
 
@@ -32,6 +33,7 @@ export default function OrderFlow({ data }: Props) {
     const { user } = useAuthStore();
     const [step, setStep] = useState(1);
     const [showSuccess, setShowSuccess] = useState(false);
+    const [showOrdersModal, setShowOrdersModal] = useState(false);
 
     const [selectedState, setSelectedState] = useState('');
     // const [selectedCity, setSelectedCity] = useState(''); // Removed as per new requirement
@@ -477,22 +479,38 @@ export default function OrderFlow({ data }: Props) {
                 await batch.commit();
 
                 // 4. Preparar mensaje de WhatsApp con aviso de backorder
-                let finalMessage = message;
                 if (isBackorder) {
-                    finalMessage += `\n⚠️ *AVISO DE PRODUCCIÓN:*\nEste pedido incluye productos en producción. Será atendido en las próximas 24-48 horas.`;
+                    message += `\n⚠️ *AVISO DE PRODUCCIÓN:*\nEste pedido incluye productos en producción. Será atendido en las próximas 24-48 horas.`;
                 }
-                const encodedMessage = encodeURIComponent(finalMessage);
+                const encodedMessage = encodeURIComponent(message);
 
-                // Open WhatsApp
-                window.open(`https://wa.me/${businessPhone}?text=${encodedMessage}`, '_blank');
+                // 4. Send Confirmation Email (Non-blocking)
+                if (userEmail) {
+                    fetch('/.netlify/functions/notifications', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            to: userEmail,
+                            userName: userName,
+                            orderId: orderRef.id,
+                            customerId: currentUser.uid,
+                            status: 'pendiente'
+                        })
+                    }).catch(err => console.error("Failed to trigger notification:", err));
+                }
 
                 // 5. Cleanup and Success Message
                 useAlertStore.getState().showAlert(
                     "¡Pedido enviado!",
-                    "Tu pedido ha sido registrado con éxito. Serás redirigido a WhatsApp para finalizar.",
+                    "Tu pedido ha sido registrado con éxito. Serás redirigido a WhatsApp en unos segundos para finalizar.",
                     "success"
                 );
                 setShowSuccess(true);
+
+                // 6. Open WhatsApp (Delayed)
+                setTimeout(() => {
+                    window.open(`https://wa.me/${businessPhone}?text=${encodedMessage}`, '_blank');
+                }, 3000);
 
                 // Si ya está logueado (no anónimo), sincronizamos perfil por si cambió algo
                 // Nota: Solo sincronizamos los datos del COMPRADOR, no los del receptor.
@@ -656,6 +674,18 @@ export default function OrderFlow({ data }: Props) {
                         </button>
                     )}
 
+                    {/* User Orders Button */}
+                    {user && !user.isAnonymous && (
+                        <button
+                            onClick={() => setShowOrdersModal(true)}
+                            className="bg-white/50 hover:bg-white text-[#D91A2A] w-10 h-10 md:w-auto md:px-4 md:h-10 rounded-full font-bold text-xs md:text-sm shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2"
+                            title="Mis Pedidos"
+                        >
+                            <Package size={20} />
+                            <span className="hidden md:inline">Mis Pedidos</span>
+                        </button>
+                    )}
+
                     {/* Auth Status / Login Trigger */}
                     <button
                         onClick={handleAuthClick}
@@ -681,6 +711,11 @@ export default function OrderFlow({ data }: Props) {
                     </button>
                 </div>
             </header>
+
+            <UserOrdersModal
+                isOpen={showOrdersModal}
+                onClose={() => setShowOrdersModal(false)}
+            />
 
             <main className="container mx-auto max-w-7xl px-4 pt-8 pb-12">
                 <div className="lg:grid lg:grid-cols-[1fr_380px] lg:gap-12 items-start">
@@ -1544,10 +1579,20 @@ export default function OrderFlow({ data }: Props) {
                                             <button
                                                 onClick={handleConfirmOrder}
                                                 disabled={isSubmitting}
-                                                className="w-full bg-[#007A33] text-white py-4 rounded-2xl font-bold text-lg shadow-lg hover:bg-[#006028] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                                                className={`transition-all duration-300 shadow-lg flex items-center justify-center gap-2 disabled:opacity-80
+                                                    ${isSubmitting
+                                                        ? 'w-16 h-16 rounded-full bg-[#F2A900] text-[#3E2723]'
+                                                        : 'w-full bg-[#007A33] text-white py-4 rounded-2xl font-bold text-lg hover:bg-[#006028]'
+                                                    }`}
                                             >
-                                                {isSubmitting ? <Loader2 className="animate-spin" /> : 'Finalizar Pedido'}
-                                                <CheckCircle size={20} />
+                                                {isSubmitting ? (
+                                                    <Loader2 className="animate-spin w-8 h-8" />
+                                                ) : (
+                                                    <>
+                                                        Finalizar Pedido
+                                                        <CheckCircle size={20} />
+                                                    </>
+                                                )}
                                             </button>
                                         </div>
                                     )}

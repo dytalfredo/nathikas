@@ -1,7 +1,20 @@
-import { Instagram, MessageCircle } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 import resources from '../data/resources.json';
 
 const TikTok = ({ size = 24, className = "" }) => (
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width={size}
+        height={size}
+        viewBox="0 0 24 24"
+        className={className}
+        style={{ fillRule: 'evenodd', clipRule: 'evenodd', strokeLinejoin: 'round', strokeMiterlimit: 2 }}
+    >
+        <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.65-1.7-1.32v8.22c.04 5.76-7.72 9.07-11.33 4.88-2.67-4.14-.14-9.3 4.38-9.56v4.32c-.93.18-1.57.94-1.56 1.88.02.82.72 1.49 1.54 1.48 1.58.12 1.94-2.07 1.8-3.04.14-5.63.14-11.26 0-16.89.39-.99.78-1.99 1.17-2.97z" fill="white" />
+    </svg>
+);
+
+const Instagram = ({ size = 24, className = "" }) => (
     <svg
         xmlns="http://www.w3.org/2000/svg"
         width={size}
@@ -14,7 +27,18 @@ const TikTok = ({ size = 24, className = "" }) => (
         strokeLinejoin="round"
         className={className}
     >
-        <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+        <rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke="url(#instagram-gradient)" strokeWidth="2" />
+        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" stroke="white" />
+        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke="white" strokeWidth="2" />
+        <defs>
+            <linearGradient id="instagram-gradient" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#f09433" />
+                <stop offset="25%" stopColor="#e6683c" />
+                <stop offset="50%" stopColor="#dc2743" />
+                <stop offset="75%" stopColor="#cc2366" />
+                <stop offset="100%" stopColor="#bc1888" />
+            </linearGradient>
+        </defs>
     </svg>
 );
 

@@ -141,10 +141,6 @@
             "answer": "Una vez que despachemos tu pedido, te enviaremos el número de guía de MRW o Zoom a tu correo electrónico o WhatsApp para que puedas seguir su trayecto."
         },
         {
-            "question": "¿Ofrecen delivery en Maturín?",
-            "answer": "Sí, contamos con servicio de delivery en Maturín con un costo adicional dependiendo de la zona. También puedes retirar gratis en nuestros puntos de encuentro."
-        },
-        {
             "question": "¿Cuáles son los ingredientes principales?",
             "answer": "Utilizamos gomitas de alta calidad, frutas deshidratadas selectas, mezcla de chiles en polvo y nuestra salsa chamoy artesanal a base de frutas."
         }
@@ -225,9 +221,9 @@
             }
         ],
         "pagoMovil": {
-            "bank": "0102 - Banco de Venezuela",
-            "phone": "0414-1234567",
-            "id": "12345678"
+            "bank": "Provincial",
+            "phone": "04245179033",
+            "id": "30590826"
         },
         "qrImage": "/images/qr-placeholder.webp"
     }

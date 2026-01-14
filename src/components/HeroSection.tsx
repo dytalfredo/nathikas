@@ -20,6 +20,7 @@ const HeroSection = memo(function HeroSection({ scrollToStore }: { scrollToStore
         setIsLoggingIn(true);
         try {
             await loginWithGoogle();
+            window.location.href = '/shop';
         } catch (error) {
             console.error("Login failed:", error);
         } finally {

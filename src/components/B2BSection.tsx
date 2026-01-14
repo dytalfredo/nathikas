@@ -96,7 +96,7 @@ export default function B2BSection() {
                     className="text-center mt-16"
                 >
                     <a
-                        href="https://wa.me/584149999999?text=Hola,%20me%20interesa%20ser%20distribuidor%20de%20Nathikas"
+                        href="https://wa.me/584128919386?text=Hola,%20me%20interesa%20ser%20distribuidor%20de%20Nathikas"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 bg-[#F2A900] text-[#3E2723] font-bold py-4 px-8 rounded-full hover:bg-white hover:text-[#D91A2A] transition-all transform hover:scale-105 shadow-xl"

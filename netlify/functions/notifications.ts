@@ -62,7 +62,24 @@ export const handler: Handler = async (event) => {
         let htmlContent = "";
         const shortId = (orderId || '').slice(0, 8);
 
-        if (status === 'pagado') {
+        if (status === 'pendiente') {
+            htmlContent = `
+                <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 4px solid #F2A900; border-radius: 20px; overflow: hidden; background-color: #FDF6E3;">
+                  <div style="background-color: #F2A900; padding: 20px; text-align: center;">
+                    <h1 style="color: #3E2723; margin: 10px 0; font-size: 24px;">Nathikas</h1>
+                  </div>
+                  <div style="padding: 30px; color: #3E2723;">
+                    <h2 style="color: #D91A2A;">¡Pedido Recibido!</h2>
+                    <p>Hola <strong>${userName}</strong>,</p>
+                    <p>Hemos recibido tu pedido <strong>#${shortId}</strong> exitosamente.</p>
+                    <p>En este momento nuestro equipo está verificando tu pago y los detalles de tu orden. Te avisaremos apenas comience la preparación.</p>
+                    <div style="margin-top: 30px; border-top: 1px solid #E6D9B8; padding-top: 20px; font-size: 12px; color: #7D6B5D; text-align: center;">
+                      Nathikas - Spicy Gummies & Chamoy.
+                    </div>
+                  </div>
+                </div>
+            `;
+        } else if (status === 'pagado') {
             htmlContent = `
                 <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 4px solid #F2A900; border-radius: 20px; overflow: hidden; background-color: #FDF6E3;">
                   <div style="background-color: #D91A2A; padding: 20px; text-align: center;">

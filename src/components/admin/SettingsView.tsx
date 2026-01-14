@@ -270,6 +270,39 @@ export default function SettingsView() {
         }
     };
 
+    const handleDeleteUsers = async () => {
+        const confirm1 = window.confirm("¡PELIGRO EXTREMO! Esto eliminará TODOS los usuarios y sus métodos de acceso, EXCEPTO TU CUENTA ACTUAL. ¿Continuar?");
+        if (!confirm1) return;
+
+        const confirm2 = window.prompt("Escribe 'ELIMINAR TODO' para confirmar la eliminación de usuarios:");
+        if (confirm2 !== 'ELIMINAR TODO') {
+            showAlert("Cancelado", "La frase de confirmación no coincide.", "error");
+            return;
+        }
+
+        setSaving(true);
+        try {
+            const currentUser = useAuthStore.getState().user;
+            if (!currentUser || !currentUser.uid) throw new Error("No authenticado");
+
+            const response = await fetch('/.netlify/functions/delete_users', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ exceptUid: currentUser.uid })
+            });
+
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || 'Error al eliminar usuarios');
+
+            showAlert("Usuarios Eliminados", `Se eliminaron ${data.deletedAuth} cuentas y ${data.deletedFirestore} perfiles.`, "success");
+        } catch (err: any) {
+            console.error("Error deleting users:", err);
+            showAlert("Error Crítico", err.message || "No se pudo completar la eliminación de usuarios.", "error");
+        } finally {
+            setSaving(false);
+        }
+    };
+
     if (loading || !settings) {
         return <div className="p-12 text-center text-gray-400 font-bold">Cargando configuraciones...</div>;
     }
@@ -724,10 +757,18 @@ export default function SettingsView() {
 
                             <button
                                 onClick={handleResetDatabase}
-                                className="bg-white border-2 border-red-200 text-red-600 px-8 py-4 rounded-2xl font-bold hover:bg-red-600 hover:text-white hover:border-red-600 transition-all shadow-sm flex items-center gap-3 active:scale-95"
+                                className="bg-white border-2 border-red-200 text-red-600 px-8 py-4 rounded-2xl font-bold hover:bg-red-600 hover:text-white hover:border-red-600 transition-all shadow-sm flex items-center gap-3 active:scale-95 w-full md:w-auto justify-center"
                             >
                                 <Trash2 size={24} />
                                 REINICIAR PEDIDOS Y PRODUCCIÓN
+                            </button>
+
+                            <button
+                                onClick={handleDeleteUsers}
+                                className="bg-red-600 border-2 border-red-600 text-white px-8 py-4 rounded-2xl font-bold hover:bg-red-700 hover:border-red-700 transition-all shadow-md flex items-center gap-3 active:scale-95 w-full md:w-auto justify-center"
+                            >
+                                <UserPlus size={24} className="rotate-45" /> {/* Simulating a UserDelete icon */}
+                                ELIMINAR TODOS LOS USUARIOS
                             </button>
 
                             <div className="border-t border-red-100 pt-6">
