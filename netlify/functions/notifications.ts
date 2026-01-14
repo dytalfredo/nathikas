@@ -1,5 +1,5 @@
 import type { Handler } from '@netlify/functions';
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 import * as admin from 'firebase-admin';
 
 // Inicializar Firebase Admin si se proporcionan credenciales
@@ -37,13 +37,26 @@ export const handler: Handler = async (event) => {
             return { statusCode: 400, body: JSON.stringify({ error: 'Faltan campos (to, status)' }) };
         }
 
-        const resendKey = process.env.RESEND_API_KEY || process.env.RESEND_APY_KEY;
-        if (!resendKey) {
-            console.error('❌ [NotificationWorker] FALTA API KEY DE RESEND. No se enviará correo.');
+        const smtpHost = process.env.SMTP_HOST;
+        const smtpPort = process.env.SMTP_PORT;
+        const smtpUser = process.env.SMTP_USER;
+        const smtpPass = process.env.SMTP_PASS;
+
+        if (!smtpHost || !smtpUser || !smtpPass) {
+            console.error('❌ [NotificationWorker] FALTAN CREDENCIALES SMTP. No se enviará correo.');
         } else {
-            console.log('✅ [NotificationWorker] API Key de Resend detectada.');
+            console.log('✅ [NotificationWorker] Credenciales SMTP detectadas.');
         }
-        const resend = new Resend(resendKey);
+
+        const transporter = nodemailer.createTransport({
+            host: smtpHost,
+            port: parseInt(smtpPort || '587'),
+            secure: parseInt(smtpPort || '587') === 465, // true for 465, false for others
+            auth: {
+                user: smtpUser,
+                pass: smtpPass,
+            },
+        });
 
         // 1. Definir Contenido HTML Basado en el Estatus (Templates Consolidados)
         let htmlContent = "";
@@ -140,23 +153,18 @@ export const handler: Handler = async (event) => {
         // 3. Enviar Correo Electrónico
         try {
             console.log(`📧 [NotificationWorker] INTENTANDO enviar email a ${to}...`);
-            if (!resendKey) {
-                console.warn('⚠️ [NotificationWorker] Saltando envío de email por falta de API Key');
+            if (!smtpHost || !smtpUser || !smtpPass) {
+                console.warn('⚠️ [NotificationWorker] Saltando envío de email por falta de configuración SMTP');
             } else {
-                const { data, error } = await resend.emails.send({
-                    from: 'Nathikas <notificaciones@nathikas.com>',
-                    to: [to],
+                const info = await transporter.sendMail({
+                    from: `"Nathikas" <${smtpUser}>`, // Use authenticated user as sender
+                    to: to,
                     subject: `Actualización de tu pedido Nathikas #${shortId} - ${status}`,
                     html: htmlContent,
                 });
 
-                if (error) {
-                    console.error('❌ [NotificationWorker] Resend devolvió error:', error);
-                    results.email = { error: error };
-                } else {
-                    console.log('✅ [NotificationWorker] Email enviado exitosamente. ID:', data?.id);
-                    results.email = { data, error: null };
-                }
+                console.log('✅ [NotificationWorker] Email enviado exitosamente. MessageID:', info.messageId);
+                results.email = { messageId: info.messageId, error: null };
             }
         } catch (err: any) {
             console.error("❌ [NotificationWorker] Excepción en envío de email:", err);

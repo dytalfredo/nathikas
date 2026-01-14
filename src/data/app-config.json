@@ -1,4 +1,5 @@
 {
+    "version": "1.0.0",
     "company": {
         "name": "Nathikas",
         "logo": "/images/logo.webp",
@@ -17,27 +18,26 @@
         "twitterHandle": "@nathikas"
     },
     "contact": {
-        "phone": "+58 414-1234567",
-        "email": "hola@nathikas.com",
-        "address": "Caracas, Venezuela",
-        "whatsapp": "+58 414-1234567"
+        "phone": "+58 4128919386",
+        "email": "contacto@nathikas.com",
+        "address": "Margarita, Venezuela",
+        "whatsapp": "+58 4128919386"
     },
     "social": {
-        "facebook": "#",
-        "instagram": "#",
-        "twitter": "#"
+        "instagram": "https://instagram.com/nathikas.ve",
+        "tiktok": "https://tiktok.com/@nathikas.ve"
     },
     "ritualSteps": [
         {
             "id": 1,
             "title": "Selecciona",
-            "description": "Elige tus gomitas favoritas o uno de nuestros kits explosivos.",
+            "description": "Elige tus gomitas favoritas ahogadas o enchiladas.",
             "icon": "MousePointerClick"
         },
         {
             "id": 2,
-            "title": "Personaliza",
-            "description": "Añade extra chamoy o tajín si te sientes valiente.",
+            "title": "Completa el formulario",
+            "description": "Agrela tu agencia de envio y datos del pago.",
             "icon": "Edit3"
         },
         {
@@ -101,40 +101,64 @@
     ],
     "faq": [
         {
-            "question": "¿Cuándo debo comer mis Gomitas?",
-            "answer": "¡En cualquier momento! Son perfectas para fiestas, reuniones, viendo una película o simplemente cuando tienes ese antojo picosito."
+            "question": "¿Qué es el Chamoybol?",
+            "answer": "El Chamoybol es nuestra creación estrella: una deliciosa mezcla de gomitas enchiladas, frutas deshidratadas y nuestra salsa chamoy especial de la casa. ¡Una explosión de sabor dulce, ácido y picante!"
         },
         {
-            "question": "¿Dónde se hacen las Gomitas?",
-            "answer": "Nuestras gomitas se preparan artesanalmente en nuestra cocina especializada, siguiendo estrictos estándares de higiene y calidad."
+            "question": "¿Hacen envíos a todo el país?",
+            "answer": "¡Sí! Realizamos envíos a toda Venezuela a través de MRW y Zoom. Puedes elegir tu agencia de preferencia al momento de finalizar tu compra."
         },
         {
-            "question": "¿Cómo me envían las Gomitas?",
-            "answer": "Utilizamos servicios de entrega locales rápidos y seguros para asegurar que lleguen frescas a tu puerta."
+            "question": "¿Cuánto tiempo tarda en llegar mi pedido?",
+            "answer": "Generalmente, los envíos toman entre 24 a 72 horas hábiles una vez confirmado el pago y despachado el producto, dependiendo de tu ubicación."
         },
         {
-            "question": "¿Cuál es su política de devolución?",
-            "answer": "Si no estás satisfecho con la calidad, contáctanos dentro de las 24 horas y haremos lo posible por solucionarlo."
+            "question": "¿Cuáles son los métodos de pago?",
+            "answer": "Aceptamos Pago Móvil, Transferencias Bancarias en Bolívares, Zelle y pagos en efectivo (solo para entregas personales en Maturín)."
         },
         {
-            "question": "¿Son seguras las Gomitas?",
-            "answer": "¡Totalmente! Usamos ingredientes comestibles de alta calidad. Si tienes alergias, por favor revisa los ingredientes."
+            "question": "¿Tienen tienda física?",
+            "answer": "Actualmente somos una tienda online con base en Maturín, Monagas. Ofrecemos entregas personales en zonas céntricas de la ciudad."
         },
         {
-            "question": "¿Cuántas debo comer a la vez?",
-            "answer": "¡Las que tu paladar aguante! Pero cuidado, ¡son adictivas!"
+            "question": "¿Cuánto duran las gomitas y el chamoy?",
+            "answer": "Nuestros productos son frescos. El Chamoybol y las gomitas enchiladas se mantienen en perfecto estado hasta por 1 mes si se conservan en un lugar fresco y seco, lejos del sol directo."
         },
         {
-            "question": "¿Son para ambos hombres y mujeres?",
-            "answer": "¡Sí, el sabor no tiene género! Cualquiera puede disfrutarlas."
+            "question": "¿El picante es muy fuerte?",
+            "answer": "Manejamos un nivel de picante medio-bajo, pensado para que todos puedan disfrutarlo. Es un 'picor rico' que resalta los sabores sin ser abrumador."
         },
         {
-            "question": "¿Quién no debería comerlas?",
-            "answer": "Personas con alta sensibilidad al picante o condiciones gástricas específicas deberían consumirlas con moderación."
+            "question": "¿Puedo personalizar mi pedido?",
+            "answer": "¡Claro! En ocasiones especiales ofrecemos packs personalizados. Para pedidos grandes o corporativos, contáctanos directamente por WhatsApp."
         },
         {
-            "question": "¿Puedo disfrutarlas solo?",
-            "answer": "¡Claro! Aunque compartir es bueno, no te juzgamos si te acabas la bolsa tú solo."
+            "question": "¿Venden al mayor?",
+            "answer": "Sí, tenemos precios especiales para revendedores y mayoristas a partir de cierta cantidad de unidades. Escríbenos al WhatsApp para más información."
+        },
+        {
+            "question": "¿Tienen opciones sin azúcar?",
+            "answer": "Por el momento todos nuestros productos contienen azúcar, ya que es parte esencial de la receta de las gomitas y el chamoy tradicional."
+        },
+        {
+            "question": "¿Cómo puedo rastrear mi envío?",
+            "answer": "Una vez que despachemos tu pedido, te enviaremos el número de guía de MRW o Zoom a tu correo electrónico o WhatsApp para que puedas seguir su trayecto."
+        },
+        {
+            "question": "¿Qué hago si mi pedido llega dañado?",
+            "answer": "Nos esforzamos por empacar todo con mucho cuidado. Si algo llega mal, por favor contáctanos inmediatamente enviándonos fotos del paquete y el producto para ayudarte."
+        },
+        {
+            "question": "¿Ofrecen delivery en Maturín?",
+            "answer": "Sí, contamos con servicio de delivery en Maturín con un costo adicional dependiendo de la zona. También puedes retirar gratis en nuestros puntos de encuentro."
+        },
+        {
+            "question": "¿Cuáles son los ingredientes principales?",
+            "answer": "Utilizamos gomitas de alta calidad, frutas deshidratadas selectas, mezcla de chiles en polvo y nuestra salsa chamoy artesanal a base de frutas."
+        },
+        {
+            "question": "¿Tienen presentaciones para fiestas?",
+            "answer": "¡Sí! Ofrecemos presentaciones tipo 'party favor' o mesas de dulces con nuestros productos. Contáctanos con anticipación para agendar tu evento."
         }
     ],
     "products": [

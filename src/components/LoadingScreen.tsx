@@ -88,7 +88,7 @@ export default function LoadingScreen() {
                         <div
                             className="w-16 h-16 animate-sprite"
                             style={{
-                                backgroundImage: "url('/images/AnimacionLoginSprite.webp')",
+                                backgroundImage: "url('/images/animacion-login-sprite.webp')",
                                 backgroundSize: "512px 64px",
                                 backgroundRepeat: "no-repeat",
                                 animationDuration: "5s",

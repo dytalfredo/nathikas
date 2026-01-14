@@ -3,14 +3,14 @@
     "backgrounds": {
         "heroDesktop": "/images/fondo1.webp",
         "heroMobile": "/images/fondo1m.webp",
-        "loginSprite": "/images/AnimacionLoginSprite.webp",
+        "loginSprite": "/images/animacion-login-sprite.webp",
         "blackScales": "https://www.transparenttextures.com/patterns/black-scales.png"
     },
     "ui": {
         "papelPicadoBottom": "/recursos/papel-picado-bottom.webp",
         "qrPlaceholder": "/images/qr-placeholder.webp",
         "userPlaceholder": "/recursos/recurso5.webp",
-        "loadingAnimation": "/images/AnimacionLoginSprite.webp"
+        "loadingAnimation": "/images/animacion-login-sprite.webp"
     },
     "particles": {
         "g1": "/particulas/g1.webp",

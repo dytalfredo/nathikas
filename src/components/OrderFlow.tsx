@@ -61,6 +61,7 @@ export default function OrderFlow({ data }: Props) {
     const [showTermsModal, setShowTermsModal] = useState(false);
 
     const [stocks, setStocks] = useState<Record<string, number>>({});
+    const [productConfig, setProductConfig] = useState<Record<string, { enabled: boolean, price?: number }>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [dynamicSettings, setDynamicSettings] = useState<any>(null);
     const [hasMessaging, setHasMessaging] = useState(!!getMessagingInstance());
@@ -109,10 +110,18 @@ export default function OrderFlow({ data }: Props) {
 
         const unsubProducts = onSnapshot(collection(db, "products"), (snapshot) => {
             const stockMap: Record<string, number> = {};
+            const configMap: Record<string, { enabled: boolean, price?: number }> = {};
+
             snapshot.forEach(doc => {
-                stockMap[doc.id] = doc.data().stock || 0;
+                const d = doc.data();
+                stockMap[doc.id] = d.stock || 0;
+                configMap[doc.id] = {
+                    enabled: d.enabled !== false, // Default to true
+                    price: d.price // Optional price override
+                };
             });
             setStocks(stockMap);
+            setProductConfig(configMap);
         });
 
         // Listen to live settings
@@ -762,92 +771,111 @@ export default function OrderFlow({ data }: Props) {
                                     </div>
 
                                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-                                        {data.products.map((product: Product) => {
-                                            const inCart = items.find(i => i.id === product.id);
-                                            return (
-                                                <motion.div
-                                                    key={product.id}
-                                                    className={`bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all border-2 flex flex-col group cursor-pointer ${inCart ? 'border-[#F2A900]' : 'border-gray-100 hover:border-[#F2A900]'}`}
-                                                    whileHover={{ y: -5 }}
-                                                    onClick={() => addToCart(product, 1)}
-                                                >
-                                                    <div className="aspect-square bg-[#FDF6E3]/30 flex items-center justify-center p-3 relative overflow-hidden rounded-t-2xl">
-                                                        <img
-                                                            src={product.image}
-                                                            alt={product.name}
-                                                            className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
-                                                        />
-                                                        {inCart && (
-                                                            <div className="absolute top-2 right-2 bg-[#D91A2A] text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full shadow-lg border-2 border-white animate-bounce-in">
-                                                                {inCart.quantity}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                    <div className="p-3 md:p-4 text-center flex-grow flex flex-col justify-between gap-2">
-                                                        <div>
-                                                            <h3 className="font-bold text-xs md:text-sm leading-tight text-[#3E2723] line-clamp-2 h-10 flex items-center justify-center">{product.name}</h3>
-                                                            {product.description && (
-                                                                <p className="text-gray-500 text-xs leading-relaxed px-2 mb-2">{product.description}</p>
-                                                            )}
-                                                            <p className="text-[#D91A2A] font-bold text-lg md:text-xl mt-1">${product.price.toFixed(2)}</p>
-                                                        </div>
+                                        {data.products
+                                            .filter((p: Product) => {
+                                                // Only show if enabled in Firestore (or if config doesn't exist yet, we default to show)
+                                                // If config loaded, check status. If not loaded (empty), show all.
+                                                const config = productConfig[p.id];
+                                                return config ? config.enabled : true;
+                                            })
+                                            .map((product: Product) => {
+                                                const config = productConfig[product.id];
+                                                // Use dynamic price if available
+                                                const displayPrice = config?.price || product.price;
 
-                                                        {inCart ? (
-                                                            <div className="flex flex-col gap-2 mt-auto">
-                                                                <div className="flex items-center justify-between gap-1 bg-[#FDF6E3] rounded-full p-1 border-2 border-[#F2A900] text-black w-full overflow-hidden">
-                                                                    <button
-                                                                        onClick={(e) => { e.stopPropagation(); updateQuantity(product.id, Math.max(0, inCart.quantity - 1)); }}
-                                                                        className="w-8 h-8 shrink-0 flex items-center justify-center bg-white rounded-full text-[#D91A2A] shadow-sm hover:bg-red-50 transition-colors"
-                                                                    >
-                                                                        <Minus size={14} />
-                                                                    </button>
-                                                                    <span className="font-bold text-sm min-w-[20px]">{inCart.quantity}</span>
-                                                                    <button
-                                                                        onClick={(e) => { e.stopPropagation(); updateQuantity(product.id, inCart.quantity + 1); }}
-                                                                        className="w-8 h-8 shrink-0 flex items-center justify-center bg-[#F2A900] text-[#3E2723] rounded-full shadow-sm hover:bg-[#d99700] transition-colors"
-                                                                    >
-                                                                        <Plus size={14} />
-                                                                    </button>
+                                                const inCart = items.find(i => i.id === product.id);
+                                                return (
+                                                    <motion.div
+                                                        key={product.id}
+                                                        className={`bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all border-2 flex flex-col group cursor-pointer ${inCart ? 'border-[#F2A900]' : 'border-gray-100 hover:border-[#F2A900]'}`}
+                                                        whileHover={{ y: -5 }}
+                                                        onClick={() => addToCart(product, 1)}
+                                                    >
+                                                        <div className="aspect-square bg-[#FDF6E3]/30 flex items-center justify-center p-3 relative overflow-hidden rounded-t-2xl">
+                                                            <img
+                                                                src={product.image}
+                                                                alt={product.name}
+                                                                className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
+                                                            />
+                                                            {inCart && (
+                                                                <div className="absolute top-2 right-2 bg-[#D91A2A] text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full shadow-lg border-2 border-white animate-bounce-in">
+                                                                    {inCart.quantity}
                                                                 </div>
-                                                                {(stocks[product.id] || 0) < inCart.quantity && (
-                                                                    <div className="text-[10px] text-[#D91A2A] font-bold leading-tight bg-red-50 p-2 rounded-lg border border-red-100 italic">
-                                                                        Produciendo más unidades...
-                                                                    </div>
+                                                            )}
+                                                        </div>
+                                                        <div className="p-3 md:p-4 text-center flex-grow flex flex-col justify-between gap-2">
+                                                            <div>
+                                                                <h3 className="font-bold text-xs md:text-sm leading-tight text-[#3E2723] line-clamp-2 h-10 flex items-center justify-center">{product.name}</h3>
+                                                                {product.description && (
+                                                                    <p className="text-gray-500 text-xs leading-relaxed px-2 mb-2">{product.description}</p>
                                                                 )}
+                                                                <p className="text-[#D91A2A] font-bold text-lg md:text-xl mt-1">${displayPrice.toFixed(2)}</p>
                                                             </div>
-                                                        ) : (
-                                                            <button
-                                                                onClick={(e) => { e.stopPropagation(); addToCart(product, 1); }}
-                                                                className="w-full py-2.5 rounded-xl font-bold text-sm shadow-md mt-auto transition-all bg-[#D91A2A] text-white hover:bg-[#B71524] hover:shadow-lg active:scale-95"
-                                                            >
-                                                                {(stocks[product.id] || 0) <= 0 ? 'PEDIR (EN PROD.)' : 'AGREGAR'}
-                                                            </button>
-                                                        )}
-                                                    </div>
-                                                </motion.div>
-                                            );
-                                        })}
+
+                                                            {inCart ? (
+                                                                <div className="flex flex-col gap-2 mt-auto">
+                                                                    <div className="flex items-center justify-between gap-1 bg-[#FDF6E3] rounded-full p-1 border-2 border-[#F2A900] text-black w-full overflow-hidden">
+                                                                        <button
+                                                                            onClick={(e) => { e.stopPropagation(); updateQuantity(product.id, Math.max(0, inCart.quantity - 1)); }}
+                                                                            className="w-8 h-8 shrink-0 flex items-center justify-center bg-white rounded-full text-[#D91A2A] shadow-sm hover:bg-red-50 transition-colors"
+                                                                        >
+                                                                            <Minus size={14} />
+                                                                        </button>
+                                                                        <span className="font-bold text-sm min-w-[20px]">{inCart.quantity}</span>
+                                                                        <button
+                                                                            onClick={(e) => { e.stopPropagation(); updateQuantity(product.id, inCart.quantity + 1); }}
+                                                                            className="w-8 h-8 shrink-0 flex items-center justify-center bg-[#F2A900] text-[#3E2723] rounded-full shadow-sm hover:bg-[#d99700] transition-colors"
+                                                                        >
+                                                                            <Plus size={14} />
+                                                                        </button>
+                                                                    </div>
+                                                                    {(stocks[product.id] || 0) < inCart.quantity && (
+                                                                        <div className="text-[10px] text-[#D91A2A] font-bold leading-tight bg-red-50 p-2 rounded-lg border border-red-100 italic">
+                                                                            Produciendo más unidades...
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            ) : (
+                                                                <button
+                                                                    onClick={(e) => { e.stopPropagation(); addToCart(product, 1); }}
+                                                                    className="w-full py-2.5 rounded-xl font-bold text-sm shadow-md mt-auto transition-all bg-[#D91A2A] text-white hover:bg-[#B71524] hover:shadow-lg active:scale-95"
+                                                                >
+                                                                    {(stocks[product.id] || 0) <= 0 ? 'PEDIR (EN PROD.)' : 'AGREGAR'}
+                                                                </button>
+                                                            )}
+                                                        </div>
+                                                    </motion.div>
+                                                );
+                                            })}
 
                                         {/* Dynamic Placeholders to fill grid gaps */}
-                                        {Array.from({ length: (gridCols - (data.products.length % gridCols)) % gridCols }).map((_, i) => (
-                                            <div
-                                                key={`placeholder-${i}`}
-                                                className="bg-gray-50/50 rounded-2xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center p-6 text-center group grayscale opacity-60 min-h-[280px] md:min-h-[320px] transition-all"
-                                            >
-                                                <div className="w-20 h-20 mb-4 group-hover:scale-110 transition-transform duration-500 flex items-center justify-center bg-white/50 rounded-full p-4 border-2 border-gray-100">
-                                                    <img
-                                                        src="/images/logo.webp"
-                                                        alt="Nathikas Logo"
-                                                        className="w-full h-full object-contain mix-blend-luminosity opacity-40"
-                                                    />
+                                        {(() => {
+                                            const visibleProducts = data.products.filter((p: Product) => {
+                                                const config = productConfig[p.id];
+                                                return config ? config.enabled : true;
+                                            }).length;
+                                            const placeholdersNeeded = (gridCols - (visibleProducts % gridCols)) % gridCols;
+
+                                            return Array.from({ length: placeholdersNeeded }).map((_, i) => (
+                                                <div
+                                                    key={`placeholder-${i}`}
+                                                    className="bg-gray-50/50 rounded-2xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center p-6 text-center group grayscale opacity-60 min-h-[280px] md:min-h-[320px] transition-all"
+                                                >
+                                                    <div className="w-20 h-20 mb-4 group-hover:scale-110 transition-transform duration-500 flex items-center justify-center bg-white/50 rounded-full p-4 border-2 border-gray-100">
+                                                        <img
+                                                            src="/images/logo.webp"
+                                                            alt="Nathikas Logo"
+                                                            className="w-full h-full object-contain mix-blend-luminosity opacity-40"
+                                                        />
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] block">Próximamente</span>
+                                                        <h3 className="text-sm font-bold text-gray-400">NUEVO ANTOJO</h3>
+                                                    </div>
+                                                    <div className="mt-8 w-full max-w-[120px] h-9 bg-gray-100/80 rounded-xl" />
                                                 </div>
-                                                <div className="space-y-1">
-                                                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] block">Próximamente</span>
-                                                    <h3 className="text-sm font-bold text-gray-400">NUEVO ANTOJO</h3>
-                                                </div>
-                                                <div className="mt-8 w-full max-w-[120px] h-9 bg-gray-100/80 rounded-xl" />
-                                            </div>
-                                        ))}
+                                            ));
+                                        })()}
                                     </div>
                                 </section>
 
@@ -1619,7 +1647,10 @@ export default function OrderFlow({ data }: Props) {
                     </div>
                 )}
             </AnimatePresence>
+
         </div>
     );
 }
+
+
 

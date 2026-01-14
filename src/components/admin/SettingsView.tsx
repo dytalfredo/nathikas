@@ -27,6 +27,7 @@ interface ProductPrice {
     id: string;
     name: string;
     price: number;
+    enabled?: boolean;
 }
 
 interface PaymentMethod {
@@ -148,7 +149,13 @@ export default function SettingsView() {
         const unsubProducts = onSnapshot(collection(db, "products"), (snapshot) => {
             const productsData: ProductPrice[] = [];
             snapshot.forEach(doc => {
-                productsData.push({ id: doc.id, name: doc.data().name, price: doc.data().price || 0 });
+                const d = doc.data();
+                productsData.push({
+                    id: doc.id,
+                    name: d.name,
+                    price: d.price || 0,
+                    enabled: d.enabled !== false // Default to true if not set
+                });
             });
             setProducts(productsData);
             setLoading(false);
@@ -178,6 +185,17 @@ export default function SettingsView() {
         } catch (err) {
             console.error("Error updating price:", err);
             showAlert("Error", "No se pudo actualizar el precio.", "error");
+        }
+    };
+
+    const handleProductStatusChange = async (productId: string, enabled: boolean) => {
+        try {
+            await setDoc(doc(db, "products", productId), { enabled }, { merge: true });
+            // Update local state to reflect change immediately
+            setProducts(products.map(p => p.id === productId ? { ...p, enabled } : p));
+        } catch (err) {
+            console.error("Error updating status:", err);
+            showAlert("Error", "No se pudo actualizar el estado.", "error");
         }
     };
 
@@ -417,8 +435,17 @@ export default function SettingsView() {
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {products.map(product => (
-                                <div key={product.id} className="flex items-center justify-between p-4 bg-[#FDF6E3] rounded-2xl border border-gray-100 group">
-                                    <span className="font-bold text-[#3E2723]">{product.name}</span>
+                                <div key={product.id} className={`flex items-center justify-between p-4 rounded-2xl border transition-colors ${product.enabled ? 'bg-[#FDF6E3] border-gray-100' : 'bg-gray-100 border-gray-200 opacity-75'}`}>
+                                    <div className="flex items-center gap-3">
+                                        <button
+                                            onClick={() => handleProductStatusChange(product.id, !product.enabled)}
+                                            className={`w-10 h-6 rounded-full p-1 transition-colors relative ${product.enabled ? 'bg-green-500' : 'bg-gray-300'}`}
+                                            title={product.enabled ? "Producto Activo" : "Producto Inactivo"}
+                                        >
+                                            <div className={`w-4 h-4 bg-white rounded-full shadow-sm transition-transform ${product.enabled ? 'translate-x-4' : 'translate-x-0'}`} />
+                                        </button>
+                                        <span className={`font-bold ${product.enabled ? 'text-[#3E2723]' : 'text-gray-500 line-through'}`}>{product.name}</span>
+                                    </div>
                                     <div className="flex items-center gap-3">
                                         <div className="relative">
                                             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold">$</span>

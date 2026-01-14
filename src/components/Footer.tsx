@@ -1,5 +1,22 @@
-import { Facebook, Instagram, Twitter, MessageCircle } from 'lucide-react';
+import { Instagram, MessageCircle } from 'lucide-react';
 import resources from '../data/resources.json';
+
+const TikTok = ({ size = 24, className = "" }) => (
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width={size}
+        height={size}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className={className}
+    >
+        <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+    </svg>
+);
 
 export default function Footer({ companyData, contact, social }: { companyData: any, contact: any, social: any }) {
     return (
@@ -8,7 +25,7 @@ export default function Footer({ companyData, contact, social }: { companyData: 
             <div className="h-4 w-full bg-[#D91A2A]" style={{ backgroundImage: 'linear-gradient(45deg, #F2A900 25%, transparent 25%, transparent 50%, #F2A900 50%, #F2A900 75%, transparent 75%, transparent)', backgroundSize: '20px 20px' }}></div>
 
             <div className="container mx-auto px-4 py-12 md:py-16 relative z-10">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
                     {/* Brand */}
                     <div className="text-center md:text-left">
                         <img src={resources.logo} alt="Nathikas Logo" className="w-24 h-24 mx-auto md:mx-0 mb-4 object-contain filter brightness-100" />
@@ -18,17 +35,7 @@ export default function Footer({ companyData, contact, social }: { companyData: 
                         </p>
                     </div>
 
-                    {/* Quick Links */}
-                    <div className="text-center md:text-left">
-                        <h4 className="text-xl font-bold text-[#D91A2A] mb-6 font-heading">Explora</h4>
-                        <ul className="space-y-3">
-                            {['Inicio', 'Productos', 'Kits', 'Promociones', 'Contacto'].map((item) => (
-                                <li key={item}>
-                                    <a href="#" className="hover:text-[#F2A900] transition-colors">{item}</a>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+
 
                     {/* Contact */}
                     <div className="text-center md:text-left">
@@ -54,11 +61,10 @@ export default function Footer({ companyData, contact, social }: { companyData: 
                         <h4 className="text-xl font-bold text-[#D91A2A] mb-6 font-heading">Síguenos</h4>
                         <div className="flex justify-center md:justify-start gap-4">
                             {[
-                                { Icon: Facebook, url: social.facebook },
                                 { Icon: Instagram, url: social.instagram },
-                                { Icon: Twitter, url: social.twitter }
+                                { Icon: TikTok, url: social.tiktok }
                             ].map(({ Icon, url }, i) => (
-                                <a key={i} href={url} className="bg-[#5D4037] p-3 rounded-full hover:bg-[#D91A2A] transition-colors shadow-lg group">
+                                <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="bg-[#5D4037] p-3 rounded-full hover:bg-[#D91A2A] transition-colors shadow-lg group">
                                     <Icon size={20} className="group-hover:text-white" />
                                 </a>
                             ))}

@@ -7,6 +7,7 @@
         "start": "astro dev",
         "build": "astro build",
         "preview": "astro preview",
+        "test": "vitest",
         "astro": "astro"
     },
     "dependencies": {
@@ -14,6 +15,7 @@
         "@astrojs/react": "^4.1.0",
         "@netlify/functions": "^5.1.2",
         "@tailwindcss/vite": "^4.0.0-beta.9",
+        "@types/nodemailer": "^7.0.5",
         "astro": "^5.1.1",
         "driver.js": "^1.4.0",
         "firebase": "^12.7.0",
@@ -22,11 +24,11 @@
         "google-auth-library": "^9.15.0",
         "leaflet": "^1.9.4",
         "lucide-react": "^0.469.0",
+        "nodemailer": "^7.0.12",
         "react": "18.3.1",
         "react-dom": "18.3.1",
         "react-leaflet": "^4.2.1",
         "react-tsparticles": "^2.12.2",
-        "resend": "^6.7.0",
         "tailwindcss": "^4.0.0-beta.9",
         "tsparticles-slim": "^2.12.0",
         "zustand": "^5.0.2"
@@ -35,6 +37,12 @@
         "@types/leaflet": "^1.9.21",
         "@types/react": "^18.3.3",
         "@types/react-dom": "^18.3.0",
-        "@vite-pwa/astro": "^1.2.0"
+        "@vite-pwa/astro": "^1.2.0",
+        "vitest": "^1.2.0",
+        "dotenv": "^16.4.1",
+        "@testing-library/react": "^14.0.0",
+        "@testing-library/user-event": "^14.0.0",
+        "@vitejs/plugin-react": "^4.0.0",
+        "happy-dom": "^12.0.0"
     }
 }
