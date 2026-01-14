@@ -3,7 +3,6 @@ import { ArrowRight, Menu, X, User as UserIcon, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import GummyRain from './GummyRain';
 import { useAuthStore } from '../store/authStore';
-import { loginWithGoogle, logout } from '../lib/auth-service';
 import resources from '../data/resources.json';
 
 const HeroSection = memo(function HeroSection({ scrollToStore }: { scrollToStore: () => void }) {
@@ -19,6 +18,7 @@ const HeroSection = memo(function HeroSection({ scrollToStore }: { scrollToStore
         }
         setIsLoggingIn(true);
         try {
+            const { loginWithGoogle } = await import('../lib/auth-service');
             await loginWithGoogle();
             window.location.href = '/shop';
         } catch (error) {
@@ -26,6 +26,11 @@ const HeroSection = memo(function HeroSection({ scrollToStore }: { scrollToStore
         } finally {
             setIsLoggingIn(false);
         }
+    };
+
+    const handleLogout = async () => {
+        const { logout } = await import('../lib/auth-service');
+        await logout();
     };
 
 
@@ -104,7 +109,7 @@ const HeroSection = memo(function HeroSection({ scrollToStore }: { scrollToStore
 
                     {user && !user.isAnonymous && (
                         <button
-                            onClick={() => logout()}
+                            onClick={() => handleLogout()}
                             className="p-2.5 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors"
                             title="Cerrar Sesión"
                         >
@@ -156,7 +161,7 @@ const HeroSection = memo(function HeroSection({ scrollToStore }: { scrollToStore
 
                             {user && !user.isAnonymous && (
                                 <button
-                                    onClick={() => logout()}
+                                    onClick={() => handleLogout()}
                                     className="w-full bg-gray-200 text-gray-700 px-6 py-4 rounded-2xl font-bold text-xl flex items-center justify-center gap-4"
                                 >
                                     <LogOut size={24} />
