@@ -63,7 +63,8 @@ export default defineConfig({
         // @ts-ignore
         plugins: [tailwindcss()],
         build: {
-            minify: true
+            minify: true,
+            assetsInlineLimit: 11000,
         }
     },
 });

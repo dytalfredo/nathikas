@@ -2,6 +2,12 @@ import { useCallback, useEffect, useState, useMemo } from "react";
 import Particles from "react-tsparticles";
 import { loadSlim } from "tsparticles-slim";
 import type { Container, Engine } from "tsparticles-engine";
+import g1 from "../assets/particulas/g1.webp";
+import g2 from "../assets/particulas/g2.webp";
+import g3 from "../assets/particulas/g3.webp";
+import g4 from "../assets/particulas/g4.webp";
+import g5 from "../assets/particulas/g5.webp";
+import g6 from "../assets/particulas/g6.webp";
 
 interface Props {
     id?: string;
@@ -39,32 +45,32 @@ export default function GummyRain({ id = "tsparticles", zIndex = "z-0", count = 
                 type: "image",
                 image: [
                     {
-                        src: "/particulas/g1.webp",
+                        src: typeof g1 === 'string' ? g1 : (g1 as any).src,
                         width: 100,
                         height: 100,
                     },
                     {
-                        src: "/particulas/g2.webp",
+                        src: typeof g2 === 'string' ? g2 : (g2 as any).src,
                         width: 100,
                         height: 100,
                     },
                     {
-                        src: "/particulas/g3.webp",
+                        src: typeof g3 === 'string' ? g3 : (g3 as any).src,
                         width: 100,
                         height: 100,
                     },
                     {
-                        src: "/particulas/g4.webp",
+                        src: typeof g4 === 'string' ? g4 : (g4 as any).src,
                         width: 100,
                         height: 100,
                     },
                     {
-                        src: "/particulas/g5.webp",
+                        src: typeof g5 === 'string' ? g5 : (g5 as any).src,
                         width: 100,
                         height: 100,
                     },
                     {
-                        src: "/particulas/g6.webp",
+                        src: typeof g6 === 'string' ? g6 : (g6 as any).src,
                         width: 100,
                         height: 100,
                     },
