@@ -1,4 +1,4 @@
-import { useState, useEffect, memo } from 'react';
+import { useState, useEffect, memo, startTransition } from 'react';
 import { ArrowRight, Menu, X, User as UserIcon, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import GummyRain from './GummyRain';
@@ -6,7 +6,15 @@ import { useAuthStore } from '../store/authStore';
 import resources from '../data/resources.json';
 
 const HeroSection = memo(function HeroSection({ scrollToStore }: { scrollToStore: () => void }) {
-    const user = useAuthStore((state) => state.user);
+    const [isHydrated, setIsHydrated] = useState(false);
+
+    useEffect(() => {
+        startTransition(() => {
+            setIsHydrated(true);
+        });
+    }, []);
+
+    const user = useAuthStore((state) => isHydrated ? state.user : null);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isLoggingIn, setIsLoggingIn] = useState(false);
 
@@ -47,8 +55,7 @@ const HeroSection = memo(function HeroSection({ scrollToStore }: { scrollToStore
                         src={resources.backgrounds.heroDesktop}
                         alt="Fondo Nathikas"
                         className="w-full h-full object-cover"
-                        // @ts-ignore
-                        fetchPriority="high"
+                        {...{ fetchpriority: "high" } as any}
                     />
                 </picture>
                 <div className="absolute inset-0 bg-black/10"></div> {/* Optional overlay if needed for contrast */}

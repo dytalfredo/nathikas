@@ -1,13 +1,11 @@
-import { useState, memo, lazy, Suspense } from 'react';
+import { useState, useEffect, memo, lazy, Suspense, startTransition } from 'react';
 import { ShoppingCart } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useCartStore } from '../store/cartStore';
 import HeroSection from './HeroSection';
 // Lazy load below-the-fold components
 const RitualSteps = lazy(() => import('./RitualSteps'));
-const TestimonialCarousel = lazy(() => import('./TestimonialCarousel'));
 const TikTokSection = lazy(() => import('./TikTokSection'));
-const VideoCTA = lazy(() => import('./VideoCTA'));
 const Footer = lazy(() => import('./Footer'));
 const BenefitsSection = lazy(() => import('./BenefitsSection'));
 const FAQSection = lazy(() => import('./FAQSection'));
@@ -18,8 +16,18 @@ interface Props {
     data: any;
 }
 
+const EMPTY_ARRAY: any[] = [];
+
 const Shop = memo(function Shop({ data }: Props) {
-    const cartItems = useCartStore((state) => state.items);
+    const [isHydrated, setIsHydrated] = useState(false);
+
+    useEffect(() => {
+        startTransition(() => {
+            setIsHydrated(true);
+        });
+    }, []);
+
+    const cartItems = useCartStore((state) => isHydrated ? state.items : EMPTY_ARRAY);
     const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
     return (
@@ -41,8 +49,6 @@ const Shop = memo(function Shop({ data }: Props) {
                     {/* 5. The Store (Products) - Moved to /shop */}
                 </div>
 
-                {/* 6. TikTok Section ( Replaces Testimonials ) */}
-                {/* {data.testimonials && <TestimonialCarousel testimonials={data.testimonials} />} */}
                 <TikTokSection />
 
                 {/* 6.5 B2B Partnership Section */}
@@ -51,7 +57,6 @@ const Shop = memo(function Shop({ data }: Props) {
                 {/* 7. FAQ Section (New) */}
                 {data.faq && <FAQSection faqs={data.faq} contact={data.contact} />}
 
-                {/* 8. Video CTA Removed */}
 
                 {/* 9. Footer */}
                 <Footer

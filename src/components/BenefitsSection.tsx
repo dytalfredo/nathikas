@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { motion, useScroll, useTransform, type Variants } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 import resources from '../data/resources.json';
 
 export default function BenefitsSection() {

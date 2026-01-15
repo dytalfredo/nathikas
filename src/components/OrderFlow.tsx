@@ -75,6 +75,7 @@ export default function OrderFlow({ data }: Props) {
     const [dynamicSettings, setDynamicSettings] = useState<any>(null);
     const [hasMessaging, setHasMessaging] = useState(!!getMessagingInstance());
     const [gridCols, setGridCols] = useState(2);
+    const [productsLoaded, setProductsLoaded] = useState(false);
 
     // Custom style classes
     const inputClass = "w-full px-4 py-3 rounded-xl border-2 border-[#F2A900]/30 focus:border-[#F2A900] bg-white outline-none transition-all text-[#3E2723] placeholder:text-gray-400 font-medium disabled:opacity-70 disabled:bg-gray-50";
@@ -131,6 +132,7 @@ export default function OrderFlow({ data }: Props) {
             });
             setStocks(stockMap);
             setProductConfig(configMap);
+            setProductsLoaded(true);
         });
 
         // Listen to live settings
@@ -843,82 +845,103 @@ export default function OrderFlow({ data }: Props) {
                                     </div>
 
                                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-                                        {data.products
-                                            .filter((p: Product) => {
-                                                // Only show if enabled in Firestore (or if config doesn't exist yet, we default to show)
-                                                // If config loaded, check status. If not loaded (empty), show all.
-                                                const config = productConfig[p.id];
-                                                return config ? config.enabled : true;
-                                            })
-                                            .map((product: Product) => {
-                                                const config = productConfig[product.id];
-                                                // Use dynamic price if available
-                                                const displayPrice = config?.price || product.price;
+                                        {!productsLoaded ? (
+                                            // Loading Skeletons
+                                            Array.from({ length: 8 }).map((_, i) => (
+                                                <div
+                                                    key={`skeleton-${i}`}
+                                                    className="bg-white rounded-2xl shadow-sm border-2 border-gray-100 flex flex-col h-full animate-pulse"
+                                                >
+                                                    <div className="aspect-square bg-gray-100 rounded-t-2xl relative overflow-hidden">
+                                                        <div className="absolute inset-0 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 animate-shimmer" style={{ backgroundSize: '200% 100%' }}></div>
+                                                    </div>
+                                                    <div className="p-4 flex-grow flex flex-col gap-3">
+                                                        <div className="h-4 bg-gray-100 rounded w-3/4 mx-auto"></div>
+                                                        <div className="h-3 bg-gray-100 rounded w-full"></div>
+                                                        <div className="h-8 bg-gray-100 rounded w-1/2 mx-auto mt-auto"></div>
+                                                        <div className="h-10 bg-gray-100 rounded-xl w-full mt-2"></div>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            data.products
+                                                .filter((p: Product) => {
+                                                    // Only show if enabled in Firestore (or if config doesn't exist yet, we default to show)
+                                                    // This is safe now because productsLoaded=true ensures we have the config
+                                                    const config = productConfig[p.id];
+                                                    return config ? config.enabled : true;
+                                                })
+                                                .map((product: Product) => {
+                                                    const config = productConfig[product.id];
+                                                    // Use dynamic price if available
+                                                    const displayPrice = config?.price || product.price;
 
-                                                const inCart = items.find(i => i.id === product.id);
-                                                return (
-                                                    <motion.div
-                                                        key={product.id}
-                                                        className={`bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all border-2 flex flex-col group cursor-pointer ${inCart ? 'border-[#F2A900]' : 'border-gray-100 hover:border-[#F2A900]'}`}
-                                                        whileHover={{ y: -5 }}
-                                                        onClick={() => addToCart(product, 1)}
-                                                    >
-                                                        <div className="aspect-square bg-[#FDF6E3]/30 flex items-center justify-center p-3 relative overflow-hidden rounded-t-2xl">
-                                                            <img
-                                                                src={product.image}
-                                                                alt={product.name}
-                                                                className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
-                                                            />
-                                                            {inCart && (
-                                                                <div className="absolute top-2 right-2 bg-[#D91A2A] text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full shadow-lg border-2 border-white animate-bounce-in">
-                                                                    {inCart.quantity}
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                        <div className="p-3 md:p-4 text-center flex-grow flex flex-col justify-between gap-2">
-                                                            <div>
-                                                                <h3 className="font-bold text-xs md:text-sm leading-tight text-[#3E2723] line-clamp-2 h-10 flex items-center justify-center">{product.name}</h3>
-                                                                {product.description && (
-                                                                    <p className="text-gray-500 text-xs leading-relaxed px-2 mb-2">{product.description}</p>
-                                                                )}
-                                                                <p className="text-[#D91A2A] font-bold text-lg md:text-xl mt-1">${displayPrice.toFixed(2)}</p>
-                                                            </div>
-
-                                                            {inCart ? (
-                                                                <div className="flex flex-col gap-2 mt-auto">
-                                                                    <div className="flex items-center justify-between gap-1 bg-[#FDF6E3] rounded-full p-1 border-2 border-[#F2A900] text-black w-full overflow-hidden">
-                                                                        <button
-                                                                            onClick={(e) => { e.stopPropagation(); updateQuantity(product.id, Math.max(0, inCart.quantity - 1)); }}
-                                                                            className="w-8 h-8 shrink-0 flex items-center justify-center bg-white rounded-full text-[#D91A2A] shadow-sm hover:bg-red-50 transition-colors"
-                                                                        >
-                                                                            <Minus size={14} />
-                                                                        </button>
-                                                                        <span className="font-bold text-sm min-w-[20px]">{inCart.quantity}</span>
-                                                                        <button
-                                                                            onClick={(e) => { e.stopPropagation(); updateQuantity(product.id, inCart.quantity + 1); }}
-                                                                            className="w-8 h-8 shrink-0 flex items-center justify-center bg-[#F2A900] text-[#3E2723] rounded-full shadow-sm hover:bg-[#d99700] transition-colors"
-                                                                        >
-                                                                            <Plus size={14} />
-                                                                        </button>
+                                                    const inCart = items.find(i => i.id === product.id);
+                                                    return (
+                                                        <motion.div
+                                                            key={product.id}
+                                                            className={`bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all border-2 flex flex-col group cursor-pointer ${inCart ? 'border-[#F2A900]' : 'border-gray-100 hover:border-[#F2A900]'}`}
+                                                            whileHover={{ y: -5 }}
+                                                            onClick={() => addToCart(product, 1)}
+                                                        >
+                                                            <div className="aspect-square bg-[#FDF6E3]/30 flex items-center justify-center p-3 relative overflow-hidden rounded-t-2xl">
+                                                                <img
+                                                                    src={product.image}
+                                                                    alt={product.name}
+                                                                    className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
+                                                                />
+                                                                {inCart && (
+                                                                    <div className="absolute top-2 right-2 bg-[#D91A2A] text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full shadow-lg border-2 border-white animate-bounce-in">
+                                                                        {inCart.quantity}
                                                                     </div>
-                                                                    {(stocks[product.id] || 0) < inCart.quantity && (
-                                                                        <div className="text-[10px] text-[#D91A2A] font-bold leading-tight bg-red-50 p-2 rounded-lg border border-red-100 italic">
-                                                                            Produciendo más unidades...
-                                                                        </div>
+                                                                )}
+                                                            </div>
+                                                            <div className="p-3 md:p-4 text-center flex-grow flex flex-col justify-between gap-2">
+                                                                <div>
+                                                                    <h3 className="font-bold text-xs md:text-sm leading-tight text-[#3E2723] line-clamp-2 h-10 flex items-center justify-center">{product.name}</h3>
+                                                                    {product.description && (
+                                                                        <p className="text-gray-500 text-xs leading-relaxed px-2 mb-2">{product.description}</p>
                                                                     )}
+                                                                    <p className="text-[#D91A2A] font-bold text-lg md:text-xl mt-1">${displayPrice.toFixed(2)}</p>
                                                                 </div>
-                                                            ) : (
-                                                                <button
-                                                                    onClick={(e) => { e.stopPropagation(); addToCart(product, 1); }}
-                                                                    className="w-full py-2.5 rounded-xl font-bold text-sm shadow-md mt-auto transition-all bg-[#D91A2A] text-white hover:bg-[#B71524] hover:shadow-lg active:scale-95"
-                                                                >
-                                                                    {(stocks[product.id] || 0) <= 0 ? 'PEDIR (EN PROD.)' : 'AGREGAR'}
-                                                                </button>
-                                                            )}
-                                                        </div>
-                                                    </motion.div>
-                                                );
-                                            })}
+
+                                                                {inCart ? (
+                                                                    <div className="flex flex-col gap-2 mt-auto">
+                                                                        <div className="flex items-center justify-between gap-1 bg-[#FDF6E3] rounded-full p-1 border-2 border-[#F2A900] text-black w-full overflow-hidden">
+                                                                            <button
+                                                                                onClick={(e) => { e.stopPropagation(); updateQuantity(product.id, Math.max(0, inCart.quantity - 1)); }}
+                                                                                className="w-8 h-8 shrink-0 flex items-center justify-center bg-white rounded-full text-[#D91A2A] shadow-sm hover:bg-red-50 transition-colors"
+                                                                            >
+                                                                                <Minus size={14} />
+                                                                            </button>
+                                                                            <span className="font-bold text-sm min-w-[20px]">{inCart.quantity}</span>
+                                                                            <button
+                                                                                onClick={(e) => { e.stopPropagation(); updateQuantity(product.id, inCart.quantity + 1); }}
+                                                                                className="w-8 h-8 shrink-0 flex items-center justify-center bg-[#F2A900] text-[#3E2723] rounded-full shadow-sm hover:bg-[#d99700] transition-colors"
+                                                                            >
+                                                                                <Plus size={14} />
+                                                                            </button>
+                                                                        </div>
+                                                                        {(stocks[product.id] || 0) < inCart.quantity && (
+                                                                            <div className="text-[10px] text-[#D91A2A] font-bold leading-tight bg-red-50 p-2 rounded-lg border border-red-100 italic">
+                                                                                Produciendo más unidades...
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                ) : (
+                                                                    <button
+                                                                        onClick={(e) => { e.stopPropagation(); addToCart(product, 1); }}
+                                                                        className="w-full py-2.5 rounded-xl font-bold text-sm shadow-md mt-auto transition-all bg-[#D91A2A] text-white hover:bg-[#B71524] hover:shadow-lg active:scale-95"
+                                                                    >
+                                                                        {(stocks[product.id] || 0) <= 0 ? 'PEDIR (EN PROD.)' : 'AGREGAR'}
+                                                                    </button>
+                                                                )}
+                                                            </div>
+                                                        </motion.div>
+                                                    );
+                                                })
+                                        )
+                                        }
 
                                         {/* Dynamic Placeholders to fill grid gaps */}
                                         {(() => {
