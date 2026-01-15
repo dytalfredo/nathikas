@@ -150,7 +150,7 @@
             "id": "Enchiladas",
             "name": "Enchiladas",
             "description": "Gomitas cubiertas con chamoy, chile y tajin.",
-            "price": 2.5,
+            "price": 4,
             "image": "/productos/Enchiladas.webp",
             "category": "kits"
         },
@@ -158,7 +158,7 @@
             "id": "Ahogadas",
             "name": "Ahogadas",
             "description": "Gomitas cubiertas con chamoy, chile y tajin.",
-            "price": 2.5,
+            "price": 4,
             "image": "/productos/ahogadas.webp",
             "category": "kits"
         },
