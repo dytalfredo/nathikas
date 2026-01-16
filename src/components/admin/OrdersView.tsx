@@ -192,8 +192,21 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
         doc.save(`Etiqueta_${order.id.slice(0, 8)}.pdf`);
     };
 
+    const [statusFilter, setStatusFilter] = useState(filterByStatus || 'all');
+    const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc');
+
+    // Update internal status filter if prop changes (e.g. switching tabs in Dashboard)
+    useEffect(() => {
+        if (filterByStatus) setStatusFilter(filterByStatus);
+    }, [filterByStatus]);
+
+    // ... (rest of the filteredOrders logic remains, but we need to sort filteredOrders in memory if we don't do it in query)
+    // Actually, let's do it in memory for filteredOrders to keep the "search" etc working fast without re-fetching.
+    // BUT the query below fetches based on status.
+
     // Computed Filtered Orders
     const filteredOrders = orders.filter(order => {
+        // ... (existing search and shipping filter logic)
         const matchesSearch =
             order.userName.toLowerCase().includes(search.toLowerCase()) ||
             order.id.includes(search);
@@ -208,7 +221,13 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
         }
 
         return matchesSearch && matchesShipping;
+    }).sort((a, b) => { // Sort in memory
+        const dateA = a.createdAt?.toDate?.()?.getTime() || 0;
+        const dateB = b.createdAt?.toDate?.()?.getTime() || 0;
+        return sortOrder === 'desc' ? dateB - dateA : dateA - dateB;
     });
+
+    // ... (groupedOrders logic remains same, dependent on filteredOrders)
 
     // Computed Grouped Orders
     const groupedOrders = filteredOrders.reduce((groups, order) => {
@@ -234,10 +253,18 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
             return;
         }
 
-        let q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
+        // Base query - always sort by createdAt for consistency, but we handle direction in memory or here
+        // Note: Changing orderBy direction in query requires an index if combined with where.
+        // To be safe and avoid "Missing Index" errors for now (since we might not have them), 
+        // we can fetch DESC and reverse in memory if needed, OR just match the query.
+        // Let's stick to state-based filtering on Firestore side for efficiency on Status.
 
-        if (filterByStatus) {
-            q = query(collection(db, "orders"), where("status", "==", filterByStatus), orderBy("createdAt", "desc"));
+        let q;
+
+        if (statusFilter !== 'all') {
+            q = query(collection(db, "orders"), where("status", "==", statusFilter), orderBy("createdAt", "desc"));
+        } else {
+            q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
         }
 
         const unsub = onSnapshot(q,
@@ -256,7 +283,7 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
         );
 
         return () => unsub();
-    }, [filterByStatus, user?.role]);
+    }, [statusFilter, user?.role]); // Removed filterByStatus prop from dependency, using statusFilter state instead
 
     // Auto-open order details if requested
     useEffect(() => {
@@ -518,6 +545,37 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
                             {method === 'all' ? 'Todos' : method}
                         </button>
                     ))}
+                </div>
+
+                {/* Status Filter */}
+                <div className="w-px h-6 bg-gray-200 mx-2"></div>
+                <div className="flex items-center gap-2">
+                    <span className="font-bold text-sm text-gray-600">Estado:</span>
+                    <select
+                        value={statusFilter}
+                        onChange={(e) => setStatusFilter(e.target.value)}
+                        className="bg-white border text-gray-600 text-xs font-bold border-gray-200 rounded-lg px-2 py-1 focus:outline-none focus:border-[#F2A900] cursor-pointer"
+                    >
+                        <option value="all">Todos</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="pagado">Pagado</option>
+                        <option value="despachado">Despachado</option>
+                        <option value="entregado">Entregado</option>
+                        <option value="cancelado">Cancelado</option>
+                    </select>
+                </div>
+
+                {/* Sort Order */}
+                <div className="w-px h-6 bg-gray-200 mx-2"></div>
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={() => setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')}
+                        className="flex items-center gap-2 px-3 py-1 rounded-lg text-xs font-bold transition-all border bg-white text-gray-600 border-gray-200 hover:border-[#F2A900]"
+                        title={sortOrder === 'desc' ? "Más recientes primero" : "Más antiguos primero"}
+                    >
+                        <Clock size={14} />
+                        {sortOrder === 'desc' ? 'Recientes' : 'Antiguos'}
+                    </button>
                 </div>
 
                 <div className="w-px h-6 bg-gray-200 mx-2"></div>

@@ -58,7 +58,7 @@ ${items.map(item => `- ${item.quantity}x ${item.name} ($${item.price * item.quan
 
         const encodedMessage = encodeURIComponent(message);
         // Clean number for link (remove spaces, symbols)
-        const businessPhone = appConfig.contact.whatsapp.replace(/[^\d+]/g, '');
+        const businessPhone = appConfig.contact.whatsapp.replace(/\D/g, '');
         window.open(`https://wa.me/${businessPhone}?text=${encodedMessage}`, '_blank');
     };
 

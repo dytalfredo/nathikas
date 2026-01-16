@@ -22,24 +22,45 @@ interface ProductionViewProps {
 export default function ProductionView({ onNavigateToOrder }: ProductionViewProps) {
     const [needs, setNeeds] = useState<ProductionNeed[]>([]);
     const [loading, setLoading] = useState(true);
+    const [statusFilter, setStatusFilter] = useState('pendiente'); // 'pendiente', 'completado', 'all'
+    const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc');
+    const [sortBy, setSortBy] = useState<'date' | 'product'>('date');
 
     useEffect(() => {
         if (!db) return;
 
-        const q = query(collection(db, "production_needs"), where("status", "==", "pendiente"));
+        let q;
+        // Basic query construction
+        if (statusFilter === 'all') {
+            q = query(collection(db, "production_needs"));
+        } else {
+            q = query(collection(db, "production_needs"), where("status", "==", statusFilter));
+        }
+
         const unsub = onSnapshot(q, (snapshot) => {
             const needsData: ProductionNeed[] = [];
             snapshot.forEach((doc) => {
                 needsData.push({ id: doc.id, ...doc.data() } as ProductionNeed);
             });
-            // Sort by product name
-            needsData.sort((a, b) => a.productName.localeCompare(b.productName));
+
+            // Client-side Sort
+            needsData.sort((a, b) => {
+                if (sortBy === 'product') {
+                    return a.productName.localeCompare(b.productName);
+                } else {
+                    // Date Sort
+                    const dateA = a.createdAt?.toDate?.()?.getTime() || 0;
+                    const dateB = b.createdAt?.toDate?.()?.getTime() || 0;
+                    return sortOrder === 'desc' ? dateB - dateA : dateA - dateB;
+                }
+            });
+
             setNeeds(needsData);
             setLoading(false);
         });
 
         return () => unsub();
-    }, []);
+    }, [statusFilter, sortOrder, sortBy]); // Re-run if filters/sort change
 
     // Aggregate needs by product
     const summary = needs.reduce((acc, need) => {
@@ -68,9 +89,43 @@ export default function ProductionView({ onNavigateToOrder }: ProductionViewProp
 
     return (
         <div className="space-y-6">
-            <header className="mb-8">
-                <h2 className="text-3xl font-heading text-[#D91A2A]">Planificación de Producción</h2>
-                <p className="text-gray-600 font-bold">Unidades faltantes para completar pedidos pendientes</p>
+            <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div>
+                    <h2 className="text-3xl font-heading text-[#D91A2A]">Planificación de Producción</h2>
+                    <p className="text-gray-600 font-bold">Unidades faltantes para completar pedidos pendientes</p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2 bg-white p-2 rounded-xl border border-gray-100 shadow-sm">
+                    {/* Status Filter */}
+                    <select
+                        value={statusFilter}
+                        onChange={(e) => setStatusFilter(e.target.value)}
+                        className="bg-gray-50 border text-gray-600 text-xs font-bold border-gray-200 rounded-lg px-2 py-2 focus:outline-none focus:border-[#F2A900] cursor-pointer"
+                    >
+                        <option value="pendiente">Pendientes</option>
+                        <option value="completado">Completados</option>
+                        <option value="all">Todos</option>
+                    </select>
+
+                    <div className="w-px h-6 bg-gray-200"></div>
+
+                    {/* Sort Controls */}
+                    <button
+                        onClick={() => setSortBy(sortBy === 'date' ? 'product' : 'date')}
+                        className={`px-3 py-2 rounded-lg text-xs font-bold transition-all border flex items-center gap-1 ${sortBy === 'date' ? 'bg-[#D91A2A] text-white border-[#D91A2A]' : 'bg-white text-gray-500 border-gray-200'}`}
+                    >
+                        {sortBy === 'date' ? <Clock size={14} /> : <Package size={14} />}
+                        {sortBy === 'date' ? 'Fecha' : 'Producto'}
+                    </button>
+
+                    <button
+                        onClick={() => setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')}
+                        className="p-2 rounded-lg text-xs font-bold transition-all border bg-white text-gray-500 border-gray-200 hover:border-[#F2A900] flex items-center gap-1"
+                        title={sortOrder === 'desc' ? "Descendente" : "Ascendente"}
+                    >
+                        {sortOrder === 'desc' ? 'DESC' : 'ASC'}
+                    </button>
+                </div>
             </header>
 
             {/* Total Summary Card */}

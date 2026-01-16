@@ -97,10 +97,18 @@ export default function Footer({ companyData, contact, social }: { companyData: 
                 </div>
 
                 {/* Bottom Bar */}
-                <div className="border-t border-[#5D4037] pt-8 text-center text-sm opacity-60 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div className="border-t border-[#5D4037] pt-8 flex flex-col items-center justify-center gap-4 text-center text-sm opacity-60">
                     <p>&copy; {new Date().getFullYear()} Nathikas. Todos los derechos reservados.</p>
-                    <p className="flex items-center gap-2">
-                        Hecho con 🌶️ y ❤️ por Nathikas Team
+                    <p className="flex items-center justify-center gap-2">
+                        Hecho con 🌶️ y ❤️ por
+                        <a
+                            href="https://alfredomendoza.netlify.app/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-bold text-[#F2A900] hover:text-white transition-colors"
+                        >
+                            Alfredo Mendoza
+                        </a>
                     </p>
                 </div>
             </div>

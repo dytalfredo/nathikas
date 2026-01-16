@@ -384,7 +384,7 @@ export default function OrderFlow({ data }: Props) {
         }
 
         // Clean number for link (remove spaces, symbols)
-        const businessPhone = appConfig.contact.whatsapp.replace(/[^\d+]/g, '');
+        const businessPhone = appConfig.contact.whatsapp.replace(/\D/g, '');
 
         let message = `*NUEVO PEDIDO - NATHIKAS*\n\n`;
         message += `👤 *Comprador:* ${userName}\n`;
