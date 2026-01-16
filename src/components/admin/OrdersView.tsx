@@ -81,6 +81,11 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
     const [cancelReason, setCancelReason] = useState('');
     const [orderToCancel, setOrderToCancel] = useState<string | null>(null);
 
+    // Dispatch Modal State
+    const [showDispatchModal, setShowDispatchModal] = useState(false);
+    const [trackingNumber, setTrackingNumber] = useState('');
+    const [orderToDispatch, setOrderToDispatch] = useState<string | null>(null);
+
     const generateShippingLabel = (order: Order) => {
         // 1/4 Letter Size (approx 108mm x 140mm)
         // Orientation: Portrait
@@ -360,6 +365,55 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
         }
     };
 
+    const confirmDispatch = async () => {
+        if (!orderToDispatch) return;
+
+        const orderId = orderToDispatch;
+        const order = orders.find(o => o.id === orderId);
+        if (!order) return;
+
+        if (!trackingNumber.trim()) {
+            useAlertStore.getState().showAlert("Dato Requerido", "Por favor ingresa el número de guía.", "warning");
+            return;
+        }
+
+        try {
+            const orderRef = doc(db, "orders", orderId);
+            await updateDoc(orderRef, {
+                status: 'despachado',
+                trackingNumber: trackingNumber
+            });
+
+            // Notificación con Tracking
+            if (order.userEmail) {
+                fetch('/.netlify/functions/notifications', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        to: order.userEmail,
+                        userName: order.userName,
+                        orderId: order.id,
+                        status: 'despachado',
+                        trackingNumber: trackingNumber
+                    })
+                }).catch(console.error);
+            }
+
+            if (selectedOrder?.id === orderId) {
+                // Cast to any because the interface might not have trackingNumber yet defined, but it's fine in JS/Firestore
+                setSelectedOrder({ ...selectedOrder, status: 'despachado', trackingNumber: trackingNumber } as any);
+            }
+
+            useAlertStore.getState().showAlert("Despacho Registrado", "El pedido ha sido marcado como despachado y se ha notificado al cliente.", "success");
+            setShowDispatchModal(false);
+            setOrderToDispatch(null);
+            setTrackingNumber('');
+
+        } catch (err: any) {
+            console.error("Error al despachar:", err);
+            useAlertStore.getState().showAlert("Error", "No se pudo actualizar el estado.", "error");
+        }
+    };
+
     const updateStatus = async (orderId: string, newStatus: string) => {
         const order = orders.find(o => o.id === orderId) || selectedOrder;
         if (!order) return;
@@ -369,6 +423,14 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
             setOrderToCancel(orderId);
             setCancelReason('');
             setShowCancelModal(true);
+            return;
+        }
+
+        if (newStatus === 'despachado') {
+            if (order.status === 'despachado') return;
+            setOrderToDispatch(orderId);
+            setTrackingNumber('');
+            setShowDispatchModal(true);
             return;
         }
 
@@ -1025,6 +1087,45 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
                                         className="flex-1 py-3 rounded-xl font-bold bg-[#D91A2A] text-white hover:bg-red-700 shadow-lg shadow-red-200"
                                     >
                                         Confirmar Cancelación
+                                    </button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+                {showDispatchModal && (
+                    <div key="dispatch-modal" className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            className="bg-white rounded-3xl shadow-2xl overflow-hidden max-w-md w-full border-4 border-purple-500"
+                        >
+                            <div className="bg-purple-600 p-4 text-center">
+                                <h3 className="font-heading text-xl text-white">Registrar Despacho</h3>
+                            </div>
+                            <div className="p-6 space-y-4">
+                                <p className="text-gray-600 font-bold text-center">Por favor ingresa el número de guía o tracking de la empresa de envíos.</p>
+                                <input
+                                    type="text"
+                                    value={trackingNumber}
+                                    onChange={(e) => setTrackingNumber(e.target.value)}
+                                    placeholder="Ej: 123456789 (Zoom / MRW)"
+                                    className="w-full p-4 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:bg-white transition-all font-medium text-center text-lg"
+                                    autoFocus
+                                />
+                                <div className="flex gap-3 pt-2">
+                                    <button
+                                        onClick={() => { setShowDispatchModal(false); setOrderToDispatch(null); }}
+                                        className="flex-1 py-3 rounded-xl font-bold bg-gray-100 text-gray-500 hover:bg-gray-200"
+                                    >
+                                        Cancelar
+                                    </button>
+                                    <button
+                                        onClick={confirmDispatch}
+                                        className="flex-1 py-3 rounded-xl font-bold bg-purple-600 text-white hover:bg-purple-700 shadow-lg shadow-purple-200"
+                                    >
+                                        Confirmar Despacho
                                     </button>
                                 </div>
                             </div>
