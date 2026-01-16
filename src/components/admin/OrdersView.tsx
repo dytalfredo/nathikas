@@ -86,6 +86,117 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
     const [trackingNumber, setTrackingNumber] = useState('');
     const [orderToDispatch, setOrderToDispatch] = useState<string | null>(null);
 
+    // Generic Status Confirmation State
+    const [showConfirmStatusModal, setShowConfirmStatusModal] = useState(false);
+    const [pendingStatusUpdate, setPendingStatusUpdate] = useState<{ orderId: string, status: string } | null>(null);
+    const [isUpdating, setIsUpdating] = useState(false);
+
+    const executeStatusUpdate = async (orderId: string, newStatus: string, trackingNumber?: string, cancelReason?: string) => {
+        const order = orders.find(o => o.id === orderId) || selectedOrder;
+
+        if (!order) return;
+        setIsUpdating(true);
+
+        try {
+            const batch = writeBatch(db);
+            const orderRef = doc(db, "orders", orderId);
+
+            // CASO REACTIVACIÓN: Pedido CANCELADO se REACTIVA -> Se vuelve a quitar stock
+            if (order.status === 'cancelado' && newStatus !== 'cancelado') {
+                for (const item of order.items) {
+                    const productSnap = await getDoc(doc(db, "products", item.id));
+                    const currentStock = productSnap.data()?.stock || 0;
+                    if (currentStock < item.quantity) {
+                        useAlertStore.getState().showAlert(
+                            "Stock Insuficiente",
+                            `No hay stock suficiente de ${item.name} para reactivar este pedido.`,
+                            "error"
+                        );
+                        setIsUpdating(false);
+                        return;
+                    }
+                }
+
+                order.items.forEach(item => {
+                    const productRef = doc(db, "products", item.id);
+                    batch.update(productRef, {
+                        stock: increment(-item.quantity)
+                    });
+                });
+            }
+
+            // CASO CANCELACIÓN
+            if (newStatus === 'cancelado') {
+                order.items.forEach(item => {
+                    const productRef = doc(db, "products", item.id);
+                    batch.update(productRef, {
+                        stock: increment(item.quantity)
+                    });
+                });
+                batch.update(orderRef, {
+                    status: 'cancelado',
+                    cancelReason: cancelReason
+                });
+            } else if (newStatus === 'despachado') {
+                batch.update(orderRef, {
+                    status: 'despachado',
+                    trackingNumber: trackingNumber || ''
+                });
+            } else {
+                batch.update(orderRef, { status: newStatus });
+            }
+
+            await batch.commit();
+
+            // Enviar notificación
+            if (order.userEmail) {
+                const payload: any = {
+                    to: order.userEmail,
+                    userName: order.userName,
+                    orderId: order.id,
+                    customerId: order.customerId,
+                    status: newStatus,
+                    shippingMethod: order.shippingMethod // Add this line
+                };
+                if (newStatus === 'cancelado') payload.reason = cancelReason;
+                if (newStatus === 'despachado') payload.trackingNumber = trackingNumber;
+
+                fetch('/.netlify/functions/notifications', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                }).catch(console.error);
+            }
+
+            if (selectedOrder?.id === orderId) {
+                let u: any = { status: newStatus };
+                if (cancelReason) u.cancelReason = cancelReason;
+                if (trackingNumber) u.trackingNumber = trackingNumber;
+                setSelectedOrder({ ...selectedOrder, ...u } as any);
+            }
+
+            // Reset States
+            setShowCancelModal(false);
+            setOrderToCancel(null);
+            setCancelReason('');
+
+            setShowDispatchModal(false);
+            setOrderToDispatch(null);
+            setTrackingNumber('');
+
+            setShowConfirmStatusModal(false);
+            setPendingStatusUpdate(null);
+
+            useAlertStore.getState().showAlert("Estado Actualizado", "El pedido ha sido actualizado correctamente.", "success");
+
+        } catch (err: any) {
+            console.error("Error al actualizar estado:", err);
+            useAlertStore.getState().showAlert("Error", "No se pudo cambiar el estado.", "error");
+        } finally {
+            setIsUpdating(false);
+        }
+    };
+
     const generateShippingLabel = (order: Order) => {
         // 1/4 Letter Size (approx 108mm x 140mm)
         // Orientation: Portrait
@@ -305,121 +416,31 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
             useAlertStore.getState().showAlert("Dato Requerido", "Debes indicar un motivo.", "warning");
             return;
         }
-
-        const orderId = orderToCancel;
-        const order = orders.find(o => o.id === orderId);
-        if (!order) return;
-
-        try {
-            const batch = writeBatch(db);
-            const orderRef = doc(db, "orders", orderId);
-
-            // Devolver stock al inventario
-            order.items.forEach(item => {
-                const productRef = doc(db, "products", item.id);
-                batch.update(productRef, {
-                    stock: increment(item.quantity)
-                });
-            });
-
-            batch.update(orderRef, {
-                status: 'cancelado',
-                cancelReason: cancelReason
-            });
-
-            await batch.commit();
-
-            // Enviar notificación
-            if (order.userEmail) {
-                try {
-                    await fetch('/.netlify/functions/notifications', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            to: order.userEmail,
-                            userName: order.userName,
-                            orderId: order.id,
-                            customerId: order.customerId,
-                            status: 'cancelado',
-                            reason: cancelReason,
-                        })
-                    });
-                } catch (e) {
-                    console.error("Error enviando email cancelación:", e);
-                }
-            }
-
-            if (selectedOrder?.id === orderId) {
-                setSelectedOrder({ ...selectedOrder, status: 'cancelado', cancelReason });
-            }
-
-            setShowCancelModal(false);
-            setOrderToCancel(null);
-            setCancelReason('');
-
-            useAlertStore.getState().showAlert("Orden Cancelada", "El pedido ha sido cancelado y el stock restaurado.", "success");
-
-        } catch (err: any) {
-            console.error("Error al cancelar:", err);
-            useAlertStore.getState().showAlert("Error", "No se pudo cancelar la orden.", "error");
-        }
+        await executeStatusUpdate(orderToCancel, 'cancelado', undefined, cancelReason);
     };
 
     const confirmDispatch = async () => {
         if (!orderToDispatch) return;
-
-        const orderId = orderToDispatch;
-        const order = orders.find(o => o.id === orderId);
-        if (!order) return;
-
         if (!trackingNumber.trim()) {
             useAlertStore.getState().showAlert("Dato Requerido", "Por favor ingresa el número de guía.", "warning");
             return;
         }
-
-        try {
-            const orderRef = doc(db, "orders", orderId);
-            await updateDoc(orderRef, {
-                status: 'despachado',
-                trackingNumber: trackingNumber
-            });
-
-            // Notificación con Tracking
-            if (order.userEmail) {
-                fetch('/.netlify/functions/notifications', {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        to: order.userEmail,
-                        userName: order.userName,
-                        orderId: order.id,
-                        status: 'despachado',
-                        trackingNumber: trackingNumber
-                    })
-                }).catch(console.error);
-            }
-
-            if (selectedOrder?.id === orderId) {
-                // Cast to any because the interface might not have trackingNumber yet defined, but it's fine in JS/Firestore
-                setSelectedOrder({ ...selectedOrder, status: 'despachado', trackingNumber: trackingNumber } as any);
-            }
-
-            useAlertStore.getState().showAlert("Despacho Registrado", "El pedido ha sido marcado como despachado y se ha notificado al cliente.", "success");
-            setShowDispatchModal(false);
-            setOrderToDispatch(null);
-            setTrackingNumber('');
-
-        } catch (err: any) {
-            console.error("Error al despachar:", err);
-            useAlertStore.getState().showAlert("Error", "No se pudo actualizar el estado.", "error");
-        }
+        await executeStatusUpdate(orderToDispatch, 'despachado', trackingNumber);
     };
+
+    const confirmGeneralStatusUpdate = async () => {
+        if (!pendingStatusUpdate) return;
+        await executeStatusUpdate(pendingStatusUpdate.orderId, pendingStatusUpdate.status);
+    }
 
     const updateStatus = async (orderId: string, newStatus: string) => {
         const order = orders.find(o => o.id === orderId) || selectedOrder;
         if (!order) return;
 
+        // Skip if same status
+        if (order.status === newStatus) return;
+
         if (newStatus === 'cancelado') {
-            if (order.status === 'cancelado') return;
             setOrderToCancel(orderId);
             setCancelReason('');
             setShowCancelModal(true);
@@ -427,63 +448,15 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
         }
 
         if (newStatus === 'despachado') {
-            if (order.status === 'despachado') return;
             setOrderToDispatch(orderId);
             setTrackingNumber('');
             setShowDispatchModal(true);
             return;
         }
 
-        try {
-            const batch = writeBatch(db);
-            const orderRef = doc(db, "orders", orderId);
-
-            // CASO REACTIVACIÓN: Pedido CANCELADO se REACTIVA -> Se vuelve a quitar stock
-            if (order.status === 'cancelado' && newStatus !== 'cancelado') {
-                for (const item of order.items) {
-                    const productSnap = await getDoc(doc(db, "products", item.id));
-                    const currentStock = productSnap.data()?.stock || 0;
-                    if (currentStock < item.quantity) {
-                        useAlertStore.getState().showAlert(
-                            "Stock Insuficiente",
-                            `No hay stock suficiente de ${item.name} para reactivar este pedido.`,
-                            "error"
-                        );
-                        return;
-                    }
-                }
-
-                order.items.forEach(item => {
-                    const productRef = doc(db, "products", item.id);
-                    batch.update(productRef, {
-                        stock: increment(-item.quantity)
-                    });
-                });
-            }
-
-            batch.update(orderRef, { status: newStatus });
-            await batch.commit();
-
-            // Notificación (simplificada)
-            if (order.userEmail && ['pagado', 'despachado'].includes(newStatus)) {
-                fetch('/.netlify/functions/notifications', {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        to: order.userEmail,
-                        userName: order.userName,
-                        orderId: order.id,
-                        status: newStatus
-                    })
-                }).catch(console.error);
-            }
-
-            if (selectedOrder?.id === orderId) {
-                setSelectedOrder({ ...selectedOrder, status: newStatus as any });
-            }
-        } catch (err: any) {
-            console.error("Error al actualizar estado:", err);
-            useAlertStore.getState().showAlert("Error", "No se pudo cambiar el estado.", "error");
-        }
+        // For other statuses (pagado, entregado, pendiente), show generic confirmation
+        setPendingStatusUpdate({ orderId, status: newStatus });
+        setShowConfirmStatusModal(true);
     };
 
     const syncProductionNeeds = async (order: Order) => {
@@ -1031,22 +1004,44 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
                                                     { id: 'despachado', label: 'Marcar Despachado', icon: Truck, color: 'purple' },
                                                     { id: 'entregado', label: 'Marcar Entregado', icon: CheckCircle2, color: 'green' },
                                                     { id: 'cancelado', label: 'Cancelar Orden', icon: X, color: 'red' },
-                                                ].map(opt => (
-                                                    <button
-                                                        key={opt.id}
-                                                        onClick={() => updateStatus(selectedOrder.id, opt.id)}
-                                                        className={`w-full text-left p-3 rounded-xl border flex items-center justify-between transition-all ${selectedOrder.status === opt.id
-                                                            ? `bg-${opt.color}-50 border-${opt.color}-500 text-${opt.color}-700 font-bold`
-                                                            : 'border-gray-100 hover:bg-gray-50 text-gray-600'
-                                                            }`}
-                                                    >
-                                                        <div className="flex items-center gap-3">
-                                                            <opt.icon size={18} />
-                                                            {opt.label}
-                                                        </div>
-                                                        {selectedOrder.status === opt.id && <CheckCircle2 size={16} />}
-                                                    </button>
-                                                ))}
+                                                ].map(opt => {
+                                                    const isCurrent = selectedOrder.status === opt.id;
+
+                                                    // Logic for Allowed Transitions
+                                                    let isAllowed = false;
+                                                    if (isCurrent) isAllowed = true; // Allow clicking current (no-op but enabled)
+                                                    else if (opt.id === 'cancelado') isAllowed = true; // Always allow cancel? Or maybe restricted if delivered? Let's say always for now based on user request "ve activando los botones... segun sea el caso" implies unlocking flow.
+                                                    else if (selectedOrder.status === 'pendiente' && opt.id === 'pagado') isAllowed = true;
+                                                    else if (selectedOrder.status === 'pagado' && opt.id === 'despachado') isAllowed = true;
+                                                    else if (selectedOrder.status === 'despachado' && opt.id === 'entregado') isAllowed = true;
+
+                                                    // Special case: If order is 'cancelado', maybe allow reactivation to 'pendiente' or 'pagado'? 
+                                                    // The `updateStatus` logic handles stock checks for reactivation. 
+                                                    // Let's assume re-activation to 'pagado' is okay if it was cancelled. 
+                                                    else if (selectedOrder.status === 'cancelado' && (opt.id === 'pagado' || opt.id === 'pendiente')) isAllowed = true;
+
+
+                                                    return (
+                                                        <button
+                                                            key={opt.id}
+                                                            onClick={() => isAllowed && updateStatus(selectedOrder.id, opt.id)}
+                                                            disabled={!isAllowed}
+                                                            className={`w-full text-left p-3 rounded-xl border flex items-center justify-between transition-all ${isCurrent
+                                                                ? `bg-${opt.color}-50 border-${opt.color}-500 text-${opt.color}-700 font-bold`
+                                                                : isAllowed
+                                                                    ? 'border-gray-100 hover:bg-gray-50 text-gray-600'
+                                                                    : 'border-gray-100 bg-gray-50 text-gray-300 cursor-not-allowed opacity-60'
+                                                                }`}
+                                                        >
+                                                            <div className="flex items-center gap-3">
+                                                                <opt.icon size={18} />
+                                                                {opt.label}
+                                                            </div>
+                                                            {isCurrent && <CheckCircle2 size={16} />}
+                                                            {!isAllowed && !isCurrent && <span className="text-[10px] font-bold uppercase bg-gray-100 px-2 py-0.5 rounded text-gray-400">Bloqueado</span>}
+                                                        </button>
+                                                    );
+                                                })}
                                             </div>
                                         </section>
                                     </div>
@@ -1078,15 +1073,17 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
                                 <div className="flex gap-3 pt-2">
                                     <button
                                         onClick={() => { setShowCancelModal(false); setOrderToCancel(null); }}
-                                        className="flex-1 py-3 rounded-xl font-bold bg-gray-100 text-gray-500 hover:bg-gray-200"
+                                        disabled={isUpdating}
+                                        className="flex-1 py-3 rounded-xl font-bold bg-gray-100 text-gray-500 hover:bg-gray-200 disabled:opacity-50"
                                     >
                                         Volver
                                     </button>
                                     <button
                                         onClick={confirmCancellation}
-                                        className="flex-1 py-3 rounded-xl font-bold bg-[#D91A2A] text-white hover:bg-red-700 shadow-lg shadow-red-200"
+                                        disabled={isUpdating}
+                                        className="flex-1 py-3 rounded-xl font-bold bg-[#D91A2A] text-white hover:bg-red-700 shadow-lg shadow-red-200 flex items-center justify-center gap-2 disabled:opacity-50"
                                     >
-                                        Confirmar Cancelación
+                                        {isUpdating ? <span className="animate-spin">⏳</span> : 'Confirmar Cancelación'}
                                     </button>
                                 </div>
                             </div>
@@ -1117,15 +1114,53 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
                                 <div className="flex gap-3 pt-2">
                                     <button
                                         onClick={() => { setShowDispatchModal(false); setOrderToDispatch(null); }}
-                                        className="flex-1 py-3 rounded-xl font-bold bg-gray-100 text-gray-500 hover:bg-gray-200"
+                                        disabled={isUpdating}
+                                        className="flex-1 py-3 rounded-xl font-bold bg-gray-100 text-gray-500 hover:bg-gray-200 disabled:opacity-50"
                                     >
                                         Cancelar
                                     </button>
                                     <button
                                         onClick={confirmDispatch}
-                                        className="flex-1 py-3 rounded-xl font-bold bg-purple-600 text-white hover:bg-purple-700 shadow-lg shadow-purple-200"
+                                        disabled={isUpdating}
+                                        className="flex-1 py-3 rounded-xl font-bold bg-purple-600 text-white hover:bg-purple-700 shadow-lg shadow-purple-200 flex items-center justify-center gap-2 disabled:opacity-50"
                                     >
-                                        Confirmar Despacho
+                                        {isUpdating ? <span className="animate-spin">⏳</span> : 'Confirmar Despacho'}
+                                    </button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+
+                {showConfirmStatusModal && pendingStatusUpdate && (
+                    <div key="confirm-status-modal" className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            className="bg-white rounded-3xl shadow-2xl overflow-hidden max-w-sm w-full border-4 border-[#F2A900]"
+                        >
+                            <div className="bg-[#F2A900] p-4 text-center">
+                                <h3 className="font-heading text-xl text-[#3E2723]">Confirmar Cambio</h3>
+                            </div>
+                            <div className="p-6 space-y-4 text-center">
+                                <p className="text-gray-600">
+                                    ¿Estás seguro que deseas cambiar el estado del pedido a <strong className="uppercase text-[#D91A2A]">{pendingStatusUpdate.status}</strong>?
+                                </p>
+                                <div className="flex gap-3 pt-2">
+                                    <button
+                                        onClick={() => { setShowConfirmStatusModal(false); setPendingStatusUpdate(null); }}
+                                        disabled={isUpdating}
+                                        className="flex-1 py-3 rounded-xl font-bold bg-gray-100 text-gray-500 hover:bg-gray-200 disabled:opacity-50"
+                                    >
+                                        Cancelar
+                                    </button>
+                                    <button
+                                        onClick={confirmGeneralStatusUpdate}
+                                        disabled={isUpdating}
+                                        className="flex-1 py-3 rounded-xl font-bold bg-[#F2A900] text-[#3E2723] hover:bg-yellow-500 shadow-lg shadow-yellow-200 flex items-center justify-center gap-2 disabled:opacity-50"
+                                    >
+                                        {isUpdating ? <span className="animate-spin">⏳</span> : 'Confirmar'}
                                     </button>
                                 </div>
                             </div>

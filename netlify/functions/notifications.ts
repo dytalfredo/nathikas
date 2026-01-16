@@ -34,7 +34,7 @@ export const handler: Handler = async (event) => {
     try {
         console.log('📦 [NotificationWorker] Payload recibido crude:', event.body);
         const payload = JSON.parse(event.body || '{}');
-        const { to, userName, orderId, customerId, status, reason, trackingNumber } = payload;
+        const { to, userName, orderId, customerId, status, reason, trackingNumber, shippingMethod } = payload;
 
         console.log(`🔍 [NotificationWorker] Procesando para Orden #${orderId} - Estado: ${status}`);
         console.log(`👤 [NotificationWorker] Cliente: ${userName} (${to})`);
@@ -114,6 +114,9 @@ export const handler: Handler = async (event) => {
                     <p>Tu pedido <strong>#${shortId}</strong> ha sido despachado hoy.</p>
                     ${trackingNumber ? `
                     <div style="background-color: white; padding: 15px; border-radius: 10px; margin: 20px 0; border: 2px dashed #D91A2A;">
+                        <p style="margin: 0; font-size: 14px; color: #7D6B5D; font-weight: bold;">EMPRESA DE ENVÍO:</p>
+                        <p style="margin: 5px 0 15px 0; font-size: 18px; font-weight: bold; color: #D91A2A; text-transform: uppercase;">${shippingMethod || 'Transporte Privado'}</p>
+                        
                         <p style="margin: 0; font-size: 14px; color: #7D6B5D; font-weight: bold;">NÚMERO DE GUÍA / TRACKING:</p>
                         <p style="margin: 5px 0 0 0; font-size: 20px; font-family: monospace; color: #3E2723; letter-spacing: 2px;">${trackingNumber}</p>
                     </div>
