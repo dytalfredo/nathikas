@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { db } from '../../lib/firebase';
 import { useAuthStore } from '../../store/authStore';
 import { useAlertStore } from '../../store/alertStore';
-import { collection, query, orderBy, onSnapshot, doc, updateDoc, where, writeBatch, increment, getDoc, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, doc, updateDoc, where, writeBatch, increment, getDoc, getDocs, addDoc, serverTimestamp, limit } from 'firebase/firestore';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Clock,
@@ -17,7 +17,10 @@ import {
     User,
     Package,
     RotateCcw,
-    Printer
+    Printer,
+    AlertTriangle,
+    Wallet,
+    Diff
 } from 'lucide-react';
 import mrwData from '../../data/agenciasMrw2.json';
 import zoomData from '../../data/zoom_venezuela_filtrado.json';
@@ -78,8 +81,14 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
     const [shippingFilter, setShippingFilter] = useState('all'); // 'all', 'MRW', 'Zoom', 'Retiro'
     const [groupMode, setGroupMode] = useState('none'); // 'none', 'agency'
     const [showCancelModal, setShowCancelModal] = useState(false);
+    // ... (existing state)
     const [cancelReason, setCancelReason] = useState('');
     const [orderToCancel, setOrderToCancel] = useState<string | null>(null);
+    const [cancelOption, setCancelOption] = useState<number | null>(null);
+    const [duplicateCandidates, setDuplicateCandidates] = useState<Order[]>([]);
+    const [manualPaidAmount, setManualPaidAmount] = useState('');
+    const [ordersLimit, setOrdersLimit] = useState(50);
+
 
     // Dispatch Modal State
     const [showDispatchModal, setShowDispatchModal] = useState(false);
@@ -195,6 +204,71 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
         } finally {
             setIsUpdating(false);
         }
+    };
+
+    const findDuplicates = (targetOrder: Order) => {
+        if (!targetOrder) return [];
+        return orders.filter(o =>
+            o.id !== targetOrder.id &&
+            o.status !== 'cancelado' &&
+            (
+                (o.paymentReference && targetOrder.paymentReference && o.paymentReference.length > 4 && o.paymentReference.trim() === targetOrder.paymentReference.trim()) ||
+                (o.userName === targetOrder.userName && Math.abs(o.total - targetOrder.total) < 0.01)
+            )
+        );
+    };
+
+    const initCancel = (order: Order) => {
+        setOrderToCancel(order.id);
+        const dups = findDuplicates(order);
+        setDuplicateCandidates(dups);
+        setCancelOption(dups.length > 0 ? 1 : 4);
+        setCancelReason('');
+        setManualPaidAmount('');
+        setShowCancelModal(true);
+    };
+
+    const getCancelMessage = () => {
+        const order = orders.find(o => o.id === orderToCancel);
+        if (!order) return cancelReason;
+
+        const supportLink = " Si necesitas ayuda, contáctanos aquí: https://wa.me/584129157564";
+
+        switch (cancelOption) {
+            case 1:
+                return `Pedido cancelado por duplicidad. Referencia o detalles coinciden con otra orden activa. ${cancelReason}${supportLink}`;
+            case 2:
+                return `Tu pago ha sido rechazado debido a incongruencias en los datos del Pago Móvil o Zelle. Por favor verifica tu comprobante. ${cancelReason}${supportLink}`;
+            case 3:
+                const paid = parseFloat(manualPaidAmount || '0');
+                const diff = paid - order.total;
+                return `Hemos detectado una diferencia en el monto pagado. Recibido: $${paid.toFixed(2)}. Total Orden: $${order.total.toFixed(2)}. Diferencia: $${diff.toFixed(2)}. ${cancelReason}${supportLink}`;
+            default:
+                return `${cancelReason}${supportLink}`;
+        }
+    };
+
+    const handleConfirmCancellation = async () => {
+        const finalReason = getCancelMessage();
+        if (!orderToCancel) return;
+
+        if (cancelOption === 3 && !manualPaidAmount) {
+            useAlertStore.getState().showAlert("Dato Requerido", "Indica el monto que pagó el cliente.", "warning");
+            return;
+        }
+        if (cancelOption === 4 && !cancelReason.trim()) {
+            useAlertStore.getState().showAlert("Dato Requerido", "Escribe un motivo.", "warning");
+            return;
+        }
+
+        await executeStatusUpdate(orderToCancel, 'cancelado', undefined, finalReason);
+    };
+
+    const openWhatsAppCancel = () => {
+        const order = orders.find(o => o.id === orderToCancel);
+        if (!order) return;
+        const msg = encodeURIComponent(`Hola ${order.userName}, referente a su pedido #${order.id.slice(0, 8)}: ${getCancelMessage()}`);
+        window.open(`https://wa.me/${order.userPhone.replace(/\D/g, '')}?text=${msg}`, '_blank');
     };
 
     const generateShippingLabel = (order: Order) => {
@@ -378,9 +452,9 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
         let q;
 
         if (statusFilter !== 'all') {
-            q = query(collection(db, "orders"), where("status", "==", statusFilter), orderBy("createdAt", "desc"));
+            q = query(collection(db, "orders"), where("status", "==", statusFilter), orderBy("createdAt", "desc"), limit(ordersLimit));
         } else {
-            q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
+            q = query(collection(db, "orders"), orderBy("createdAt", "desc"), limit(ordersLimit));
         }
 
         const unsub = onSnapshot(q,
@@ -399,7 +473,7 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
         );
 
         return () => unsub();
-    }, [statusFilter, user?.role]); // Removed filterByStatus prop from dependency, using statusFilter state instead
+    }, [statusFilter, user?.role, ordersLimit]); // Added ordersLimit dependency
 
     // Auto-open order details if requested
     useEffect(() => {
@@ -441,9 +515,7 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
         if (order.status === newStatus) return;
 
         if (newStatus === 'cancelado') {
-            setOrderToCancel(orderId);
-            setCancelReason('');
-            setShowCancelModal(true);
+            initCancel(order);
             return;
         }
 
@@ -790,6 +862,19 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
                 }
             </div >
 
+            {/* Load More Button */}
+            {orders.length >= ordersLimit && (
+                <div className="flex justify-center mt-6 mb-12">
+                    <button
+                        onClick={() => setOrdersLimit(prev => prev + 50)}
+                        className="px-6 py-3 bg-white border border-gray-200 text-gray-500 font-bold rounded-full shadow-sm hover:bg-gray-50 hover:text-[#D91A2A] hover:border-[#D91A2A] transition-all flex items-center gap-2"
+                    >
+                        <Clock size={18} />
+                        Cargar más pedidos ({ordersLimit} mostrados)
+                    </button>
+                </div>
+            )}
+
             {/* Order Details Modal / Mobile Drawer */}
             <AnimatePresence>
                 {
@@ -1056,35 +1141,132 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.9, opacity: 0 }}
-                            className="bg-white rounded-3xl shadow-2xl overflow-hidden max-w-md w-full border-4 border-[#D91A2A]"
+                            className="bg-white rounded-3xl shadow-2xl overflow-hidden max-w-lg w-full border-4 border-[#D91A2A] flex flex-col max-h-[90vh]"
                         >
-                            <div className="bg-[#D91A2A] p-4 text-center">
+                            <div className="bg-[#D91A2A] p-4 text-center shrink-0">
                                 <h3 className="font-heading text-xl text-white">Cancelar Pedido</h3>
                             </div>
-                            <div className="p-6 space-y-4">
-                                <p className="text-gray-600 font-bold text-center"> Por favor indica el motivo de la cancelación. Esta acción devolverá el stock al inventario.</p>
-                                <textarea
-                                    value={cancelReason}
-                                    onChange={(e) => setCancelReason(e.target.value)}
-                                    placeholder="Ej: Cliente solicitó cancelación, falta de pago..."
-                                    className="w-full h-32 p-4 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-[#F2A900] focus:bg-white transition-all resize-none font-medium"
-                                    autoFocus
-                                />
-                                <div className="flex gap-3 pt-2">
+
+                            <div className="p-6 overflow-y-auto custom-scrollbar space-y-4">
+                                {/* Quick Options */}
+                                <div className="grid grid-cols-2 gap-2">
                                     <button
-                                        onClick={() => { setShowCancelModal(false); setOrderToCancel(null); }}
-                                        disabled={isUpdating}
-                                        className="flex-1 py-3 rounded-xl font-bold bg-gray-100 text-gray-500 hover:bg-gray-200 disabled:opacity-50"
+                                        onClick={() => setCancelOption(1)}
+                                        className={`p-3 rounded-xl border-2 font-bold text-xs flex flex-col items-center gap-2 transition-all ${cancelOption === 1 ? 'border-[#D91A2A] bg-red-50 text-[#D91A2A]' : 'border-gray-100 bg-gray-50 text-gray-400'}`}
                                     >
-                                        Volver
+                                        <Copy size={20} />
+                                        Duplicado
                                     </button>
                                     <button
-                                        onClick={confirmCancellation}
-                                        disabled={isUpdating}
-                                        className="flex-1 py-3 rounded-xl font-bold bg-[#D91A2A] text-white hover:bg-red-700 shadow-lg shadow-red-200 flex items-center justify-center gap-2 disabled:opacity-50"
+                                        onClick={() => setCancelOption(2)}
+                                        className={`p-3 rounded-xl border-2 font-bold text-xs flex flex-col items-center gap-2 transition-all ${cancelOption === 2 ? 'border-[#D91A2A] bg-red-50 text-[#D91A2A]' : 'border-gray-100 bg-gray-50 text-gray-400'}`}
                                     >
-                                        {isUpdating ? <span className="animate-spin">⏳</span> : 'Confirmar Cancelación'}
+                                        <AlertTriangle size={20} />
+                                        Pago Rechazado
                                     </button>
+                                    <button
+                                        onClick={() => setCancelOption(3)}
+                                        className={`p-3 rounded-xl border-2 font-bold text-xs flex flex-col items-center gap-2 transition-all ${cancelOption === 3 ? 'border-[#D91A2A] bg-red-50 text-[#D91A2A]' : 'border-gray-100 bg-gray-50 text-gray-400'}`}
+                                    >
+                                        <Diff size={20} />
+                                        Diferencia
+                                    </button>
+                                    <button
+                                        onClick={() => setCancelOption(4)}
+                                        className={`p-3 rounded-xl border-2 font-bold text-xs flex flex-col items-center gap-2 transition-all ${cancelOption === 4 ? 'border-[#D91A2A] bg-red-50 text-[#D91A2A]' : 'border-gray-100 bg-gray-50 text-gray-400'}`}
+                                    >
+                                        <MessageCircle size={20} />
+                                        Otro / Manual
+                                    </button>
+                                </div>
+
+                                {/* Dynamic Content */}
+                                <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                                    {cancelOption === 1 && (
+                                        <div className="space-y-3">
+                                            <p className="text-sm font-bold text-gray-600">Posibles Duplicados:</p>
+                                            {duplicateCandidates.length > 0 ? (
+                                                duplicateCandidates.map(dup => (
+                                                    <div key={dup.id} className="bg-white p-2 rounded border text-xs flex justify-between items-center">
+                                                        <div>
+                                                            <span className="font-bold">#{dup.id.slice(0, 8)}</span> - {dup.status}
+                                                            <div className="text-gray-400">${dup.total} - Ref: {dup.paymentReference}</div>
+                                                        </div>
+                                                        <button className="text-[#D91A2A] font-bold hover:underline" onClick={() => window.alert('Detalle no disponible aquí, revisar en lista.')}>Ver</button>
+                                                    </div>
+                                                ))
+                                            ) : (
+                                                <p className="text-xs text-gray-400 italic">No se detectaron duplicados obvios.</p>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    {cancelOption === 2 && (
+                                        <div className="text-center py-2">
+                                            <AlertTriangle className="mx-auto text-orange-500 mb-2" size={32} />
+                                            <p className="text-sm font-bold text-gray-700">Incongruencias en Pago</p>
+                                            <p className="text-xs text-gray-500">Se notificará al usuario que los datos bancarios no coinciden.</p>
+                                        </div>
+                                    )}
+
+                                    {cancelOption === 3 && (
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-bold text-gray-600">Monto Real Pagado ($):</label>
+                                            <input
+                                                type="number"
+                                                value={manualPaidAmount}
+                                                onChange={e => setManualPaidAmount(e.target.value)}
+                                                className="w-full p-2 border rounded-lg"
+                                                placeholder="Ej: 15.00"
+                                            />
+                                            {manualPaidAmount && orderToCancel && (
+                                                <p className="text-xs font-bold text-red-600 text-right">
+                                                    Diferencia: ${(parseFloat(manualPaidAmount) - (orders.find(o => o.id === orderToCancel)?.total || 0)).toFixed(2)}
+                                                </p>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    <div className="mt-3">
+                                        <label className="text-xs font-bold text-gray-500 mb-1 block">Mensaje / Nota Adicional:</label>
+                                        <textarea
+                                            value={cancelReason}
+                                            onChange={(e) => setCancelReason(e.target.value)}
+                                            placeholder="Detalles opcionales..."
+                                            className="w-full h-20 p-3 bg-white border border-gray-200 rounded-lg text-sm resize-none focus:border-[#D91A2A] focus:outline-none"
+                                        />
+                                    </div>
+
+                                    <div className="mt-2 text-[10px] text-gray-400 text-center">
+                                        * Se incluirá enlace a soporte: 0412-915-7564
+                                    </div>
+                                </div>
+
+                                <div className="flex flex-col gap-2 pt-2">
+                                    <button
+                                        onClick={openWhatsAppCancel}
+                                        className="w-full py-3 rounded-xl font-bold bg-[#25D366] text-white hover:bg-green-600 shadow-lg shadow-green-100 flex items-center justify-center gap-2"
+                                    >
+                                        <MessageCircle size={18} />
+                                        Enviar WhatsApp al Cliente
+                                    </button>
+
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={() => { setShowCancelModal(false); setOrderToCancel(null); }}
+                                            disabled={isUpdating}
+                                            className="flex-1 py-3 rounded-xl font-bold bg-gray-100 text-gray-500 hover:bg-gray-200 disabled:opacity-50"
+                                        >
+                                            Volver
+                                        </button>
+                                        <button
+                                            onClick={handleConfirmCancellation}
+                                            disabled={isUpdating}
+                                            className="flex-1 py-3 rounded-xl font-bold bg-[#D91A2A] text-white hover:bg-red-700 shadow-lg shadow-red-200 flex items-center justify-center gap-2 disabled:opacity-50"
+                                        >
+                                            {isUpdating ? <span className="animate-spin">⏳</span> : 'Confirmar'}
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </motion.div>

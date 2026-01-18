@@ -61,6 +61,11 @@ service cloud.firestore {
       allow write: if hasAdminRole('administrator');
     }
 
+    // ASOCIADOS / PARTNERS
+    match /partners/{partnerId} {
+      allow read, write: if hasAdminRole('administrator');
+    }
+
     // Asegurar que el administrador pueda editar cualquier campo de productos
     match /products/{productId} {
       allow write: if hasAdminRole('administrator');

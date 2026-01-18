@@ -24,6 +24,7 @@ import OrdersView from './OrdersView';
 import ProductionView from './ProductionView';
 import SettingsView from './SettingsView';
 import ReportsView from './ReportsView';
+import PartnersView from './PartnersView';
 
 export default function Dashboard() {
     const { user } = useAuthStore();
@@ -44,6 +45,7 @@ export default function Dashboard() {
         { id: 'production', label: 'Producción', icon: AlertTriangle, roles: ['administrator', 'asistente'] },
         { id: 'inventory', label: 'Inventario', icon: Package, roles: ['administrator', 'asistente', 'vendedor'] },
         { id: 'shipments', label: 'Despachos', icon: Truck, roles: ['administrator', 'asistente'] },
+        { id: 'partners', label: 'Asociados', icon: Users, roles: ['administrator'] },
         { id: 'settings', label: 'Configuraciones', icon: Settings, roles: ['administrator'] },
     ];
 
@@ -116,12 +118,21 @@ export default function Dashboard() {
                         </div>
                         <div className="flex items-center gap-3">
                             {user.role === 'administrator' && (
-                                <button
-                                    onClick={() => setActiveTab('settings')}
-                                    className={`p-2 rounded-lg transition-colors ${activeTab === 'settings' ? 'bg-[#F2A900] text-[#3E2723]' : 'text-gray-400 hover:bg-gray-100'}`}
-                                >
-                                    <Settings size={20} />
-                                </button>
+                                <>
+                                    <button
+                                        onClick={() => setActiveTab('partners')}
+                                        className={`p-2 rounded-lg transition-colors ${activeTab === 'partners' ? 'bg-[#F2A900] text-[#3E2723]' : 'text-gray-400 hover:bg-gray-100'}`}
+                                        title="Gestión de Asociados"
+                                    >
+                                        <Users size={20} />
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveTab('settings')}
+                                        className={`p-2 rounded-lg transition-colors ${activeTab === 'settings' ? 'bg-[#F2A900] text-[#3E2723]' : 'text-gray-400 hover:bg-gray-100'}`}
+                                    >
+                                        <Settings size={20} />
+                                    </button>
+                                </>
                             )}
                             <div className="w-8 h-8 bg-[#F2A900] rounded-full flex items-center justify-center font-bold text-[#3E2723] text-xs border-2 border-white shadow-sm">
                                 {user.email?.[0].toUpperCase()}
@@ -150,6 +161,8 @@ export default function Dashboard() {
                                 {activeTab === 'inventory' && <InventoryView />}
                                 {activeTab === 'settings' && <SettingsView />}
                                 {activeTab === 'reports' && <ReportsView />}
+                                {activeTab === 'reports' && <ReportsView />}
+                                {activeTab === 'partners' && <PartnersView />}
                                 {activeTab === 'shipments' && <OrdersView filterByStatus="pagado" title="Gestión de Despachos" />}
                             </motion.div>
                         </AnimatePresence>
@@ -159,7 +172,7 @@ export default function Dashboard() {
 
             {/* Mobile Bottom Navigation */}
             <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-2 py-2 flex justify-around items-center md:hidden z-50 safe-area-bottom">
-                {filteredMenu.filter(item => item.id !== 'settings').map((item) => (
+                {filteredMenu.filter(item => item.id !== 'settings' && item.id !== 'partners').map((item) => (
                     <button
                         key={item.id}
                         onClick={() => setActiveTab(item.id)}

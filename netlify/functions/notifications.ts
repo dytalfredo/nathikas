@@ -141,7 +141,13 @@ export const handler: Handler = async (event) => {
                     <blockquote style="background: #FDF6E3; padding: 10px; border-left: 5px solid #D91A2A; border: 1px solid #E6D9B8;">
                         ${reason || "No especificado"}
                     </blockquote>
-                    <p>Si crees que esto es un error, por favor contáctanos por WhatsApp.</p>
+                    <div style="text-align: center; margin: 20px 0;">
+                        <a href="https://wa.me/584129157564" style="background-color: #25D366; color: white; padding: 12px 24px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 14px; display: inline-block;">
+                            Contactar Soporte por WhatsApp
+                        </a>
+                        <p style="font-size: 10px; color: #999; margin-top: 5px;">Para gestionar tu reembolso o corrección.</p>
+                    </div>
+                    <p>Si crees que esto es un error, contáctanos usando el botón de arriba.</p>
                     <div style="margin-top: 30px; border-top: 1px solid #E6D9B8; padding-top: 20px; font-size: 12px; color: #7D6B5D; text-align: center;">
                       Nathikas - Spicy Gummies & Chamoy.
                     </div>
