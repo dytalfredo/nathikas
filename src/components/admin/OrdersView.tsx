@@ -70,9 +70,10 @@ interface OrdersViewProps {
     title?: string;
     autoOpenOrderId?: string | null;
     onModalClose?: () => void;
+    isDispatchView?: boolean;
 }
 
-export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onModalClose }: OrdersViewProps) {
+export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onModalClose, isDispatchView }: OrdersViewProps) {
     const { user } = useAuthStore();
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
@@ -88,6 +89,7 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
     const [duplicateCandidates, setDuplicateCandidates] = useState<Order[]>([]);
     const [manualPaidAmount, setManualPaidAmount] = useState('');
     const [ordersLimit, setOrdersLimit] = useState(50);
+    const [selectedForPrint, setSelectedForPrint] = useState<string[]>([]);
 
 
     // Dispatch Modal State
@@ -368,18 +370,169 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
         doc.text(`Fecha: ${order.createdAt?.toDate ? order.createdAt.toDate().toLocaleDateString() : 'N/A'}`, 55, 102);
 
         doc.setFont("helvetica", "normal");
-        doc.text(`Cant. Productos: ${order.items.reduce((acc, item) => acc + item.quantity, 0)}`, 5, 108);
+        // Item List
+        const itemsText = order.items.map(i => `${i.quantity}x ${i.name}`).join(', ');
+        const splitItems = doc.splitTextToSize(itemsText, 98);
+        doc.text(splitItems, 5, 108);
 
-        // Fragile / Warning
-        doc.setLineWidth(0.8);
-        doc.rect(30, 115, 48, 15);
-        centerText("FRÁGIL / DELICADO", 124, 12, true);
+        // Fragile / Warning (Small at bottom)
+        doc.setFontSize(8);
+        doc.setFont("helvetica", "bold");
+        centerText("FRÁGIL / DELICADO", 132, 8, true);
 
         // Footer
         doc.setFontSize(7);
         centerText("Generado desde Nathikas Admin", 135);
 
         doc.save(`Etiqueta_${order.id.slice(0, 8)}.pdf`);
+    };
+
+    const generateBulkLabels = () => {
+        if (selectedForPrint.length === 0) return;
+
+        // A4 format for 4 labels (2x2 grid) or Letter
+        // Let's use Letter size: 216mm x 279mm
+        // Each label 108x140mm approx fit perfectly in 4 quadrants? 
+        // 108*2 = 216, 140*2 = 280. It's tight on A4/Letter margins.
+        // Let's reduce slightly to fit margins.
+
+        const doc = new jsPDF({
+            orientation: 'p',
+            unit: 'mm',
+            format: 'letter' // 215.9 x 279.4 mm
+        });
+
+        // Config
+        const labelW = 100;
+        const labelH = 130;
+        const marginX = 6;
+        const marginY = 8;
+        const gapX = 4;
+        const gapY = 4;
+
+        let printedCount = 0;
+
+        selectedForPrint.forEach((orderId, index) => {
+            const order = orders.find(o => o.id === orderId);
+            if (!order) return;
+
+            // New page every 4 items
+            if (printedCount > 0 && printedCount % 4 === 0) {
+                doc.addPage();
+            }
+
+            // Calculate position (0, 1, 2, 3 on page)
+            const positionOnPage = printedCount % 4;
+            const col = positionOnPage % 2; // 0 or 1
+            const row = Math.floor(positionOnPage / 2); // 0 or 1
+
+            const x = marginX + (col * (labelW + gapX));
+            const y = marginY + (row * (labelH + gapY));
+
+            // --- Draw Label Content (Simplified from single label) ---
+            // Helper localized to x,y
+            const localText = (text: string, localY: number, size: number = 9, bold: boolean = false) => {
+                doc.setFontSize(size);
+                doc.setFont("helvetica", bold ? "bold" : "normal");
+                // Center relative to label
+                const textWidth = doc.getTextWidth(text);
+                const localX = x + (labelW - textWidth) / 2;
+                doc.text(text, localX, y + localY);
+            };
+
+            doc.setLineWidth(0.3);
+            doc.rect(x, y, labelW, labelH); // Border
+
+            localText("NATHIKAS", 12, 10, true);
+            localText("Spicy Gummies & Chamoy", 17, 8);
+
+            doc.line(x, y + 20, x + labelW, y + 20);
+
+            // Recipient
+            const rName = (order.isGift && order.recipient?.name) ? order.recipient.name : order.userName;
+            const rPhone = (order.isGift && order.recipient?.phone) ? order.recipient.phone : order.userPhone;
+            const rCedula = (order.isGift && order.recipient?.cedula) ? order.recipient.cedula : (order.userCedula || 'N/A');
+
+            doc.setFontSize(7);
+            doc.setFont("helvetica", "bold");
+            doc.text("DESTINATARIO:", x + 4, y + 28);
+
+            doc.setFontSize(11); // Scale down slightly checks
+            doc.text(rName.substring(0, 28), x + 4, y + 35);
+
+            doc.setFontSize(9);
+            doc.setFont("helvetica", "normal");
+            doc.text(`CI: ${rCedula}`, x + 4, y + 41);
+            doc.text(`Telf: ${rPhone}`, x + 4, y + 46);
+
+            doc.line(x, y + 50, x + labelW, y + 50);
+
+            // Address
+            doc.setFontSize(7);
+            doc.setFont("helvetica", "bold");
+            doc.text("DIRECCIÓN:", x + 4, y + 56);
+
+            doc.setFontSize(9);
+            doc.setFont("helvetica", "normal");
+            doc.text(`${order.selectedState}, ${order.selectedCity}`, x + 4, y + 62);
+
+            // Agency logic
+            let addressDetail = order.selectedAgency || 'Dirección no especificada';
+            let agencyLabel = "";
+            if (order.shippingMethod?.toLowerCase() === 'mrw' && order.selectedAgency) {
+                const a = (mrwData as any[]).find(i => i.codigo === order.selectedAgency);
+                if (a) { agencyLabel = `MRW ${a.codigo}`; addressDetail = a.direccion; }
+            } else if (order.shippingMethod?.toLowerCase() === 'zoom' && order.selectedAgency) {
+                const a = (zoomData as any[]).find(i => i.codigo === order.selectedAgency);
+                if (a) { agencyLabel = `ZOOM ${a.codigo}`; addressDetail = a.direccion; }
+            } else if (order.shippingMethod === 'retiro') {
+                addressDetail = "RETIRO EN TIENDA";
+            }
+
+            if (agencyLabel) {
+                doc.setFont("helvetica", "bold");
+                doc.text(agencyLabel, x + 4, y + 68);
+                doc.setFont("helvetica", "normal");
+                const splitInfo = doc.splitTextToSize(addressDetail, labelW - 8);
+                doc.text(splitInfo, x + 4, y + 74);
+            } else {
+                const splitInfo = doc.splitTextToSize(addressDetail, labelW - 8);
+                doc.text(splitInfo, x + 4, y + 68);
+            }
+
+            // Info Bottom
+            doc.line(x, y + 95, x + labelW, y + 95);
+            doc.setFontSize(8);
+            doc.setFont("helvetica", "bold");
+            doc.text(`Pedido: #${order.id.slice(0, 8)}`, x + 4, y + 100);
+
+            doc.setFont("helvetica", "normal");
+            // Item List for Bulk
+            const itemsText = order.items.map(i => `${i.quantity}x ${i.name}`).join(', ');
+            // Smaller font for items in bulk view to fit more
+            doc.setFontSize(8);
+            const splitItems = doc.splitTextToSize(itemsText, labelW - 8);
+            // Limit to 6 lines to show significantly more items
+            const visibleItems = splitItems.slice(0, 6);
+            if (splitItems.length > 6) visibleItems[5] += '...';
+
+            doc.text(visibleItems, x + 4, y + 104);
+
+            // Fragile (Small at bottom)
+            localText("FRÁGIL / DELICADO", 126, 8, true);
+
+            printedCount++;
+        });
+
+        doc.save(`Etiquetas_Lote_${new Date().toLocaleDateString().replace(/\//g, '-')}.pdf`);
+        useAlertStore.getState().showAlert("Generado", `${printedCount} etiquetas generadas.`, "success");
+        setSelectedForPrint([]);
+    };
+
+    const togglePrintSelection = (orderId: string) => {
+        setSelectedForPrint(prev =>
+            prev.includes(orderId) ? prev.filter(id => id !== orderId) : [...prev, orderId]
+        );
     };
 
     const [statusFilter, setStatusFilter] = useState(filterByStatus || 'all');
@@ -707,6 +860,27 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
                 )}
             </div>
 
+            {/* Bulk Print Floating Action Button */}
+            {selectedForPrint.length > 0 && (
+                <div className="fixed bottom-24 right-6 md:bottom-12 md:right-12 z-[90]">
+                    <motion.button
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        onClick={generateBulkLabels}
+                        className="bg-[#3E2723] text-[#F2A900] px-6 py-4 rounded-full shadow-2xl border-4 border-[#F2A900] font-bold flex items-center gap-3 hover:transform hover:scale-105 transition-all text-xl"
+                    >
+                        <Printer size={24} />
+                        Imprimir {selectedForPrint.length} Etiquetas
+                    </motion.button>
+                    <button
+                        onClick={() => setSelectedForPrint([])}
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600"
+                    >
+                        <X size={12} />
+                    </button>
+                </div>
+            )}
+
             {/* Desktop Table View */}
             <div className="bg-white rounded-3xl shadow-xl overflow-hidden border-2 border-white hidden md:block">
                 {groupMode === 'agency' ? (
@@ -783,11 +957,12 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
                                     <th className="p-4 text-xs font-bold text-gray-500 uppercase">Total</th>
                                     <th className="p-4 text-xs font-bold text-gray-500 uppercase">Estado</th>
                                     <th className="p-4 text-xs font-bold text-gray-500 uppercase">Acciones</th>
+                                    {isDispatchView && <th className="p-4 text-xs font-bold text-gray-500 uppercase text-center"><Printer size={16} /></th>}
                                 </tr>
                             </thead>
                             <tbody className="divide-y">
                                 {filteredOrders.map((order) => (
-                                    <tr key={order.id} className="hover:bg-gray-50 transition-colors">
+                                    <tr key={order.id} className={`hover:bg-gray-50 transition-colors ${selectedForPrint.includes(order.id) ? 'bg-yellow-50' : ''}`}>
                                         <td className="p-4">
                                             <p className="font-bold text-xs">#{order.id.slice(0, 8)}</p>
                                             <p className="text-[10px] text-gray-400">{order.createdAt?.toDate().toLocaleDateString()}</p>
@@ -821,6 +996,16 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
                                                 <Eye size={18} />
                                             </button>
                                         </td>
+                                        {isDispatchView && (
+                                            <td className="p-4 text-center">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={selectedForPrint.includes(order.id)}
+                                                    onChange={() => togglePrintSelection(order.id)}
+                                                    className="w-5 h-5 accent-[#D91A2A] cursor-pointer"
+                                                />
+                                            </td>
+                                        )}
                                     </tr>
                                 ))}
                             </tbody>

@@ -1,4 +1,5 @@
 // @ts-check
+// Trigger restart for new asset discovery in public folder
 import { defineConfig } from "astro/config";
 import react from "@astrojs/react";
 import netlify from "@astrojs/netlify";

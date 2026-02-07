@@ -2,12 +2,19 @@ import { useCallback, useEffect, useState, useMemo } from "react";
 import Particles from "react-tsparticles";
 import { loadSlim } from "tsparticles-slim";
 import type { Container, Engine } from "tsparticles-engine";
-import g1 from "../assets/particulas/g1.webp";
-import g2 from "../assets/particulas/g2.webp";
-import g3 from "../assets/particulas/g3.webp";
-import g4 from "../assets/particulas/g4.webp";
-import g5 from "../assets/particulas/g5.webp";
-import g6 from "../assets/particulas/g6.webp";
+// import g1 from "../assets/particulas/g1.webp"; // Moved to public
+// import g2 from "../assets/particulas/g2.webp";
+// import g3 from "../assets/particulas/g3.webp";
+// import g4 from "../assets/particulas/g4.webp";
+// import g5 from "../assets/particulas/g5.webp";
+// import g6 from "../assets/particulas/g6.webp";
+
+const g1 = "/particulas/g1_p.webp";
+const g2 = "/particulas/g2_p.webp";
+const g3 = "/particulas/g3_p.webp";
+const g4 = "/particulas/g4_p.webp";
+const g5 = "/particulas/g5_p.webp";
+const g6 = "/particulas/g6_p.webp";
 
 interface Props {
     id?: string;
@@ -45,32 +52,22 @@ export default function GummyRain({ id = "tsparticles", zIndex = "z-0", count = 
                 type: "image",
                 image: [
                     {
-                        src: typeof g1 === 'string' ? g1 : (g1 as any).src,
+                        src: g1,
                         width: 100,
                         height: 100,
                     },
                     {
-                        src: typeof g2 === 'string' ? g2 : (g2 as any).src,
+                        src: g2,
                         width: 100,
                         height: 100,
                     },
                     {
-                        src: typeof g3 === 'string' ? g3 : (g3 as any).src,
+                        src: g4,
                         width: 100,
                         height: 100,
                     },
                     {
-                        src: typeof g4 === 'string' ? g4 : (g4 as any).src,
-                        width: 100,
-                        height: 100,
-                    },
-                    {
-                        src: typeof g5 === 'string' ? g5 : (g5 as any).src,
-                        width: 100,
-                        height: 100,
-                    },
-                    {
-                        src: typeof g6 === 'string' ? g6 : (g6 as any).src,
+                        src: g6,
                         width: 100,
                         height: 100,
                     },

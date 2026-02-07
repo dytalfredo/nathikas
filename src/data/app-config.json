@@ -151,6 +151,7 @@
             "name": "Enchiladas",
             "description": "Gomitas cubiertas con chamoy, chile y tajin.",
             "price": 4,
+            "deliveryCost": 0.5,
             "image": "/productos/Enchiladas.webp",
             "category": "kits"
         },
@@ -159,6 +160,7 @@
             "name": "Ahogadas",
             "description": "Gomitas cubiertas con chamoy, chile y tajin.",
             "price": 4,
+            "deliveryCost": 0.5,
             "image": "/productos/ahogadas.webp",
             "category": "kits"
         },
@@ -167,6 +169,7 @@
             "name": "Chamoy 1 Litro",
             "description": "Un litro de puro sabor mexicano. Ideal para compartir o para los muy viciosos.",
             "price": 12.00,
+            "deliveryCost": 1.0,
             "image": "/productos/grandeChamoy.webp",
             "category": "salsas"
         },
@@ -175,6 +178,7 @@
             "name": "Chamoy 1/2 Litro",
             "description": "La medida perfecta para tus antojos personales.",
             "price": 7.00,
+            "deliveryCost": 0.75,
             "image": "/productos/medianoChamoy.webp",
             "category": "salsas"
         }

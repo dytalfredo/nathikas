@@ -66,6 +66,22 @@ service cloud.firestore {
       allow read, write: if hasAdminRole('administrator');
     }
 
+    // INGREDIENTES
+    match /ingredients/{ingredientId} {
+      // Permitir lectura a cualquier staff
+      allow read: if isStaff();
+      // Permitir escritura solo a administradores o asistentes de producción
+      allow write: if hasAdminRole('administrator') || hasAdminRole('asistente');
+    }
+
+    // COMPRAS
+    match /purchases/{purchaseId} {
+      // Permitir lectura a cualquier staff
+      allow read: if isStaff();
+      // Permitir escritura solo a administradores o asistentes
+      allow write: if hasAdminRole('administrator') || hasAdminRole('asistente');
+    }
+
     // Asegurar que el administrador pueda editar cualquier campo de productos
     match /products/{productId} {
       allow write: if hasAdminRole('administrator');

@@ -27,6 +27,7 @@ interface ProductPrice {
     id: string;
     name: string;
     price: number;
+    deliveryCost?: number;
     enabled?: boolean;
 }
 
@@ -154,6 +155,7 @@ export default function SettingsView() {
                     id: doc.id,
                     name: d.name,
                     price: d.price || 0,
+                    deliveryCost: d.deliveryCost || 0,
                     enabled: d.enabled !== false // Default to true if not set
                 });
             });
@@ -182,6 +184,7 @@ export default function SettingsView() {
     const handleProductPriceChange = async (productId: string, newPrice: number) => {
         try {
             await setDoc(doc(db, "products", productId), { price: newPrice }, { merge: true });
+            setProducts(products.map(p => p.id === productId ? { ...p, price: newPrice } : p));
         } catch (err) {
             console.error("Error updating price:", err);
             showAlert("Error", "No se pudo actualizar el precio.", "error");
@@ -196,6 +199,16 @@ export default function SettingsView() {
         } catch (err) {
             console.error("Error updating status:", err);
             showAlert("Error", "No se pudo actualizar el estado.", "error");
+        }
+    };
+
+    const handleProductDeliveryCostChange = async (productId: string, deliveryCost: number) => {
+        try {
+            await setDoc(doc(db, "products", productId), { deliveryCost }, { merge: true });
+            setProducts(products.map(p => p.id === productId ? { ...p, deliveryCost } : p));
+        } catch (err) {
+            console.error("Error updating delivery cost:", err);
+            showAlert("Error", "No se pudo actualizar el costo de delivery.", "error");
         }
     };
 
@@ -476,35 +489,60 @@ export default function SettingsView() {
                         <h3 className="text-xl font-heading text-[#3E2723] mb-6 flex items-center gap-2">
                             <DollarSign className="text-green-500" /> Precios de Productos
                         </h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 gap-4">
                             {products.map(product => (
-                                <div key={product.id} className={`flex items-center justify-between p-4 rounded-2xl border transition-colors ${product.enabled ? 'bg-[#FDF6E3] border-gray-100' : 'bg-gray-100 border-gray-200 opacity-75'}`}>
-                                    <div className="flex items-center gap-3">
-                                        <button
-                                            onClick={() => handleProductStatusChange(product.id, !product.enabled)}
-                                            className={`w-10 h-6 rounded-full p-1 transition-colors relative ${product.enabled ? 'bg-green-500' : 'bg-gray-300'}`}
-                                            title={product.enabled ? "Producto Activo" : "Producto Inactivo"}
-                                        >
-                                            <div className={`w-4 h-4 bg-white rounded-full shadow-sm transition-transform ${product.enabled ? 'translate-x-4' : 'translate-x-0'}`} />
-                                        </button>
-                                        <span className={`font-bold ${product.enabled ? 'text-[#3E2723]' : 'text-gray-500 line-through'}`}>{product.name}</span>
-                                    </div>
-                                    <div className="flex items-center gap-3">
-                                        <div className="relative">
-                                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold">$</span>
-                                            <input
-                                                type="number"
-                                                step="0.01"
-                                                defaultValue={product.price}
-                                                onBlur={(e) => handleProductPriceChange(product.id, parseFloat(e.target.value))}
-                                                className="w-24 bg-white border-2 border-gray-100 rounded-xl p-2 pl-7 focus:border-[#F2A900] outline-none font-bold text-right shadow-sm"
-                                            />
+                                <div key={product.id} className={`p-4 rounded-2xl border transition-colors ${product.enabled ? 'bg-[#FDF6E3] border-gray-100' : 'bg-gray-100 border-gray-200 opacity-75'}`}>
+                                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                        <div className="flex items-center gap-3">
+                                            <button
+                                                onClick={() => handleProductStatusChange(product.id, !product.enabled)}
+                                                className={`w-10 h-6 rounded-full p-1 transition-colors relative ${product.enabled ? 'bg-green-500' : 'bg-gray-300'}`}
+                                                title={product.enabled ? "Producto Activo" : "Producto Inactivo"}
+                                            >
+                                                <div className={`w-4 h-4 bg-white rounded-full shadow-sm transition-transform ${product.enabled ? 'translate-x-4' : 'translate-x-0'}`} />
+                                            </button>
+                                            <span className={`font-bold ${product.enabled ? 'text-[#3E2723]' : 'text-gray-500 line-through'}`}>{product.name}</span>
+                                        </div>
+                                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                                            <div>
+                                                <label className="text-[10px] font-bold text-gray-400 uppercase block mb-1">Precio Base</label>
+                                                <div className="relative">
+                                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold">$</span>
+                                                    <input
+                                                        type="number"
+                                                        step="0.01"
+                                                        defaultValue={product.price}
+                                                        onBlur={(e) => handleProductPriceChange(product.id, parseFloat(e.target.value))}
+                                                        className="w-28 bg-white border-2 border-gray-100 rounded-xl p-2 pl-7 focus:border-[#F2A900] outline-none font-bold text-right shadow-sm"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label className="text-[10px] font-bold text-gray-400 uppercase block mb-1">Costo Delivery</label>
+                                                <div className="relative">
+                                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold">$</span>
+                                                    <input
+                                                        type="number"
+                                                        step="0.01"
+                                                        min="0"
+                                                        defaultValue={(product as any).deliveryCost || 0}
+                                                        onBlur={(e) => handleProductDeliveryCostChange(product.id, parseFloat(e.target.value) || 0)}
+                                                        className="w-28 bg-white border-2 border-gray-100 rounded-xl p-2 pl-7 focus:border-[#F2A900] outline-none font-bold text-right shadow-sm"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="text-right">
+                                                <label className="text-[10px] font-bold text-[#D91A2A] uppercase block mb-1">Precio Final</label>
+                                                <div className="font-bold text-lg text-[#D91A2A]">
+                                                    ${(product.price + ((product as any).deliveryCost || 0)).toFixed(2)}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             ))}
                         </div>
-                        <p className="text-xs text-gray-400 italic mt-4">* Los cambios de precios se guardan automáticamente al perder el foco (blur) del campo.</p>
+                        <p className="text-xs text-gray-400 italic mt-4">* Los cambios de precios y costos de delivery se guardan automáticamente al perder el foco (blur) del campo. El precio final es la suma del precio base + costo de delivery.</p>
                     </div>
                 )}
 

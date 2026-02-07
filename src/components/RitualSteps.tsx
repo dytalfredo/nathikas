@@ -30,21 +30,9 @@ export default function RitualSteps({ steps }: { steps: Step[] }) {
                 >
                     <span className="text-[#D91A2A] font-bold tracking-[0.4em] uppercase text-sm mb-4 block">Fácil de Disfrutar</span>
                     <div className="flex items-center justify-center gap-4 md:gap-8">
-                        <motion.img
-                            src={resources.particles.g3}
-                            className="w-12 h-12 md:w-20 md:h-20 object-contain hidden sm:block"
-                            animate={{ rotate: [0, 15, -15, 0], y: [0, -10, 10, 0] }}
-                            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                        />
                         <h2 className="text-6xl md:text-8xl font-bold text-[#3E2723] font-heading drop-shadow-lg leading-tight">
                             EL RITUAL
                         </h2>
-                        <motion.img
-                            src={resources.particles.g5}
-                            className="w-12 h-12 md:w-20 md:h-20 object-contain hidden sm:block"
-                            animate={{ rotate: [0, -15, 15, 0], y: [0, 10, -10, 0] }}
-                            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-                        />
                     </div>
                     <div className="w-48 h-2 bg-[#D91A2A] mx-auto mt-8 rounded-full shadow-md"></div>
                 </motion.div>

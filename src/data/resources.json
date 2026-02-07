@@ -13,12 +13,10 @@
         "loadingAnimation": "/images/animacion-login-sprite.webp"
     },
     "particles": {
-        "g1": "/particulas/g1.webp",
-        "g2": "/particulas/g2.webp",
-        "g3": "/particulas/g3.webp",
-        "g4": "/particulas/g4.webp",
-        "g5": "/particulas/g5.webp",
-        "g6": "/particulas/g6.webp"
+        "g1": "/particulas/g1_p.webp",
+        "g2": "/particulas/g2_p.webp",
+        "g4": "/particulas/g4_p.webp",
+        "g6": "/particulas/g6_p.webp"
     },
     "recursos": {
         "r1": "/recursos/recurso1.webp",

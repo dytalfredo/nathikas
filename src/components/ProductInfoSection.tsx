@@ -37,21 +37,9 @@ export default function ProductInfoSection() {
                     className="text-center mb-24"
                 >
                     <div className="flex items-center justify-center gap-4 md:gap-8">
-                        <motion.img
-                            src={resources.particles.g3}
-                            className="w-10 h-10 md:w-16 md:h-16 object-contain hidden sm:block opacity-80"
-                            animate={{ rotate: [0, 15, -15, 0], y: [0, -10, 10, 0] }}
-                            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                        />
                         <h2 className="text-4xl md:text-6xl font-bold text-[#F2A900] font-heading drop-shadow-lg leading-tight uppercase relative inline-block">
                             Qué hacemos en Nathikas
                         </h2>
-                        <motion.img
-                            src={resources.particles.g5}
-                            className="w-10 h-10 md:w-16 md:h-16 object-contain hidden sm:block opacity-80"
-                            animate={{ rotate: [0, -15, 15, 0], y: [0, 10, -10, 0] }}
-                            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-                        />
                     </div>
                     <div className="w-32 h-1.5 bg-[#D91A2A] mx-auto mt-6 rounded-full shadow-md"></div>
                 </motion.div>

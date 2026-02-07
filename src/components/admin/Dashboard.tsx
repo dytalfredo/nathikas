@@ -15,7 +15,9 @@ import {
     CheckCircle2,
     AlertTriangle,
     Settings,
-    TrendingUp
+    TrendingUp,
+    ShoppingBag,
+    Leaf
 } from 'lucide-react';
 
 // Sub-components for sections
@@ -25,6 +27,7 @@ import ProductionView from './ProductionView';
 import SettingsView from './SettingsView';
 import ReportsView from './ReportsView';
 import PartnersView from './PartnersView';
+import PurchasesView from './PurchasesView';
 
 export default function Dashboard() {
     const { user } = useAuthStore();
@@ -44,6 +47,7 @@ export default function Dashboard() {
         { id: 'reports', label: 'Reportes', icon: TrendingUp, roles: ['administrator'] },
         { id: 'production', label: 'Producción', icon: AlertTriangle, roles: ['administrator', 'asistente'] },
         { id: 'inventory', label: 'Inventario', icon: Package, roles: ['administrator', 'asistente', 'vendedor'] },
+        { id: 'purchases', label: 'Compras', icon: ShoppingBag, roles: ['administrator', 'asistente'] },
         { id: 'shipments', label: 'Despachos', icon: Truck, roles: ['administrator', 'asistente'] },
         { id: 'partners', label: 'Asociados', icon: Users, roles: ['administrator'] },
         { id: 'settings', label: 'Configuraciones', icon: Settings, roles: ['administrator'] },
@@ -159,11 +163,11 @@ export default function Dashboard() {
                                 )}
                                 {activeTab === 'production' && <ProductionView onNavigateToOrder={navigateToOrder} />}
                                 {activeTab === 'inventory' && <InventoryView />}
+                                {activeTab === 'purchases' && <PurchasesView />}
                                 {activeTab === 'settings' && <SettingsView />}
                                 {activeTab === 'reports' && <ReportsView />}
-                                {activeTab === 'reports' && <ReportsView />}
                                 {activeTab === 'partners' && <PartnersView />}
-                                {activeTab === 'shipments' && <OrdersView filterByStatus="pagado" title="Gestión de Despachos" />}
+                                {activeTab === 'shipments' && <OrdersView filterByStatus="pagado" title="Gestión de Despachos" isDispatchView={true} />}
                             </motion.div>
                         </AnimatePresence>
                     </div>

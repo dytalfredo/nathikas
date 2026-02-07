@@ -1,12 +1,21 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+export interface ProductIngredient {
+    ingredientId: string;
+    ingredientName: string;
+    quantity: number;
+    unit: string;
+}
+
 export interface Product {
     id: string;
     name: string;
     price: number;
     image: string;
     description: string;
+    deliveryCost?: number; // Costo de empaque y envío individual
+    ingredients?: ProductIngredient[]; // Ingredientes del producto
 }
 
 export interface CartItem extends Product {
@@ -53,7 +62,11 @@ export const useCartStore = create<CartState>()(
             clearCart: () => set({ items: [] }),
             total: () => {
                 const { items } = get();
-                return items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+                return items.reduce((acc, item) => {
+                    const productPrice = item.price || 0;
+                    const deliveryCost = item.deliveryCost || 0;
+                    return acc + (productPrice + deliveryCost) * item.quantity;
+                }, 0);
             },
         }),
         {

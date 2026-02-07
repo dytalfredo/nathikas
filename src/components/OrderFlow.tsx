@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ShoppingCart, CreditCard, Minus, Plus, Trash2, ArrowLeft, ArrowRight, Loader2, HelpCircle, AlertTriangle, Percent, CheckCircle, LogIn, User, Sparkles, X, Package } from 'lucide-react';
 import { useCartStore } from '../store/cartStore';
@@ -70,7 +70,7 @@ export default function OrderFlow({ data }: Props) {
     const [rateLoading, setRateLoading] = useState(false);
 
     const [stocks, setStocks] = useState<Record<string, number>>({});
-    const [productConfig, setProductConfig] = useState<Record<string, { enabled: boolean, price?: number }>>({});
+    const [productConfig, setProductConfig] = useState<Record<string, { enabled: boolean, price?: number, deliveryCost?: number }>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [dynamicSettings, setDynamicSettings] = useState<any>(null);
     const [hasMessaging, setHasMessaging] = useState(!!getMessagingInstance());
@@ -111,7 +111,6 @@ export default function OrderFlow({ data }: Props) {
     }, [hasMessaging]);
 
     useEffect(() => {
-
         // Listen to live stock
         if (!db) {
             console.warn("Firestore 'db' is not initialized. Stock updates disabled.");
@@ -120,14 +119,15 @@ export default function OrderFlow({ data }: Props) {
 
         const unsubProducts = onSnapshot(collection(db, "products"), (snapshot) => {
             const stockMap: Record<string, number> = {};
-            const configMap: Record<string, { enabled: boolean, price?: number }> = {};
+            const configMap: Record<string, { enabled: boolean, price?: number, deliveryCost?: number }> = {};
 
             snapshot.forEach(doc => {
                 const d = doc.data();
                 stockMap[doc.id] = d.stock || 0;
                 configMap[doc.id] = {
                     enabled: d.enabled !== false, // Default to true
-                    price: d.price // Optional price override
+                    price: d.price, // Optional price override
+                    deliveryCost: d.deliveryCost || 0
                 };
             });
             setStocks(stockMap);
@@ -148,32 +148,18 @@ export default function OrderFlow({ data }: Props) {
         };
     }, []);
 
-    // Normalize text helper
-    const normalizeText = (text: string) => text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
-
-    const availableAgencies = (() => {
-        if (!selectedState || !shippingMethod) return [];
-
-        if (shippingMethod === 'MRW') {
-            const normalizedState = normalizeText(selectedState);
-
-            // Filter flat list by 'estado'
-            return (mrwData as any[]).filter((a: any) => normalizeText(a.estado) === normalizedState);
-        }
-
-        if (shippingMethod === 'Zoom') {
-            const normalizedState = normalizeText(selectedState);
-            return (zoomData as any[]).filter((a: any) => normalizeText(a.estado) === normalizedState);
-        }
-
-        return []; // Simple fallback for now
-    })();
+    // ... (rest of the code)
 
     // Derived state with dynamic pricing
-    const cartItemsWithDynamicPrice = items.map(item => ({
-        ...item,
-        price: productConfig[item.id]?.price ?? item.price
-    }));
+    const cartItemsWithDynamicPrice = items.map(item => {
+        const config = productConfig[item.id];
+        const basePrice = config?.price ?? item.price;
+        const deliveryCost = config?.deliveryCost || 0;
+        return {
+            ...item,
+            price: basePrice + deliveryCost
+        };
+    });
 
     const totalItems = cartItemsWithDynamicPrice.reduce((acc, item) => acc + item.quantity, 0);
     const baseSubtotal = cartItemsWithDynamicPrice.reduce((acc, item) => acc + (item.price * item.quantity), 0);
@@ -211,6 +197,25 @@ export default function OrderFlow({ data }: Props) {
             }
         }
     }, [selectedAgency, shippingMethod]);
+
+    // Calculate available agencies based on state and method
+    const availableAgencies = useMemo(() => {
+        if (!selectedState || !shippingMethod) return [];
+
+        const normalize = (str: string) => str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        const targetState = normalize(selectedState);
+
+        if (shippingMethod === 'MRW') {
+            return (mrwData as any[]).filter(agency =>
+                normalize(agency.estado) === targetState
+            );
+        } else if (shippingMethod === 'Zoom') {
+            return (zoomData as any[]).filter(agency =>
+                normalize(agency.estado) === targetState
+            );
+        }
+        return [];
+    }, [selectedState, shippingMethod]);
 
     // Calculate volume discount
     // Calculate volume discount per item
@@ -411,8 +416,8 @@ export default function OrderFlow({ data }: Props) {
 
         message += `- Método: ${shippingMethod}\n`;
         if (selectedAgency) {
-            const agency = availableAgencies.find(a => a.id === selectedAgency);
-            message += `- Agencia: ${agency?.name || selectedAgency}\n`;
+            const agency = availableAgencies.find((a: any) => a.codigo === selectedAgency);
+            message += `- Agencia: ${agency?.nombre || selectedAgency}\n`;
         }
         if (address) {
             message += `- Dirección: ${address}\n`;
@@ -874,7 +879,9 @@ export default function OrderFlow({ data }: Props) {
                                                 .map((product: Product) => {
                                                     const config = productConfig[product.id];
                                                     // Use dynamic price if available
-                                                    const displayPrice = config?.price || product.price;
+                                                    const basePrice = config?.price ?? product.price;
+                                                    const deliveryCost = config?.deliveryCost || 0;
+                                                    const displayPrice = basePrice + deliveryCost;
 
                                                     const inCart = items.find(i => i.id === product.id);
                                                     return (
