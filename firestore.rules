@@ -61,6 +61,18 @@ service cloud.firestore {
       allow write: if hasAdminRole('administrator');
     }
 
+    // PUNTOS DE RETIRO
+    match /pickup_points/{pointId} {
+      allow read: if true;
+      allow write: if hasAdminRole('administrator');
+    }
+
+    // PROMOCIONES
+    match /promotions/{promoId} {
+      allow read: if true;
+      allow write: if hasAdminRole('administrator');
+    }
+
     // ASOCIADOS / PARTNERS
     match /partners/{partnerId} {
       allow read, write: if hasAdminRole('administrator');

@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ShoppingCart, CreditCard, Minus, Plus, Trash2, ArrowLeft, ArrowRight, Loader2, HelpCircle, AlertTriangle, Percent, CheckCircle, LogIn, User, Sparkles, X, Package } from 'lucide-react';
+import { ChevronDown, ShoppingCart, CreditCard, Minus, Plus, Trash2, ArrowLeft, ArrowRight, Loader2, HelpCircle, AlertTriangle, AlertCircle, Percent, CheckCircle, LogIn, User, Sparkles, X, Package, Truck, MapPin, Globe } from 'lucide-react';
 import { useCartStore } from '../store/cartStore';
 import type { Product } from '../store/cartStore';
+import type { Promotion } from '../types/types';
 import { venezuelaData } from '../data/venezuela';
 import { getAgenciesForCity } from '../data/agencies';
 import mrwData from '../data/agenciasMrw2.json';
@@ -21,6 +22,20 @@ import { CustomSelect } from './ui/CustomSelect';
 import UserOrdersModal from './UserOrdersModal';
 import resources from '../data/resources.json';
 import appConfig from '../data/app-config.json';
+import LocationMap from './LocationMap';
+
+// Distance calculation helper (Haversine formula)
+function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
+    const R = 6371; // km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+}
 
 
 
@@ -77,6 +92,18 @@ export default function OrderFlow({ data }: Props) {
     const [gridCols, setGridCols] = useState(2);
     const [productsLoaded, setProductsLoaded] = useState(false);
 
+    // Pick-up and Delivery logic
+    const [pickupPoints, setPickupPoints] = useState<any[]>([]);
+    const [selectedPickup, setSelectedPickup] = useState<any>(null);
+    const [showMap, setShowMap] = useState(false);
+    const [userLocation, setUserLocation] = useState<{ lat: number, lng: number } | null>(null);
+    const [deliveryValidated, setDeliveryValidated] = useState(false);
+    const [calculatedDeliveryCost, setCalculatedDeliveryCost] = useState(0);
+
+    // Promotions
+    const [promotions, setPromotions] = useState<Promotion[]>([]);
+    const [selectedPromo, setSelectedPromo] = useState<Promotion | null>(null);
+
     // Custom style classes
     const inputClass = "w-full px-4 py-3 rounded-xl border-2 border-[#F2A900]/30 focus:border-[#F2A900] bg-white outline-none transition-all text-[#3E2723] placeholder:text-gray-400 font-medium disabled:opacity-70 disabled:bg-gray-50";
     const labelClass = "block text-[#3E2723] font-bold mb-2 ml-1";
@@ -125,8 +152,8 @@ export default function OrderFlow({ data }: Props) {
                 const d = doc.data();
                 stockMap[doc.id] = d.stock || 0;
                 configMap[doc.id] = {
-                    enabled: d.enabled !== false, // Default to true
-                    price: d.price, // Optional price override
+                    enabled: d.enabled !== false,
+                    price: d.price,
                     deliveryCost: d.deliveryCost || 0
                 };
             });
@@ -135,16 +162,32 @@ export default function OrderFlow({ data }: Props) {
             setProductsLoaded(true);
         });
 
-        // Listen to live settings
         const unsubSettings = onSnapshot(doc(db, "settings", "global"), (doc) => {
             if (doc.exists()) {
                 setDynamicSettings(doc.data());
             }
         });
 
+        const unsubPickups = onSnapshot(collection(db, "pickup_points"), (snapshot) => {
+            const points = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            setPickupPoints(points.filter((p: any) => p.enabled));
+        });
+
+        const unsubPromos = onSnapshot(collection(db, "promotions"), (snapshot) => {
+            const now = new Date();
+            const promos = snapshot.docs.map(doc => {
+                const data = doc.data() as any;
+                const expiresAt = data.expiresAt?.toDate ? data.expiresAt.toDate() : null;
+                return { id: doc.id, ...data, expiresAt } as Promotion;
+            });
+            setPromotions(promos.filter(p => p.enabled && (!p.expiresAt || p.expiresAt > now)));
+        });
+
         return () => {
             unsubProducts();
             unsubSettings();
+            unsubPickups();
+            unsubPromos();
         };
     }, []);
 
@@ -153,7 +196,15 @@ export default function OrderFlow({ data }: Props) {
     // Derived state with dynamic pricing
     const cartItemsWithDynamicPrice = items.map(item => {
         const config = productConfig[item.id];
-        const basePrice = config?.price ?? item.price;
+
+        // Prioritize product-specific promo price if selectedPromo exists
+        const promoItem = selectedPromo?.applicableProducts?.find(p => p.productId === item.id);
+
+        let basePrice = config?.price ?? item.price;
+        if (promoItem) {
+            basePrice = promoItem.promoPrice;
+        }
+
         const deliveryCost = config?.deliveryCost || 0;
         return {
             ...item,
@@ -228,7 +279,7 @@ export default function OrderFlow({ data }: Props) {
         return 0;
     };
 
-    const discountAmount = cartItemsWithDynamicPrice.reduce((acc, item) => {
+    const discountAmount = selectedPromo ? 0 : cartItemsWithDynamicPrice.reduce((acc, item) => {
         const percent = getDiscountForItem(item.quantity);
         return acc + (item.price * item.quantity * (percent / 100));
     }, 0);
@@ -266,12 +317,55 @@ export default function OrderFlow({ data }: Props) {
         fetchRate();
     }, []);
 
+    // Calculate Delivery Cost and Validate Radius
+    useEffect(() => {
+        if (shippingMethod === 'Delivery' && userLocation && pickupPoints.length > 0) {
+            let foundMatch = false;
+            let minCost = Infinity;
+
+            pickupPoints.forEach(point => {
+                if (point.coords && point.deliveryRadius) {
+                    const dist = calculateDistance(
+                        userLocation.lat,
+                        userLocation.lng,
+                        point.coords.lat,
+                        point.coords.lng
+                    );
+
+                    if (dist <= point.deliveryRadius) {
+                        foundMatch = true;
+                        if (point.deliveryCost < minCost) {
+                            minCost = point.deliveryCost;
+                        }
+                    }
+                }
+            });
+
+            if (foundMatch) {
+                setCalculatedDeliveryCost(minCost);
+                setDeliveryValidated(true);
+            } else {
+                setCalculatedDeliveryCost(0);
+                setDeliveryValidated(false);
+                useAlertStore.getState().showAlert(
+                    "Fuera de Rango",
+                    "Tu ubicación está fuera de nuestro radio de entrega. Por favor selecciona un punto de retiro o intenta con otra dirección.",
+                    "warning"
+                );
+            }
+        } else {
+            setCalculatedDeliveryCost(0);
+            if (shippingMethod !== 'Delivery') setDeliveryValidated(false);
+        }
+    }, [userLocation, shippingMethod, pickupPoints]);
+
     // Calculate Total in Bs
     useEffect(() => {
-        if (exchangeRate && total) {
-            setTotalInBs(total * exchangeRate);
+        if (exchangeRate) {
+            const finalTotal = subtotal + calculatedDeliveryCost;
+            setTotalInBs(finalTotal * exchangeRate);
         }
-    }, [total, exchangeRate]);
+    }, [subtotal, calculatedDeliveryCost, exchangeRate]);
 
     const startTour = async () => {
         // Dynamically import driver.js to avoid SSR 'window is not defined' error
@@ -348,10 +442,16 @@ export default function OrderFlow({ data }: Props) {
             if (!recipientCedula) missingFields.push("Cédula de quien recibe");
         }
 
-        // Shipping Info
-        if (!selectedState) missingFields.push("Estado de Envío");
-
-        if (shippingMethod !== 'retiro' && !selectedAgency) missingFields.push("Agencia de Envío");
+        if (shippingMethod === 'Retiro') {
+            if (!selectedPickup) missingFields.push("Punto de Retiro");
+        } else if (shippingMethod === 'Delivery') {
+            if (!userLocation) missingFields.push("Ubicación en el Mapa");
+            if (!address) missingFields.push("Dirección de Entrega");
+        } else {
+            // MRW/Zoom
+            if (!selectedState) missingFields.push("Estado de Envío");
+            if (!selectedAgency) missingFields.push("Agencia de Envío");
+        }
 
         // Payment Info (Specific to method)
         if (paymentBank === 'Zelle') {
@@ -395,6 +495,9 @@ export default function OrderFlow({ data }: Props) {
         message += `👤 *Comprador:* ${userName}\n`;
         message += `🪪 *Cédula:* ${userCedula}\n`;
         message += `📞 *WhatsApp:* ${userPhone}\n`;
+        if (selectedPromo) {
+            message += `✨ *Promoción:* ${selectedPromo.title}\n`;
+        }
 
         if (isGift) {
             message += `\n🎁 *RECEPTOR (REGALO):*\n`;
@@ -403,25 +506,30 @@ export default function OrderFlow({ data }: Props) {
             message += `- WhatsApp: ${recipientPhone}\n`;
         }
 
-        message += `\n`;
+        if (shippingMethod === 'Retiro' && selectedPickup) {
+            message += `- Punto de Retiro: ${selectedPickup.name}\n`;
+        } else if (shippingMethod === 'Delivery') {
+            message += `- Dirección: ${address}\n`;
+            if (userLocation) {
+                message += `- Ubicación: https://www.google.com/maps?q=${userLocation.lat},${userLocation.lng}\n`;
+            }
+        } else {
+            message += `- Estado: ${selectedState}\n`;
+            message += `- Agencia: ${selectedAgency}\n`;
+            message += `- Dirección: ${address}\n`;
+        }
 
-        message += `📦 *PRODUCTOS:*\n`;
+        const finalTotal = subtotal + calculatedDeliveryCost;
+        message += `\n📦 *PRODUCTOS:*\n`;
         cartItemsWithDynamicPrice.forEach(item => {
             message += `- ${item.name} (x${item.quantity}) - $${(item.price * item.quantity).toFixed(2)}\n`;
         });
-        message += `\n💰 *Total:* $${subtotal.toFixed(2)}\n\n`;
 
-        message += `📍 *ENVÍO:*\n`;
-        message += `- Estado: ${selectedState}\n`;
-
-        message += `- Método: ${shippingMethod}\n`;
-        if (selectedAgency) {
-            const agency = availableAgencies.find((a: any) => a.codigo === selectedAgency);
-            message += `- Agencia: ${agency?.nombre || selectedAgency}\n`;
+        message += `\n💵 *Subtotal:* $${subtotal.toFixed(2)}\n`;
+        if (calculatedDeliveryCost > 0) {
+            message += `🚚 *Delivery:* $${calculatedDeliveryCost.toFixed(2)}\n`;
         }
-        if (address) {
-            message += `- Dirección: ${address}\n`;
-        }
+        message += `💰 *TOTAL:* $${finalTotal.toFixed(2)}\n\n`;
 
         message += `\n💳 *DATOS DE PAGO:*\n`;
         message += `- Método: ${paymentBank}\n`;
@@ -489,6 +597,9 @@ export default function OrderFlow({ data }: Props) {
 
                     shippingMethod,
                     selectedAgency,
+                    selectedPickup: selectedPickup ? { id: selectedPickup.id, name: selectedPickup.name, address: selectedPickup.address } : null,
+                    userLocation,
+                    deliveryCost: calculatedDeliveryCost,
                     paymentBank,
                     paymentSourceBank,
                     paymentReference,
@@ -498,6 +609,7 @@ export default function OrderFlow({ data }: Props) {
                     zelleSenderName,
                     status: 'pendiente',
                     isBackorder,
+                    appliedPromotion: selectedPromo ? { id: selectedPromo.id, title: selectedPromo.title } : null,
                     createdAt: serverTimestamp()
                 };
 
@@ -979,6 +1091,53 @@ export default function OrderFlow({ data }: Props) {
                                             ));
                                         })()}
                                     </div>
+
+                                    {/* Promotions Section */}
+                                    {promotions.length > 0 && (
+                                        <div className="mt-10 space-y-4 pt-10 border-t-2 border-dashed border-gray-100">
+                                            <div className="flex items-center gap-2 mb-4">
+                                                <Sparkles className="text-[#F2A900]" size={20} />
+                                                <h3 className="font-bold text-[#3E2723] uppercase tracking-wider">PROMOS Y COMBOS ESPECIALES</h3>
+                                            </div>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                {promotions.map(promo => {
+                                                    const isSelected = selectedPromo?.id === promo.id;
+                                                    return (
+                                                        <button
+                                                            key={promo.id}
+                                                            type="button"
+                                                            onClick={() => setSelectedPromo(isSelected ? null : promo)}
+                                                            className={`p-4 rounded-2xl border-2 text-left transition-all flex items-start gap-4 ${isSelected ? 'border-[#F2A900] bg-[#F2A900]/5 shadow-md' : 'border-gray-100 bg-gray-50 hover:border-[#F2A900]/50'}`}
+                                                        >
+                                                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${isSelected ? 'bg-[#F2A900] text-[#3E2723]' : 'bg-white text-gray-400 border border-gray-100'}`}>
+                                                                <Percent size={20} />
+                                                            </div>
+                                                            <div className="flex-grow">
+                                                                <p className="font-bold text-[#3E2723] leading-tight text-sm uppercase">{promo.title}</p>
+                                                                <p className="text-[10px] text-gray-500 mt-1 line-clamp-2">{promo.description}</p>
+                                                                {promo.applicableProducts && promo.applicableProducts.length > 0 && (
+                                                                    <div className="mt-2 flex flex-wrap gap-1">
+                                                                        {promo.applicableProducts.map(ap => (
+                                                                            <span key={ap.productId} className="text-[8px] bg-[#F2A900]/20 text-[#3E2723] px-1.5 py-0.5 rounded-full font-bold uppercase">
+                                                                                {ap.productName} ➔ ${ap.promoPrice}
+                                                                            </span>
+                                                                        ))}
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                            <div className="flex flex-col items-end gap-2 shrink-0">
+                                                                {isSelected ? (
+                                                                    <CheckCircle size={20} className="text-[#F2A900]" />
+                                                                ) : (
+                                                                    <div className="w-5 h-5 rounded-full border-2 border-gray-200" />
+                                                                )}
+                                                            </div>
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    )}
                                 </section>
 
                                 {/* Cart Summary (Visible on mobile or when items change) */}
@@ -1208,59 +1367,47 @@ export default function OrderFlow({ data }: Props) {
                                             />
                                         </div>
 
-                                        {/* Shipping Method - First Step */}
+                                        {/* Shipping Method - Selection */}
                                         <div className="mb-6">
-                                            <label className="block text-[#3E2723] font-bold mb-3 ml-1">Método de Envío</label>
-                                            <div className="grid grid-cols-2 gap-4">
+                                            <label className="block text-[#3E2723] font-bold mb-3 ml-1 text-sm uppercase tracking-wider">¿Cómo quieres recibir tu pedido?</label>
+                                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                                                 <button
                                                     type="button"
-                                                    className={`p-4 rounded-xl border-2 flex items-center justify-center gap-2 font-bold transition-all ${shippingMethod === 'MRW' ? 'border-[#D91A2A] bg-[#D91A2A]/10 text-[#D91A2A] shadow-md' : 'border-[#F2A900]/30 text-gray-400 hover:border-[#F2A900] bg-white'}`}
-                                                    onClick={() => {
-                                                        setShippingMethod('MRW');
-                                                        setSelectedAgency('');
-                                                        // Keep state/city if user switches method? Better reset to avoid confusion vs agency list match. 
-                                                        // User flow implies strict steps. Let's keep distinct.
-                                                        // Actually, sticking to strict funnel, maybe reset downstream.
-                                                    }}
+                                                    className={`p-4 rounded-2xl border-2 flex flex-col items-center justify-center gap-2 font-bold transition-all ${shippingMethod === 'MRW' ? 'border-[#D91A2A] bg-[#D91A2A]/5 text-[#D91A2A] shadow-md scale-[1.02]' : 'border-gray-100 text-gray-400 bg-gray-50'}`}
+                                                    onClick={() => { setShippingMethod('MRW'); setSelectedAgency(''); setSelectedPickup(null); }}
                                                 >
-                                                    MRW
+                                                    <Truck size={20} />
+                                                    <span className="text-xs">MRW</span>
                                                 </button>
                                                 <button
                                                     type="button"
-                                                    className={`p-4 rounded-xl border-2 flex items-center justify-center gap-2 font-bold transition-all ${shippingMethod === 'Zoom' ? 'border-[#007A33] bg-[#007A33]/10 text-[#007A33] shadow-md' : 'border-[#F2A900]/30 text-gray-400 hover:border-[#F2A900] bg-white'}`}
-                                                    onClick={() => { setShippingMethod('Zoom'); setSelectedAgency(''); }}
+                                                    className={`p-4 rounded-2xl border-2 flex flex-col items-center justify-center gap-2 font-bold transition-all ${shippingMethod === 'Zoom' ? 'border-[#007A33] bg-[#007A33]/5 text-[#007A33] shadow-md scale-[1.02]' : 'border-gray-100 text-gray-400 bg-gray-50'}`}
+                                                    onClick={() => { setShippingMethod('Zoom'); setSelectedAgency(''); setSelectedPickup(null); }}
                                                 >
-                                                    Zoom
+                                                    <Truck size={20} />
+                                                    <span className="text-xs">Zoom</span>
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className={`p-4 rounded-2xl border-2 flex flex-col items-center justify-center gap-2 font-bold transition-all ${shippingMethod === 'Retiro' ? 'border-[#F2A900] bg-[#F2A900]/5 text-[#F2A900] shadow-md scale-[1.02]' : 'border-gray-100 text-gray-400 bg-gray-50'}`}
+                                                    onClick={() => { setShippingMethod('Retiro'); setSelectedAgency(''); }}
+                                                >
+                                                    <MapPin size={20} />
+                                                    <span className="text-xs">Retiro</span>
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className={`p-4 rounded-2xl border-2 flex flex-col items-center justify-center gap-2 font-bold transition-all ${shippingMethod === 'Delivery' ? 'border-[#3E2723] bg-[#3E2723]/5 text-[#3E2723] shadow-md scale-[1.02]' : 'border-gray-100 text-gray-400 bg-gray-50'}`}
+                                                    onClick={() => { setShippingMethod('Delivery'); setSelectedAgency(''); }}
+                                                >
+                                                    <Globe size={20} />
+                                                    <span className="text-xs">Delivery</span>
                                                 </button>
                                             </div>
                                         </div>
 
-                                        {/* State Selection */}
-                                        {shippingMethod && (
-                                            <motion.div
-                                                initial={{ opacity: 0, height: 0 }}
-                                                animate={{ opacity: 1, height: "auto" }}
-                                                className="space-y-2"
-                                            >
-                                                <label className={labelClass}>Estado</label>
-                                                <div className="relative">
-                                                    <CustomSelect
-                                                        options={venezuelaData.map(s => s.estado).sort().map(state => ({ value: state, label: state }))}
-                                                        value={selectedState}
-                                                        onChange={(val) => {
-                                                            setSelectedState(val);
-                                                            setSelectedAgency('');
-                                                        }}
-                                                        placeholder="Selecciona tu Estado"
-                                                        searchPlaceholder="Buscar estado..."
-                                                        emptyMessage="Estado no encontrado"
-                                                    />
-                                                </div>
-                                            </motion.div>
-                                        )}
-
-                                        {/* Agency Select - Shows after State */}
-                                        {selectedState && (
+                                        {/* State Selection - Only for MRW/Zoom */}
+                                        {(shippingMethod === 'MRW' || shippingMethod === 'Zoom') && selectedState && (
                                             <motion.div
                                                 initial={{ opacity: 0, height: 0 }}
                                                 animate={{ opacity: 1, height: "auto" }}
@@ -1294,15 +1441,122 @@ export default function OrderFlow({ data }: Props) {
                                                 )}
                                             </motion.div>
                                         )}
-                                        <div>
-                                            <label className="block text-sm font-bold mb-1 text-gray-700">Dirección Exacta</label>
-                                            <textarea
-                                                value={address}
-                                                onChange={(e) => setAddress(e.target.value)}
-                                                className="w-full bg-[#FDF6E3] border-2 border-[#E0E0E0] rounded-lg p-3 focus:outline-none focus:border-[#F2A900] transition-colors h-24 resize-none"
-                                                placeholder="Casa, Edificio, Punto de referencia..."
-                                            ></textarea>
-                                        </div>
+
+                                        {/* Pick-up Point Selection */}
+                                        {shippingMethod === 'Retiro' && (
+                                            <motion.div
+                                                initial={{ opacity: 0, height: 0 }}
+                                                animate={{ opacity: 1, height: "auto" }}
+                                                className="space-y-4"
+                                            >
+                                                <div className="bg-[#F2A900]/10 p-3 rounded-xl border border-[#F2A900]/20 flex items-start gap-3">
+                                                    <AlertCircle size={18} className="text-[#F2A900] mt-0.5 shrink-0" />
+                                                    <p className="text-[11px] text-[#3E2723] font-bold">
+                                                        Selecciona un punto de retiro. Ten en cuenta que solo contamos con locales físicos en:
+                                                        <span className="text-[#D91A2A] ml-1 uppercase">
+                                                            {Array.from(new Set(pickupPoints.map(p => p.city))).filter(c => c).join(', ')}
+                                                        </span>.
+                                                    </p>
+                                                </div>
+                                                <label className={labelClass}>Selecciona el Punto de Retiro</label>
+                                                <div className="grid grid-cols-1 gap-3">
+                                                    {pickupPoints.map((point) => (
+                                                        <button
+                                                            key={point.id}
+                                                            type="button"
+                                                            onClick={() => {
+                                                                setSelectedPickup(point);
+                                                                setAddress(`${point.name} - ${point.address}`);
+                                                            }}
+                                                            className={`p-4 rounded-2xl border-2 text-left transition-all ${selectedPickup?.id === point.id ? 'border-[#F2A900] bg-[#F2A900]/5 shadow-md' : 'border-gray-100 hover:border-[#F2A900]/50'}`}
+                                                        >
+                                                            <div className="flex justify-between items-start">
+                                                                <div>
+                                                                    <div className="flex items-center gap-2">
+                                                                        <p className="font-bold text-[#3E2723]">{point.name}</p>
+                                                                        <span className="text-[9px] bg-[#D91A2A]/10 text-[#D91A2A] px-1.5 py-0.5 rounded-full font-bold uppercase">{point.city}</span>
+                                                                    </div>
+                                                                    <p className="text-xs text-gray-500 mt-1">{point.address}</p>
+                                                                    <p className="text-[10px] text-[#D91A2A] font-bold mt-2 flex items-center gap-1">
+                                                                        <MapPin size={10} /> Ver en el mapa
+                                                                    </p>
+                                                                </div>
+                                                                {selectedPickup?.id === point.id && <CheckCircle size={18} className="text-[#F2A900]" />}
+                                                            </div>
+                                                        </button>
+                                                    ))}
+                                                    {pickupPoints.length === 0 && (
+                                                        <div className="p-8 text-center bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
+                                                            <p className="text-sm text-gray-400 font-medium">No hay puntos de retiro disponibles en este momento.</p>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </motion.div>
+                                        )}
+
+                                        {/* Delivery/Retiro Address & Map Toggle */}
+                                        {(shippingMethod === 'Delivery' || (shippingMethod === 'Retiro' && selectedPickup)) && (
+                                            <motion.div
+                                                initial={{ opacity: 0, height: 0 }}
+                                                animate={{ opacity: 1, height: "auto" }}
+                                                className="space-y-4"
+                                            >
+                                                <div>
+                                                    <label className="block text-sm font-bold mb-1 text-gray-700">
+                                                        {shippingMethod === 'Delivery' ? 'Direccion de Entrega' : 'Referencia de Retiro'}
+                                                    </label>
+                                                    <textarea
+                                                        value={address}
+                                                        onChange={(e) => setAddress(e.target.value)}
+                                                        className="w-full bg-[#FDF6E3] border-2 border-[#E0E0E0] rounded-lg p-3 focus:outline-none focus:border-[#F2A900] transition-colors h-24 resize-none"
+                                                        placeholder={shippingMethod === 'Delivery' ? "Indica tu calle, edificio, apto y punto de referencia..." : ""}
+                                                        readOnly={shippingMethod === 'Retiro'}
+                                                    ></textarea>
+                                                </div>
+
+                                                {shippingMethod === 'Delivery' && (
+                                                    <div className="bg-[#3E2723]/5 p-3 rounded-xl border border-[#3E2723]/10 flex items-start gap-3 mb-4">
+                                                        <Globe size={18} className="text-[#3E2723] mt-0.5 shrink-0" />
+                                                        <p className="text-[11px] text-[#3E2723] font-bold">
+                                                            El delivery solo está habilitado para zonas dentro del radio de cobertura de nuestros locales en:
+                                                            <span className="text-[#D91A2A] ml-1 uppercase">
+                                                                {Array.from(new Set(pickupPoints.map(p => p.city))).filter(c => c).join(', ')}
+                                                            </span>.
+                                                        </p>
+                                                    </div>
+                                                )}
+                                                {shippingMethod === 'Delivery' && (
+                                                    <div className="bg-[#3E2723]/5 p-4 rounded-2xl border-2 border-[#3E2723]/10">
+                                                        <div className="flex items-center justify-between gap-4">
+                                                            <div className="flex items-center gap-3">
+                                                                <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-[#3E2723] shadow-sm">
+                                                                    <MapPin size={20} />
+                                                                </div>
+                                                                <div>
+                                                                    <p className="font-bold text-sm">UBICACIÓN EN EL MAPA</p>
+                                                                    <p className="text-[10px] text-gray-500 font-medium">Obligatorio para validar el costo del delivery</p>
+                                                                </div>
+                                                            </div>
+                                                            <button
+                                                                onClick={() => setShowMap(true)}
+                                                                className="bg-[#3E2723] text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-[#2D1C1A] transition-all shadow-md active:scale-95"
+                                                            >
+                                                                {userLocation ? 'CAMBIAR UBICACIÓN' : 'SELECCIONAR EN MAPA'}
+                                                            </button>
+                                                        </div>
+                                                        {userLocation && (
+                                                            <div className="mt-4 pt-4 border-t border-[#3E2723]/10 flex items-center justify-between">
+                                                                <div className="flex items-center gap-2 text-green-600 font-bold text-xs">
+                                                                    <CheckCircle size={14} />
+                                                                    <span>UBICACIÓN FIJADA</span>
+                                                                </div>
+                                                                <p className="text-[10px] text-gray-400">Validated: {deliveryValidated ? 'Yes' : 'No'}</p>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </motion.div>
+                                        )}
                                     </div>
                                 </section>
 
@@ -1715,6 +1969,56 @@ export default function OrderFlow({ data }: Props) {
                     </aside>
                 </div>
             </main >
+
+            {/* Map Selection Modal */}
+            <AnimatePresence>
+                {
+                    showMap && (
+                        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                onClick={() => setShowMap(false)}
+                                className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                            />
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                                className="relative bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden border-4 border-[#F2A900] z-10"
+                            >
+                                <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+                                    <h3 className="font-bold text-xl flex items-center gap-2">
+                                        <MapPin className="text-[#D91A2A]" /> Selecciona tu Ubicación
+                                    </h3>
+                                    <button onClick={() => setShowMap(false)} className="text-gray-400 hover:text-red-500 transition-colors">
+                                        <X size={24} />
+                                    </button>
+                                </div>
+                                <div className="p-4 h-[400px]">
+                                    <LocationMap
+                                        onLocationSelect={(lat, lng) => {
+                                            setUserLocation({ lat, lng });
+                                            // setShowMap(false); // Let user confirm or see placement
+                                        }}
+                                    />
+                                </div>
+                                <div className="p-6 bg-gray-50 flex flex-col sm:flex-row gap-4 items-center justify-between">
+                                    <p className="text-xs text-gray-500 font-medium">Haz clic en el mapa exactamente donde quieres recibir tu pedido.</p>
+                                    <button
+                                        onClick={() => setShowMap(false)}
+                                        disabled={!userLocation}
+                                        className="w-full sm:w-auto bg-[#D91A2A] text-white px-8 py-3 rounded-xl font-bold disabled:opacity-50 transition-all hover:bg-[#B71524] shadow-md"
+                                    >
+                                        CONFIRMAR UBICACIÓN
+                                    </button>
+                                </div>
+                            </motion.div>
+                        </div>
+                    )
+                }
+            </AnimatePresence >
 
             <div className="fixed bottom-0 left-0 w-full pointer-events-none z-0 md:hidden">
                 <img src="/recursos/papel-picado-bottom.webp" className="w-full opacity-100" alt="" />

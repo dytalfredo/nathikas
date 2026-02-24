@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { db, auth } from '../../lib/firebase';
-import { doc, getDoc, setDoc, collection, onSnapshot, query, writeBatch, getDocs } from 'firebase/firestore';
+import { doc, getDoc, setDoc, collection, onSnapshot, query, writeBatch, getDocs, addDoc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import { useAuthStore } from '../../store/authStore';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -19,9 +19,15 @@ import {
     ShieldAlert,
     AlertCircle,
     Bell,
-    Mail
+    Mail,
+    MapPin,
+    Truck,
+    Tag,
+    Clock
 } from 'lucide-react';
 import { useAlertStore } from '../../store/alertStore';
+import type { PickUpPoint, Promotion } from '../../types/types';
+import LocationMap from '../LocationMap';
 
 interface ProductPrice {
     id: string;
@@ -74,11 +80,29 @@ interface GlobalSettings {
 }
 
 export default function SettingsView() {
-    const [activeTab, setActiveTab] = useState<'pagos' | 'productos' | 'descuentos' | 'bot' | 'usuarios' | 'notifications' | 'developer'>('pagos');
+    const [activeTab, setActiveTab] = useState<'pagos' | 'productos' | 'descuentos' | 'bot' | 'usuarios' | 'notifications' | 'logistica' | 'promociones' | 'developer'>('pagos');
     const [settings, setSettings] = useState<GlobalSettings | null>(null);
     const [products, setProducts] = useState<ProductPrice[]>([]);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+
+    // PickUp Points State
+    const [pickupPoints, setPickupPoints] = useState<PickUpPoint[]>([]);
+    const [isAddingPickup, setIsAddingPickup] = useState(false);
+    const [newPickup, setNewPickup] = useState<Partial<PickUpPoint>>({
+        enabled: true,
+        deliveryRadius: 5,
+        deliveryCost: 2,
+        city: ''
+    });
+
+    // Promotions State
+    const [promotions, setPromotions] = useState<Promotion[]>([]);
+    const [isAddingPromo, setIsAddingPromo] = useState(false);
+    const [newPromo, setNewPromo] = useState<Partial<Promotion>>({
+        enabled: true,
+        type: 'info'
+    });
 
     const showAlert = useAlertStore(state => state.showAlert);
 
@@ -164,7 +188,26 @@ export default function SettingsView() {
         });
 
         loadSettings();
-        return () => unsubProducts();
+
+        // Load Pickup Points
+        const unsubPickup = onSnapshot(collection(db, "pickup_points"), (snapshot) => {
+            const data: PickUpPoint[] = [];
+            snapshot.forEach(doc => data.push({ id: doc.id, ...doc.data() } as PickUpPoint));
+            setPickupPoints(data);
+        });
+
+        // Load Promotions
+        const unsubPromos = onSnapshot(collection(db, "promotions"), (snapshot) => {
+            const data: Promotion[] = [];
+            snapshot.forEach(doc => data.push({ id: doc.id, ...doc.data() } as Promotion));
+            setPromotions(data);
+        });
+
+        return () => {
+            unsubProducts();
+            unsubPickup();
+            unsubPromos();
+        };
     }, []);
 
     const handleSaveSettings = async () => {
@@ -337,6 +380,8 @@ export default function SettingsView() {
         { id: 'bot', label: 'SensiBot', icon: Bot },
         { id: 'usuarios', label: 'Usuarios', icon: UserPlus },
         { id: 'notifications', label: 'Notificaciones', icon: Bell },
+        { id: 'logistica', label: 'Logística', icon: Truck },
+        { id: 'promociones', label: 'Promociones', icon: Tag },
         { id: 'developer', label: 'Developer', icon: ShieldAlert },
     ];
 
@@ -784,6 +829,377 @@ export default function SettingsView() {
                                 </div>
                             </div>
                         ))}
+                    </div>
+                )}
+
+                {activeTab === 'logistica' && (
+                    <div className="space-y-8">
+                        <header className="flex items-center justify-between mb-6">
+                            <div>
+                                <h3 className="text-xl font-heading text-[#3E2723] flex items-center gap-2">
+                                    <MapPin className="text-[#D91A2A]" /> Puntos de Retiro y Delivery
+                                </h3>
+                                <p className="text-xs text-gray-500 font-bold mt-1">Gestiona tus locales y zonas de cobertura.</p>
+                            </div>
+                            <button
+                                onClick={() => setIsAddingPickup(true)}
+                                className="bg-[#D91A2A] text-white px-4 py-2 rounded-xl font-bold flex items-center gap-2 hover:bg-[#B71524] transition-all"
+                            >
+                                <Plus size={18} /> AGREGAR PUNTO
+                            </button>
+                        </header>
+
+                        {isAddingPickup && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="bg-gray-50 p-6 rounded-3xl border-2 border-[#D91A2A]/20 space-y-4 mb-8"
+                            >
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <input
+                                        type="text"
+                                        placeholder="Nombre del Local"
+                                        className="w-full bg-white border border-gray-200 rounded-xl p-3 text-sm focus:border-[#F2A900] outline-none"
+                                        value={newPickup.name || ''}
+                                        onChange={e => setNewPickup({ ...newPickup, name: e.target.value })}
+                                    />
+                                    <input
+                                        type="text"
+                                        placeholder="Teléfono"
+                                        className="w-full bg-white border border-gray-200 rounded-xl p-3 text-sm focus:border-[#F2A900] outline-none"
+                                        value={newPickup.phone || ''}
+                                        onChange={e => setNewPickup({ ...newPickup, phone: e.target.value })}
+                                    />
+                                    <input
+                                        type="text"
+                                        placeholder="Ciudad"
+                                        className="w-full bg-white border border-gray-200 rounded-xl p-3 text-sm focus:border-[#F2A900] outline-none"
+                                        value={newPickup.city || ''}
+                                        onChange={e => setNewPickup({ ...newPickup, city: e.target.value })}
+                                    />
+                                </div>
+                                <input
+                                    type="text"
+                                    placeholder="Dirección Exacta"
+                                    className="w-full bg-white border border-gray-200 rounded-xl p-3 text-sm focus:border-[#F2A900] outline-none"
+                                    value={newPickup.address || ''}
+                                    onChange={e => setNewPickup({ ...newPickup, address: e.target.value })}
+                                />
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="text-[10px] font-bold text-gray-400">RADIO DELIVERY (KM)</label>
+                                        <input
+                                            type="number"
+                                            className="w-full bg-white border border-gray-200 rounded-xl p-3 text-sm focus:border-[#F2A900] outline-none"
+                                            value={newPickup.deliveryRadius || 5}
+                                            onChange={e => setNewPickup({ ...newPickup, deliveryRadius: parseFloat(e.target.value) })}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] font-bold text-gray-400">COSTO DELIVERY ($)</label>
+                                        <input
+                                            type="number"
+                                            className="w-full bg-white border border-gray-200 rounded-xl p-3 text-sm focus:border-[#F2A900] outline-none"
+                                            value={newPickup.deliveryCost || 2}
+                                            onChange={e => setNewPickup({ ...newPickup, deliveryCost: parseFloat(e.target.value) })}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-bold text-gray-400">UBICACIÓN EN MAPA</label>
+                                    <LocationMap onLocationSelect={(lat, lng) => setNewPickup({ ...newPickup, lat, lng })} />
+                                </div>
+                                <div className="flex justify-end gap-3 pt-4">
+                                    <button
+                                        onClick={() => setIsAddingPickup(false)}
+                                        className="px-4 py-2 text-gray-500 font-bold hover:text-gray-700"
+                                    >
+                                        CANCELAR
+                                    </button>
+                                    <button
+                                        onClick={async () => {
+                                            if (!newPickup.name || !newPickup.lat) {
+                                                showAlert("Error", "Completa nombre y ubicación", "error");
+                                                return;
+                                            }
+                                            await addDoc(collection(db, "pickup_points"), { ...newPickup, createdAt: serverTimestamp() });
+                                            setIsAddingPickup(false);
+                                            setNewPickup({ enabled: true, deliveryRadius: 5, deliveryCost: 2, city: '' });
+                                            showAlert("Éxito", "Punto de retiro agregado", "success");
+                                        }}
+                                        className="bg-[#D91A2A] text-white px-6 py-2 rounded-xl font-bold hover:bg-[#B71524] shadow-md"
+                                    >
+                                        GUARDAR PUNTO
+                                    </button>
+                                </div>
+                            </motion.div>
+                        )}
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {pickupPoints.map(point => (
+                                <div key={point.id} className="bg-[#FDF6E3] p-6 rounded-3xl border border-gray-100 shadow-sm relative overflow-hidden group">
+                                    <div className="flex justify-between items-start mb-4">
+                                        <div>
+                                            <div className="flex items-center gap-2">
+                                                <h4 className="font-bold text-[#3E2723] text-lg">{point.name}</h4>
+                                                <span className="text-[10px] bg-[#D91A2A]/10 text-[#D91A2A] px-2 py-0.5 rounded-full font-bold uppercase">{point.city}</span>
+                                            </div>
+                                            <p className="text-xs text-gray-500">{point.address}</p>
+                                        </div>
+                                        <button
+                                            onClick={async () => {
+                                                if (window.confirm("¿Eliminar este punto?")) {
+                                                    const batch = writeBatch(db);
+                                                    batch.delete(doc(db, "pickup_points", point.id));
+                                                    await batch.commit();
+                                                    showAlert("Eliminado", "Punto eliminado", "info");
+                                                }
+                                            }}
+                                            className="text-red-500 p-2 hover:bg-red-50 rounded-full transition-colors"
+                                        >
+                                            <Trash2 size={18} />
+                                        </button>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4 text-xs">
+                                        <div className="bg-white p-3 rounded-xl border border-gray-100">
+                                            <span className="block text-gray-400 font-bold uppercase mb-1">Radio Delivery</span>
+                                            <span className="font-bold text-[#3E2723]">{point.deliveryRadius} KM</span>
+                                        </div>
+                                        <div className="bg-white p-3 rounded-xl border border-gray-100">
+                                            <span className="block text-gray-400 font-bold uppercase mb-1">Costo Delivery</span>
+                                            <span className="font-bold text-[#D91A2A]">${point.deliveryCost.toFixed(2)}</span>
+                                        </div>
+                                    </div>
+                                    <div className="mt-4 flex items-center gap-2">
+                                        <button
+                                            onClick={async () => {
+                                                await updateDoc(doc(db, "pickup_points", point.id), { enabled: !point.enabled });
+                                            }}
+                                            className={`px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-all ${point.enabled ? 'bg-green-500 text-white border-green-600' : 'bg-gray-200 text-gray-500 border-gray-300'}`}
+                                        >
+                                            {point.enabled ? 'ACTIVO' : 'INACTIVO'}
+                                        </button>
+                                        <span className="text-[10px] text-gray-400 italic">ID: {point.id.slice(0, 8)}</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {activeTab === 'promociones' && (
+                    <div className="space-y-8">
+                        <header className="flex items-center justify-between mb-6">
+                            <div>
+                                <h3 className="text-xl font-heading text-[#3E2723] flex items-center gap-2">
+                                    <Tag className="text-[#F2A900]" /> Gestión de Promociones
+                                </h3>
+                                <p className="text-xs text-gray-500 font-bold mt-1">Destaca ofertas con tiempo limitado en la tienda.</p>
+                            </div>
+                            <button
+                                onClick={() => setIsAddingPromo(true)}
+                                className="bg-[#F2A900] text-[#3E2723] px-4 py-2 rounded-xl font-bold flex items-center gap-2 hover:bg-[#e09b00] transition-all shadow-md"
+                            >
+                                <Plus size={18} /> AGREGAR PROMO
+                            </button>
+                        </header>
+
+                        {isAddingPromo && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="bg-gray-50 p-6 rounded-3xl border-2 border-[#F2A900]/20 space-y-4 mb-8"
+                            >
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <input
+                                        type="text"
+                                        placeholder="Título de la Promo"
+                                        className="w-full bg-white border border-gray-200 rounded-xl p-3 text-sm focus:border-[#F2A900] outline-none"
+                                        value={newPromo.title || ''}
+                                        onChange={e => setNewPromo({ ...newPromo, title: e.target.value })}
+                                    />
+                                    <select
+                                        className="w-full bg-white border border-gray-200 rounded-xl p-3 text-sm focus:border-[#F2A900] outline-none font-bold"
+                                        value={newPromo.type || 'info'}
+                                        onChange={e => setNewPromo({ ...newPromo, type: e.target.value as any })}
+                                    >
+                                        <option value="info">Informativa</option>
+                                        <option value="discount">Descuento (%)</option>
+                                        <option value="fixed">Precio Fijo ($)</option>
+                                        <option value="combo">Combo (Productos específicos)</option>
+                                    </select>
+                                </div>
+                                <textarea
+                                    placeholder="Descripción corta"
+                                    className="w-full bg-white border border-gray-200 rounded-xl p-3 text-sm focus:border-[#F2A900] outline-none h-24 resize-none"
+                                    value={newPromo.description || ''}
+                                    onChange={e => setNewPromo({ ...newPromo, description: e.target.value })}
+                                />
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="text-[10px] font-bold text-gray-400">FECHA DE CADUCIDAD</label>
+                                        <input
+                                            type="datetime-local"
+                                            className="w-full bg-white border border-gray-200 rounded-xl p-3 text-sm focus:border-[#F2A900] outline-none"
+                                            onChange={e => setNewPromo({ ...newPromo, expiresAt: new Date(e.target.value) })}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] font-bold text-gray-400">URL IMAGEN (OPCIONAL)</label>
+                                        <input
+                                            type="text"
+                                            placeholder="https://..."
+                                            className="w-full bg-white border border-gray-200 rounded-xl p-3 text-sm focus:border-[#F2A900] outline-none"
+                                            value={newPromo.image || ''}
+                                            onChange={e => setNewPromo({ ...newPromo, image: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Product Selection for Promo */}
+                                <div className="space-y-3 bg-white p-4 rounded-2xl border border-gray-100">
+                                    <h5 className="text-[10px] font-bold text-gray-400 uppercase flex items-center gap-2">
+                                        <Package size={14} /> PRODUCTOS EN PROMOCIÓN (DEJA EN BLANCO PARA TODA LA TIENDA)
+                                    </h5>
+                                    <div className="max-h-60 overflow-y-auto space-y-2 pr-2 custom-scrollbar">
+                                        {products.map(product => {
+                                            const isSelected = newPromo.applicableProducts?.some(p => p.productId === product.id);
+                                            const promoProduct = newPromo.applicableProducts?.find(p => p.productId === product.id);
+
+                                            return (
+                                                <div key={product.id} className={`flex items-center justify-between p-3 rounded-xl border transition-all ${isSelected ? 'border-[#F2A900] bg-[#F2A900]/5' : 'border-gray-100 bg-gray-50'}`}>
+                                                    <div className="flex items-center gap-3">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={isSelected}
+                                                            onChange={(e) => {
+                                                                const updated = [...(newPromo.applicableProducts || [])];
+                                                                if (e.target.checked) {
+                                                                    updated.push({ productId: product.id, productName: product.name, promoPrice: product.price });
+                                                                } else {
+                                                                    const index = updated.findIndex(p => p.productId === product.id);
+                                                                    if (index > -1) updated.splice(index, 1);
+                                                                }
+                                                                setNewPromo({ ...newPromo, applicableProducts: updated });
+                                                            }}
+                                                            className="w-4 h-4 accent-[#F2A900]"
+                                                        />
+                                                        <div>
+                                                            <p className="text-sm font-bold text-[#3E2723]">{product.name}</p>
+                                                            <p className="text-[10px] text-gray-400">Precio Ref: ${product.price}</p>
+                                                        </div>
+                                                    </div>
+                                                    {isSelected && (
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="text-[10px] font-bold text-[#F2A900]">$ PROMO:</span>
+                                                            <input
+                                                                type="number"
+                                                                className="w-20 bg-white border border-[#F2A900] rounded-lg p-1 text-xs font-bold focus:outline-none"
+                                                                value={promoProduct?.promoPrice || 0}
+                                                                onChange={(e) => {
+                                                                    const updated = [...(newPromo.applicableProducts || [])];
+                                                                    const index = updated.findIndex(p => p.productId === product.id);
+                                                                    if (index > -1) {
+                                                                        updated[index].promoPrice = parseFloat(e.target.value);
+                                                                        setNewPromo({ ...newPromo, applicableProducts: updated });
+                                                                    }
+                                                                }}
+                                                            />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+
+                                <div className="flex justify-end gap-3 pt-4">
+                                    <button
+                                        onClick={() => setIsAddingPromo(false)}
+                                        className="px-4 py-2 text-gray-500 font-bold hover:text-gray-700"
+                                    >
+                                        CANCELAR
+                                    </button>
+                                    <button
+                                        onClick={async () => {
+                                            if (!newPromo.title || !newPromo.expiresAt) {
+                                                showAlert("Error", "Título y Fecha son requeridos", "error");
+                                                return;
+                                            }
+                                            await addDoc(collection(db, "promotions"), { ...newPromo, createdAt: serverTimestamp() });
+                                            setIsAddingPromo(false);
+                                            setNewPromo({ enabled: true, type: 'info' });
+                                            showAlert("Éxito", "Promoción creada", "success");
+                                        }}
+                                        className="bg-[#F2A900] text-[#3E2723] px-6 py-2 rounded-xl font-bold hover:bg-[#e09b00] shadow-md"
+                                    >
+                                        GUARDAR PROMO
+                                    </button>
+                                </div>
+                            </motion.div>
+                        )}
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {promotions.map(promo => {
+                                const isExpired = promo.expiresAt?.toDate ? promo.expiresAt.toDate() < new Date() : false;
+                                return (
+                                    <div key={promo.id} className={`p-6 rounded-3xl border shadow-sm relative overflow-hidden flex flex-col justify-between ${isExpired ? 'bg-gray-50 border-gray-200 opacity-75' : 'bg-white border-gray-100'}`}>
+                                        <div className="flex justify-between items-start mb-4">
+                                            <div className="flex items-center gap-2">
+                                                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isExpired ? 'bg-gray-200 text-gray-400' : 'bg-[#F2A900] text-[#3E2723]'}`}>
+                                                    <Tag size={16} />
+                                                </div>
+                                                <h4 className="font-bold text-[#3E2723] text-sm">{promo.title}</h4>
+                                            </div>
+                                            <button
+                                                onClick={async () => {
+                                                    if (window.confirm("¿Eliminar promo?")) {
+                                                        await deleteDoc(doc(db, "promotions", promo.id));
+                                                        showAlert("Eliminada", "Promoción eliminada", "info");
+                                                    }
+                                                }}
+                                                className="text-red-500 p-2 hover:bg-red-50 rounded-full transition-colors"
+                                            >
+                                                <Trash2 size={18} />
+                                            </button>
+                                        </div>
+
+                                        <p className="text-xs text-gray-500 mb-4 line-clamp-2">{promo.description}</p>
+
+                                        {promo.applicableProducts && promo.applicableProducts.length > 0 && (
+                                            <div className="mb-4 space-y-1">
+                                                <p className="text-[9px] font-bold text-gray-400 uppercase">Productos:</p>
+                                                <div className="flex flex-wrap gap-1">
+                                                    {promo.applicableProducts.map(p => (
+                                                        <span key={p.productId} className="text-[9px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-bold">
+                                                            {p.productName}: ${p.promoPrice}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        <div className="space-y-3">
+                                            <div className="flex items-center gap-2 text-[10px] font-bold text-gray-400 border-t pt-3">
+                                                <Clock size={12} />
+                                                CADUCA: {promo.expiresAt?.toDate ? promo.expiresAt.toDate().toLocaleString() : 'N/A'}
+                                            </div>
+                                            <div className="flex items-center justify-between">
+                                                <button
+                                                    onClick={async () => {
+                                                        await updateDoc(doc(db, "promotions", promo.id), { enabled: !promo.enabled });
+                                                    }}
+                                                    className={`px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-all ${promo.enabled ? 'bg-green-500 text-white border-green-600' : 'bg-gray-200 text-gray-500 border-gray-300'}`}
+                                                >
+                                                    {promo.enabled ? 'ACTIVO' : 'INACTIVO'}
+                                                </button>
+                                                {isExpired && <span className="text-red-500 font-bold text-[10px] uppercase">Vencida</span>}
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
                 )}
 

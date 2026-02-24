@@ -41,3 +41,39 @@ export interface Purchase {
     createdAt: Date;
     updatedAt?: Date;
 }
+// Punto de Retiro / Pickup Point
+export interface PickUpPoint {
+    id: string;
+    name: string;
+    address: string;
+    city: string;
+    phone: string;
+    lat: number;
+    lng: number;
+    deliveryRadius: number; // en km
+    deliveryCost: number;
+    enabled: boolean;
+    createdAt?: any;
+    updatedAt?: any;
+}
+
+// Item promocional
+export interface PromotionalProduct {
+    productId: string;
+    productName: string;
+    promoPrice: number;
+}
+
+// Promoción / Promotion
+export interface Promotion {
+    id: string;
+    title: string;
+    description: string;
+    image: string;
+    type: 'discount' | 'fixed' | 'info' | 'combo';
+    value?: number;
+    expiresAt: any; // Firebase Timestamp or Date
+    enabled: boolean;
+    applicableProducts?: PromotionalProduct[];
+    createdAt?: any;
+}
