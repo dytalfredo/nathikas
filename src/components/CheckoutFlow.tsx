@@ -38,6 +38,10 @@ export default function CheckoutFlow({ data, onClose }: Props) {
     };
 
     const handleWhatsAppOrder = () => {
+        if (items.length === 0 || items.some(item => item.quantity <= 0)) {
+            alert("Tu carrito está vacío o contiene productos con cantidad inválida.");
+            return;
+        }
         const message = `
 *Hola Nathikas! Nuevo Pedido* 🌶️
 

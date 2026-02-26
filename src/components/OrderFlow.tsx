@@ -468,7 +468,11 @@ export default function OrderFlow({ data }: Props) {
             }
         }
 
-        if (cartItemsWithDynamicPrice.length === 0) missingFields.push("Al menos un producto");
+        if (cartItemsWithDynamicPrice.length === 0) {
+            missingFields.push("Al menos un producto");
+        } else if (cartItemsWithDynamicPrice.some(item => item.quantity <= 0)) {
+            missingFields.push("Cantidades válidas (mayor a cero)");
+        }
 
         if (missingFields.length > 0) {
             useAlertStore.getState().showAlert(
@@ -1407,39 +1411,58 @@ export default function OrderFlow({ data }: Props) {
                                         </div>
 
                                         {/* State Selection - Only for MRW/Zoom */}
-                                        {(shippingMethod === 'MRW' || shippingMethod === 'Zoom') && selectedState && (
-                                            <motion.div
-                                                initial={{ opacity: 0, height: 0 }}
-                                                animate={{ opacity: 1, height: "auto" }}
-                                                className="space-y-2"
-                                            >
-                                                <label className={labelClass}>Agencia {shippingMethod}</label>
-                                                <div className="relative">
+                                        {(shippingMethod === 'MRW' || shippingMethod === 'Zoom') && (
+                                            <div className="space-y-4">
+                                                <div className="space-y-2">
+                                                    <label className={labelClass}>Estado de Envío</label>
                                                     <CustomSelect
-                                                        options={availableAgencies.map((a: any) => ({
-                                                            value: a.codigo,
-                                                            label: `${a.codigo} - ${a.nombre} (${a.direccion.substring(0, 30)}...)`
-                                                        }))}
-                                                        value={selectedAgency}
+                                                        options={venezuelaData.map(d => ({ value: d.estado, label: d.estado }))}
+                                                        value={selectedState}
                                                         onChange={(val) => {
-                                                            setSelectedAgency(val);
-                                                            const agency = availableAgencies.find((a: any) => a.codigo === val);
-                                                            if (agency) {
-                                                                setAddress(`${agency.nombre} - ${agency.direccion}`);
-                                                            }
+                                                            setSelectedState(val);
+                                                            setSelectedAgency('');
                                                         }}
-                                                        placeholder="Selecciona la Agencia"
-                                                        searchPlaceholder="Buscar agencia..."
-                                                        emptyMessage="No hay agencias disponibles en esta zona"
-                                                        disabled={availableAgencies.length === 0}
+                                                        placeholder="Selecciona tu Estado"
+                                                        searchPlaceholder="Buscar estado..."
+                                                        emptyMessage="No se encontró el estado"
                                                     />
                                                 </div>
-                                                {availableAgencies.length === 0 && (
-                                                    <p className="text-sm text-red-500 mt-1">
-                                                        No encontramos agencias en este estado. Intenta otro.
-                                                    </p>
+
+                                                {selectedState && (
+                                                    <motion.div
+                                                        initial={{ opacity: 0, height: 0 }}
+                                                        animate={{ opacity: 1, height: "auto" }}
+                                                        className="space-y-2"
+                                                    >
+                                                        <label className={labelClass}>Agencia {shippingMethod}</label>
+                                                        <div className="relative">
+                                                            <CustomSelect
+                                                                options={availableAgencies.map((a: any) => ({
+                                                                    value: a.codigo,
+                                                                    label: `${a.codigo} - ${a.nombre} (${a.direccion.substring(0, 30)}...)`
+                                                                }))}
+                                                                value={selectedAgency}
+                                                                onChange={(val) => {
+                                                                    setSelectedAgency(val);
+                                                                    const agency = availableAgencies.find((a: any) => a.codigo === val);
+                                                                    if (agency) {
+                                                                        setAddress(`${agency.nombre} - ${agency.direccion}`);
+                                                                    }
+                                                                }}
+                                                                placeholder="Selecciona la Agencia"
+                                                                searchPlaceholder="Buscar agencia..."
+                                                                emptyMessage="No hay agencias disponibles en esta zona"
+                                                                disabled={availableAgencies.length === 0}
+                                                            />
+                                                        </div>
+                                                        {availableAgencies.length === 0 && (
+                                                            <p className="text-sm text-red-500 mt-1">
+                                                                No encontramos agencias en este estado. Intenta otro.
+                                                            </p>
+                                                        )}
+                                                    </motion.div>
                                                 )}
-                                            </motion.div>
+                                            </div>
                                         )}
 
                                         {/* Pick-up Point Selection */}
