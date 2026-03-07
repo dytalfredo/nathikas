@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { db } from '../../lib/firebase';
 import { collection, query, getDocs, orderBy } from 'firebase/firestore';
+import { useAuthStore } from '../../store/authStore';
 import { motion } from 'framer-motion';
 import {
     TrendingUp,
@@ -24,6 +25,7 @@ interface Order {
 }
 
 export default function ReportsView() {
+    const { user } = useAuthStore();
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
     const [timeframe, setTimeframe] = useState('all'); // '7d', '30d', 'all'
@@ -33,10 +35,18 @@ export default function ReportsView() {
             try {
                 const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
                 const querySnapshot = await getDocs(q);
-                const ordersData = querySnapshot.docs.map(doc => ({
+                let ordersData = querySnapshot.docs.map(doc => ({
                     id: doc.id,
                     ...doc.data()
                 })) as Order[];
+
+                if (user?.role === 'puntoDeVenta') {
+                    ordersData = ordersData.filter(o => {
+                        const isMethodValid = (o as any).shippingMethod === 'Retiro' || (o as any).shippingMethod === 'Delivery';
+                        return isMethodValid && (o as any).selectedPickup?.id === user.pickupId;
+                    });
+                }
+
                 setOrders(ordersData);
             } catch (err) {
                 console.error("Error fetching reports data:", err);
@@ -98,8 +108,8 @@ export default function ReportsView() {
                             key={t}
                             onClick={() => setTimeframe(t)}
                             className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${timeframe === t
-                                    ? 'bg-[#D91A2A] text-white shadow-md'
-                                    : 'text-gray-400 hover:text-gray-600'
+                                ? 'bg-[#D91A2A] text-white shadow-md'
+                                : 'text-gray-400 hover:text-gray-600'
                                 }`}
                         >
                             {t === '7d' ? '7 Días' : t === '30d' ? '30 Días' : 'Histórico'}

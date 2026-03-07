@@ -55,6 +55,14 @@ export default function Dashboard() {
 
     const filteredMenu = menuItems.filter(item => item.roles.includes(user.role as string));
 
+    const isTabAllowed = (tabId: string) => filteredMenu.some(item => item.id === tabId);
+
+    useEffect(() => {
+        if (!isTabAllowed(activeTab) && filteredMenu.length > 0) {
+            setActiveTab(filteredMenu[0].id);
+        }
+    }, [user.role, activeTab]);
+
     return (
         <div className="min-h-screen bg-[#FDF6E3] flex flex-col font-sans text-[#3E2723]">
             <div className="flex flex-1 overflow-hidden">
@@ -155,19 +163,19 @@ export default function Dashboard() {
                                 transition={{ duration: 0.2 }}
                                 className="max-w-6xl mx-auto"
                             >
-                                {activeTab === 'orders' && (
+                                {isTabAllowed('orders') && activeTab === 'orders' && (
                                     <OrdersView
                                         autoOpenOrderId={autoOpenOrderId}
                                         onModalClose={() => setAutoOpenOrderId(null)}
                                     />
                                 )}
-                                {activeTab === 'production' && <ProductionView onNavigateToOrder={navigateToOrder} />}
-                                {activeTab === 'inventory' && <InventoryView />}
-                                {activeTab === 'purchases' && <PurchasesView />}
-                                {activeTab === 'settings' && <SettingsView />}
-                                {activeTab === 'reports' && <ReportsView />}
-                                {activeTab === 'partners' && <PartnersView />}
-                                {activeTab === 'shipments' && <OrdersView filterByStatus="pagado" title="Gestión de Despachos" isDispatchView={true} />}
+                                {isTabAllowed('production') && activeTab === 'production' && <ProductionView onNavigateToOrder={navigateToOrder} />}
+                                {isTabAllowed('inventory') && activeTab === 'inventory' && <InventoryView />}
+                                {isTabAllowed('purchases') && activeTab === 'purchases' && <PurchasesView />}
+                                {isTabAllowed('settings') && activeTab === 'settings' && <SettingsView />}
+                                {isTabAllowed('reports') && activeTab === 'reports' && <ReportsView />}
+                                {isTabAllowed('partners') && activeTab === 'partners' && <PartnersView />}
+                                {isTabAllowed('shipments') && activeTab === 'shipments' && <OrdersView filterByStatus="pagado" title="Gestión de Despachos" isDispatchView={true} />}
                             </motion.div>
                         </AnimatePresence>
                     </div>

@@ -23,7 +23,8 @@ import {
     MapPin,
     Truck,
     Tag,
-    Clock
+    Clock,
+    Store
 } from 'lucide-react';
 import { useAlertStore } from '../../store/alertStore';
 import type { PickUpPoint, Promotion } from '../../types/types';
@@ -80,7 +81,8 @@ interface GlobalSettings {
 }
 
 export default function SettingsView() {
-    const [activeTab, setActiveTab] = useState<'pagos' | 'productos' | 'descuentos' | 'bot' | 'usuarios' | 'notifications' | 'logistica' | 'promociones' | 'developer'>('pagos');
+    const { user } = useAuthStore();
+    const [activeTab, setActiveTab] = useState<any>(user?.role === 'puntoDeVenta' ? 'logistica' : 'pagos');
     const [settings, setSettings] = useState<GlobalSettings | null>(null);
     const [products, setProducts] = useState<ProductPrice[]>([]);
     const [loading, setLoading] = useState(true);
@@ -111,7 +113,8 @@ export default function SettingsView() {
     // User Creation State
     const [newUserEmail, setNewUserEmail] = useState('');
     const [newUserPassword, setNewUserPassword] = useState('');
-    const [newUserRole, setNewUserRole] = useState<'administrator' | 'asistente' | 'vendedor'>('vendedor');
+    const [newUserRole, setNewUserRole] = useState<'administrator' | 'asistente' | 'vendedor' | 'puntoDeVenta'>('vendedor');
+    const [newUserPickupId, setNewUserPickupId] = useState<string>('');
     const [isCreatingUser, setIsCreatingUser] = useState(false);
 
     useEffect(() => {
@@ -283,7 +286,8 @@ export default function SettingsView() {
                     email: newUserEmail,
                     password: newUserPassword,
                     role: newUserRole,
-                    name: newUserEmail.split('@')[0]
+                    name: newUserEmail.split('@')[0],
+                    pickupId: newUserRole === 'puntoDeVenta' ? newUserPickupId : undefined
                 })
             });
 
@@ -375,7 +379,7 @@ export default function SettingsView() {
         return <div className="p-12 text-center text-gray-400 font-bold">Cargando configuraciones...</div>;
     }
 
-    const tabs = [
+    let allTabs = [
         { id: 'pagos', label: 'Pagos', icon: CreditCard },
         { id: 'productos', label: 'Precios', icon: Package },
         { id: 'descuentos', label: 'Descuentos', icon: Percent },
@@ -387,6 +391,8 @@ export default function SettingsView() {
         { id: 'developer', label: 'Developer', icon: ShieldAlert },
     ];
 
+    const tabs = user?.role === 'puntoDeVenta' ? allTabs.filter(t => t.id === 'logistica') : allTabs;
+
     return (
         <div className="space-y-6">
             <header className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -394,14 +400,16 @@ export default function SettingsView() {
                     <h2 className="text-3xl font-heading text-[#D91A2A]">Configuraciones del Sistema</h2>
                     <p className="text-gray-600 font-bold text-sm">Administra precios, pagos e integraciones</p>
                 </div>
-                <button
-                    onClick={handleSaveSettings}
-                    disabled={saving}
-                    className="bg-[#3E2723] text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-[#2D1C1A] transition-all shadow-lg active:scale-95 disabled:opacity-50"
-                >
-                    {saving ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Save size={20} />}
-                    GUARDAR CAMBIOS
-                </button>
+                {user?.role !== 'puntoDeVenta' && (
+                    <button
+                        onClick={handleSaveSettings}
+                        disabled={saving}
+                        className="bg-[#3E2723] text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-[#2D1C1A] transition-all shadow-lg active:scale-95 disabled:opacity-50"
+                    >
+                        {saving ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Save size={20} />}
+                        GUARDAR CAMBIOS
+                    </button>
+                )}
             </header>
 
             {/* Tabs Navigation */}
@@ -721,8 +729,28 @@ export default function SettingsView() {
                                     <option value="vendedor">Vendedor (Ventas / Inventario)</option>
                                     <option value="asistente">Asistente (Producción / Pedidos)</option>
                                     <option value="administrator">Administrador (Acceso Total)</option>
+                                    <option value="puntoDeVenta">Punto de Venta</option>
                                 </select>
                             </div>
+
+                            {newUserRole === 'puntoDeVenta' && (
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold text-gray-400 uppercase">Local Asignado</label>
+                                    <select
+                                        value={newUserPickupId}
+                                        onChange={(e) => setNewUserPickupId(e.target.value)}
+                                        required
+                                        className="w-full bg-white border border-gray-200 rounded-xl p-3 text-sm focus:border-[#F2A900] outline-none font-bold"
+                                    >
+                                        <option value="" disabled>Selecciona un punto de retiro o delivery</option>
+                                        {pickupPoints.map(point => (
+                                            <option key={point.id} value={point.id}>
+                                                {point.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            )}
                             <button
                                 type="submit"
                                 disabled={isCreatingUser}
@@ -836,19 +864,18 @@ export default function SettingsView() {
 
                 {activeTab === 'logistica' && (
                     <div className="space-y-8">
-                        <header className="flex items-center justify-between mb-6">
-                            <div>
-                                <h3 className="text-xl font-heading text-[#3E2723] flex items-center gap-2">
-                                    <MapPin className="text-[#D91A2A]" /> Puntos de Retiro y Delivery
-                                </h3>
-                                <p className="text-xs text-gray-500 font-bold mt-1">Gestiona tus locales y zonas de cobertura.</p>
-                            </div>
-                            <button
-                                onClick={() => setIsAddingPickup(true)}
-                                className="bg-[#D91A2A] text-white px-4 py-2 rounded-xl font-bold flex items-center gap-2 hover:bg-[#B71524] transition-all"
-                            >
-                                <Plus size={18} /> AGREGAR PUNTO
-                            </button>
+                        <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                            <h3 className="text-xl font-heading text-[#3E2723] flex items-center gap-2">
+                                <Store className="text-[#F2A900]" /> Puntos de Retiro / Delivery Fijo
+                            </h3>
+                            {user?.role !== 'puntoDeVenta' && (
+                                <button
+                                    onClick={() => setIsAddingPickup(!isAddingPickup)}
+                                    className="bg-[#D91A2A] text-white px-4 py-2 rounded-xl font-bold flex items-center gap-2 hover:bg-[#B71524] transition-all text-sm"
+                                >
+                                    <Plus size={16} /> AÑADIR LOCAL
+                                </button>
+                            )}
                         </header>
 
                         {isAddingPickup && (
@@ -953,7 +980,7 @@ export default function SettingsView() {
                         )}
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {pickupPoints.map(point => (
+                            {pickupPoints.filter(p => user?.role === 'puntoDeVenta' ? p.id === user?.pickupId : true).map(point => (
                                 <div key={point.id} className="bg-[#FDF6E3] p-6 rounded-3xl border border-gray-100 shadow-sm relative overflow-hidden group">
                                     <div className="flex justify-between items-start mb-4">
                                         <div>
@@ -979,19 +1006,21 @@ export default function SettingsView() {
                                             >
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
                                             </button>
-                                            <button
-                                                onClick={async () => {
-                                                    if (window.confirm("¿Eliminar este punto?")) {
-                                                        const batch = writeBatch(db);
-                                                        batch.delete(doc(db, "pickup_points", point.id));
-                                                        await batch.commit();
-                                                        showAlert("Eliminado", "Punto eliminado", "info");
-                                                    }
-                                                }}
-                                                className="text-red-500 p-2 hover:bg-red-50 rounded-full transition-colors"
-                                            >
-                                                <Trash2 size={18} />
-                                            </button>
+                                            {user?.role !== 'puntoDeVenta' && (
+                                                <button
+                                                    onClick={async () => {
+                                                        if (window.confirm("¿Eliminar este punto?")) {
+                                                            const batch = writeBatch(db);
+                                                            batch.delete(doc(db, "pickup_points", point.id));
+                                                            await batch.commit();
+                                                            showAlert("Eliminado", "Punto eliminado", "info");
+                                                        }
+                                                    }}
+                                                    className="text-red-500 p-2 hover:bg-red-50 rounded-full transition-colors"
+                                                >
+                                                    <Trash2 size={18} />
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
 
@@ -1069,17 +1098,19 @@ export default function SettingsView() {
                                         </div>
                                     )}
 
-                                    <div className="mt-4 flex items-center gap-2">
-                                        <button
-                                            onClick={async () => {
-                                                await updateDoc(doc(db, "pickup_points", point.id), { enabled: !point.enabled });
-                                            }}
-                                            className={`px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-all ${point.enabled ? 'bg-green-500 text-white border-green-600' : 'bg-gray-200 text-gray-500 border-gray-300'}`}
-                                        >
-                                            {point.enabled ? 'ACTIVO' : 'INACTIVO'}
-                                        </button>
-                                        <span className="text-[10px] text-gray-400 italic">ID: {point.id.slice(0, 8)}</span>
-                                    </div>
+                                    {user?.role !== 'puntoDeVenta' && (
+                                        <div className="mt-4 flex items-center gap-2">
+                                            <button
+                                                onClick={async () => {
+                                                    await updateDoc(doc(db, "pickup_points", point.id), { enabled: !point.enabled });
+                                                }}
+                                                className={`px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-all ${point.enabled ? 'bg-green-500 text-white border-green-600' : 'bg-gray-200 text-gray-500 border-gray-300'}`}
+                                            >
+                                                {point.enabled ? 'ACTIVO' : 'INACTIVO'}
+                                            </button>
+                                            <span className="text-[10px] text-gray-400 font-bold uppercase">Estado de operaciones</span>
+                                        </div>
+                                    )}
                                 </div>
                             ))}
                         </div>

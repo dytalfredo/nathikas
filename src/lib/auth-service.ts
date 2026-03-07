@@ -58,6 +58,7 @@ export const initAuth = () => {
                             name: data.name,
                             phone: data.phone,
                             cedula: data.cedula,
+                            pickupId: data.pickupId,
                             isAnonymous: false
                         });
 

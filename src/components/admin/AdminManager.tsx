@@ -28,7 +28,7 @@ export default function AdminManager() {
     return (
         <>
             {user ? (
-                (user.role === 'administrator' || user.role === 'puntoDeVenta') ? (
+                ['administrator', 'asistente', 'vendedor', 'puntoDeVenta'].includes(user.role || '') ? (
                     <Dashboard />
                 ) : (
                     <div className="min-h-screen bg-[#FDF6E3] flex flex-col items-center justify-center p-4">

@@ -587,7 +587,7 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
 
     useEffect(() => {
         // No intentar leer si no hay usuario o no tiene rol administrativo
-        if (!user || !['administrator', 'asistente', 'vendedor'].includes(user.role || '')) {
+        if (!user || !['administrator', 'asistente', 'vendedor', 'puntoDeVenta'].includes(user.role || '')) {
             setLoading(false);
             return;
         }
@@ -616,7 +616,15 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
             (snapshot) => {
                 const ordersData: Order[] = [];
                 snapshot.forEach((doc) => {
-                    ordersData.push({ id: doc.id, ...doc.data() } as Order);
+                    const data = doc.data();
+                    // Restringir a su propio local de retiro
+                    if (user.role === 'puntoDeVenta') {
+                        const isMethodValid = data?.shippingMethod === 'Retiro' || data?.shippingMethod === 'Delivery';
+                        if (!isMethodValid || data?.selectedPickup?.id !== user.pickupId) {
+                            return; // Skip
+                        }
+                    }
+                    ordersData.push({ id: doc.id, ...data } as Order);
                 });
                 setOrders(ordersData);
                 setLoading(false);

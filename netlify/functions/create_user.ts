@@ -84,7 +84,7 @@ export const handler: Handler = async (event) => {
         console.log(`🛡️ [CreateUserWorker] Acceso autorizado para admin: ${requestUserDoc.data()?.email}`);
 
         const payload = JSON.parse(event.body || '{}');
-        const { email, password, role, name } = payload;
+        const { email, password, role, name, pickupId } = payload;
 
         if (!email || !password || !role) {
             return {
@@ -108,14 +108,19 @@ export const handler: Handler = async (event) => {
         // 2. Create User Profile in Firestore
         // This bypasses client-side security rules because we are using Admin SDK
         // db is already initialized above
-        await db.collection('users').doc(userRecord.uid).set({
+        const userData: any = {
             email: email,
-            role: role, // 'administrator', 'asistente', 'vendedor'
+            role: role, // 'administrator', 'asistente', 'vendedor', 'puntoDeVenta'
             name: name || email.split('@')[0],
             createdAt: FieldValue.serverTimestamp(),
             isAnonymous: false,
-            // Add any other default fields here
-        });
+        };
+
+        if (role === 'puntoDeVenta' && pickupId) {
+            userData.pickupId = pickupId;
+        }
+
+        await db.collection('users').doc(userRecord.uid).set(userData);
 
         console.log(`✅ [CreateUserWorker] Perfil Firestore creado para ${userRecord.uid}`);
 

@@ -12,7 +12,7 @@ service cloud.firestore {
     function isStaff() {
       return request.auth != null && 
         exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['administrator', 'asistente', 'vendedor'];
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['administrator', 'asistente', 'vendedor', 'puntoDeVenta'];
     }
 
     // PERFILES DE USUARIO
@@ -64,7 +64,8 @@ service cloud.firestore {
     // PUNTOS DE RETIRO
     match /pickup_points/{pointId} {
       allow read: if true;
-      allow write: if hasAdminRole('administrator');
+      allow create, delete: if hasAdminRole('administrator');
+      allow update: if hasAdminRole('administrator') || hasAdminRole('puntoDeVenta');
     }
 
     // PROMOCIONES
