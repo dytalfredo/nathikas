@@ -43,14 +43,14 @@ export default function Dashboard() {
     if (!user) return null;
 
     const menuItems = [
-        { id: 'orders', label: 'Pedidos', icon: ShoppingCart, roles: ['administrator', 'asistente', 'vendedor'] },
-        { id: 'reports', label: 'Reportes', icon: TrendingUp, roles: ['administrator'] },
+        { id: 'orders', label: 'Pedidos', icon: ShoppingCart, roles: ['administrator', 'asistente', 'vendedor', 'puntoDeVenta'] },
+        { id: 'reports', label: 'Reportes', icon: TrendingUp, roles: ['administrator', 'puntoDeVenta'] },
         { id: 'production', label: 'Producción', icon: AlertTriangle, roles: ['administrator', 'asistente'] },
         { id: 'inventory', label: 'Inventario', icon: Package, roles: ['administrator', 'asistente', 'vendedor'] },
         { id: 'purchases', label: 'Compras', icon: ShoppingBag, roles: ['administrator', 'asistente'] },
         { id: 'shipments', label: 'Despachos', icon: Truck, roles: ['administrator', 'asistente'] },
         { id: 'partners', label: 'Asociados', icon: Users, roles: ['administrator'] },
-        { id: 'settings', label: 'Configuraciones', icon: Settings, roles: ['administrator'] },
+        { id: 'settings', label: 'Configuraciones', icon: Settings, roles: ['administrator', 'puntoDeVenta'] },
     ];
 
     const filteredMenu = menuItems.filter(item => item.roles.includes(user.role as string));

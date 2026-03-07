@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export type UserRole = 'administrator' | 'asistente' | 'vendedor' | 'customer' | null;
+export type UserRole = 'administrator' | 'asistente' | 'vendedor' | 'customer' | 'puntoDeVenta' | null;
 
 interface UserProfile {
     uid: string;
@@ -10,6 +10,7 @@ interface UserProfile {
     phone?: string;
     cedula?: string;
     isAnonymous?: boolean;
+    pickupId?: string; // ID of the assigned pickup point for 'puntoDeVenta' role
 }
 
 interface AuthState {

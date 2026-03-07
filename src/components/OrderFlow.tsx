@@ -99,10 +99,13 @@ export default function OrderFlow({ data }: Props) {
     const [userLocation, setUserLocation] = useState<{ lat: number, lng: number } | null>(null);
     const [deliveryValidated, setDeliveryValidated] = useState(false);
     const [calculatedDeliveryCost, setCalculatedDeliveryCost] = useState(0);
+    const [deliveryCostNegotiable, setDeliveryCostNegotiable] = useState(false);
 
     // Promotions
     const [promotions, setPromotions] = useState<Promotion[]>([]);
     const [selectedPromo, setSelectedPromo] = useState<Promotion | null>(null);
+    const [showDuplicateModal, setShowDuplicateModal] = useState(false);
+    const [isDuplicateConfirmed, setIsDuplicateConfirmed] = useState(false);
 
     // Custom style classes
     const inputClass = "w-full px-4 py-3 rounded-xl border-2 border-[#F2A900]/30 focus:border-[#F2A900] bg-white outline-none transition-all text-[#3E2723] placeholder:text-gray-400 font-medium disabled:opacity-70 disabled:bg-gray-50";
@@ -317,24 +320,27 @@ export default function OrderFlow({ data }: Props) {
         fetchRate();
     }, []);
 
-    // Calculate Delivery Cost and Validate Radius
     useEffect(() => {
         if (shippingMethod === 'Delivery' && userLocation && pickupPoints.length > 0) {
             let foundMatch = false;
             let minCost = Infinity;
+            let isNegotiable = false;
 
             pickupPoints.forEach(point => {
-                if (point.coords && point.deliveryRadius) {
+                if (point.lat && point.lng && point.deliveryRadius) {
                     const dist = calculateDistance(
                         userLocation.lat,
                         userLocation.lng,
-                        point.coords.lat,
-                        point.coords.lng
+                        point.lat,
+                        point.lng
                     );
 
                     if (dist <= point.deliveryRadius) {
                         foundMatch = true;
-                        if (point.deliveryCost < minCost) {
+                        if (point.deliveryCostNegotiable) {
+                            isNegotiable = true;
+                            minCost = 0;
+                        } else if (!isNegotiable && point.deliveryCost < minCost) {
                             minCost = point.deliveryCost;
                         }
                     }
@@ -342,10 +348,12 @@ export default function OrderFlow({ data }: Props) {
             });
 
             if (foundMatch) {
-                setCalculatedDeliveryCost(minCost);
+                setCalculatedDeliveryCost(isNegotiable ? 0 : minCost);
+                setDeliveryCostNegotiable(isNegotiable);
                 setDeliveryValidated(true);
             } else {
                 setCalculatedDeliveryCost(0);
+                setDeliveryCostNegotiable(false);
                 setDeliveryValidated(false);
                 useAlertStore.getState().showAlert(
                     "Fuera de Rango",
@@ -355,9 +363,11 @@ export default function OrderFlow({ data }: Props) {
             }
         } else {
             setCalculatedDeliveryCost(0);
+            setDeliveryCostNegotiable(false);
             if (shippingMethod !== 'Delivery') setDeliveryValidated(false);
         }
     }, [userLocation, shippingMethod, pickupPoints]);
+
 
     // Calculate Total in Bs
     useEffect(() => {
@@ -447,6 +457,7 @@ export default function OrderFlow({ data }: Props) {
         } else if (shippingMethod === 'Delivery') {
             if (!userLocation) missingFields.push("Ubicación en el Mapa");
             if (!address) missingFields.push("Dirección de Entrega");
+            if (userLocation && !deliveryValidated) missingFields.push("Ubicación dentro de cobertura");
         } else {
             // MRW/Zoom
             if (!selectedState) missingFields.push("Estado de Envío");
@@ -492,6 +503,26 @@ export default function OrderFlow({ data }: Props) {
             return;
         }
 
+        const currentOrderHash = JSON.stringify({
+            items: cartItemsWithDynamicPrice.map(i => ({ id: i.id, q: i.quantity })),
+            total,
+            shippingMethod,
+            paymentBank,
+            paymentReference,
+            userName
+        });
+
+        if (!isDuplicateConfirmed) {
+            const lastOrderHash = localStorage.getItem('lastNathikasOrder');
+            if (lastOrderHash === currentOrderHash) {
+                setShowDuplicateModal(true);
+                return;
+            }
+        }
+
+        localStorage.setItem('lastNathikasOrder', currentOrderHash);
+        setIsDuplicateConfirmed(false); // Reset for next time
+
         // Clean number for link (remove spaces, symbols)
         const businessPhone = appConfig.contact.whatsapp.replace(/\D/g, '');
 
@@ -532,6 +563,8 @@ export default function OrderFlow({ data }: Props) {
         message += `\n💵 *Subtotal:* $${subtotal.toFixed(2)}\n`;
         if (calculatedDeliveryCost > 0) {
             message += `🚚 *Delivery:* $${calculatedDeliveryCost.toFixed(2)}\n`;
+        } else if (deliveryCostNegotiable) {
+            message += `🚚 *Delivery:* A convenir (se coordina al confirmar el envío)\n`;
         }
         message += `💰 *TOTAL:* $${finalTotal.toFixed(2)}\n\n`;
 
@@ -602,6 +635,7 @@ export default function OrderFlow({ data }: Props) {
                     shippingMethod,
                     selectedAgency,
                     selectedPickup: selectedPickup ? { id: selectedPickup.id, name: selectedPickup.name, address: selectedPickup.address } : null,
+                    address,
                     userLocation,
                     deliveryCost: calculatedDeliveryCost,
                     paymentBank,
@@ -1540,7 +1574,7 @@ export default function OrderFlow({ data }: Props) {
                                                 {shippingMethod === 'Delivery' && (
                                                     <div className="bg-[#3E2723]/5 p-3 rounded-xl border border-[#3E2723]/10 flex items-start gap-3 mb-4">
                                                         <Globe size={18} className="text-[#3E2723] mt-0.5 shrink-0" />
-                                                        <p className="text-[11px] text-[#3E2723] font-bold">
+                                                        <p className="text-sm text-[#3E2723] font-bold">
                                                             El delivery solo está habilitado para zonas dentro del radio de cobertura de nuestros locales en:
                                                             <span className="text-[#D91A2A] ml-1 uppercase">
                                                                 {Array.from(new Set(pickupPoints.map(p => p.city))).filter(c => c).join(', ')}
@@ -2021,9 +2055,30 @@ export default function OrderFlow({ data }: Props) {
                                 </div>
                                 <div className="p-4 h-[400px]">
                                     <LocationMap
-                                        onLocationSelect={(lat, lng) => {
+                                        pickupPoints={pickupPoints}
+                                        onLocationSelect={async (lat, lng) => {
                                             setUserLocation({ lat, lng });
-                                            // setShowMap(false); // Let user confirm or see placement
+                                            // Reverse geocoding con Nominatim para rellenar dirección
+                                            try {
+                                                const res = await fetch(
+                                                    `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`,
+                                                    { headers: { 'Accept-Language': 'es' } }
+                                                );
+                                                const data = await res.json();
+                                                if (data && data.display_name) {
+                                                    // Construir dirección legible: calle + número + ciudad
+                                                    const a = data.address || {};
+                                                    const parts = [
+                                                        a.road || a.pedestrian || a.footway || '',
+                                                        a.house_number || '',
+                                                        a.suburb || a.neighbourhood || a.quarter || '',
+                                                        a.city || a.town || a.village || a.municipality || '',
+                                                    ].filter(Boolean);
+                                                    setAddress(parts.join(', ') || data.display_name);
+                                                }
+                                            } catch {
+                                                // Si falla el geocoding, no llenamos el campo
+                                            }
                                         }}
                                     />
                                 </div>
@@ -2046,6 +2101,55 @@ export default function OrderFlow({ data }: Props) {
             <div className="fixed bottom-0 left-0 w-full pointer-events-none z-0 md:hidden">
                 <img src="/recursos/papel-picado-bottom.webp" className="w-full opacity-100" alt="" />
             </div>
+
+            {/* Duplicate Order Modal */}
+            <AnimatePresence>
+                {showDuplicateModal && (
+                    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            className="relative bg-white w-full max-w-md rounded-3xl shadow-2xl p-6 border-4 border-[#F2A900] z-10 flex flex-col items-center text-center gap-4"
+                        >
+                            <div className="w-16 h-16 bg-red-100 text-[#D91A2A] rounded-full flex items-center justify-center">
+                                <AlertCircle size={32} />
+                            </div>
+                            <h3 className="font-bold text-xl text-[#3E2723]">¿Pedido Duplicado?</h3>
+                            <p className="text-sm text-gray-600">
+                                Hemos detectado que este pedido es idéntico al último que realizaste (mismos productos, método de pago y datos). ¿Estás seguro de que deseas enviar este pedido nuevamente?
+                            </p>
+                            <div className="flex flex-col gap-3 w-full mt-2">
+                                <button
+                                    onClick={() => {
+                                        setShowDuplicateModal(false);
+                                        useAlertStore.getState().showAlert("Pedido Cancelado", "El pedido duplicado ha sido cancelado.", "info");
+                                    }}
+                                    className="w-full bg-gray-100 text-gray-600 px-6 py-3 rounded-xl font-bold hover:bg-gray-200 transition-all font-heading"
+                                >
+                                    ES EL MISMO (CANCELAR)
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        setShowDuplicateModal(false);
+                                        setIsDuplicateConfirmed(true);
+                                        setTimeout(() => handleConfirmOrder(), 300);
+                                    }}
+                                    className="w-full bg-[#007A33] text-white px-6 py-3 rounded-xl font-bold hover:bg-[#006028] transition-all shadow-md font-heading"
+                                >
+                                    ES OTRO PEDIDO (CONFIRMAR)
+                                </button>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
 
             {/* Terms Modal */}
             <AnimatePresence>

@@ -95,6 +95,8 @@ export default function SettingsView() {
         deliveryCost: 2,
         city: ''
     });
+    const [editingPickupId, setEditingPickupId] = useState<string | null>(null);
+    const [editingPickup, setEditingPickup] = useState<Partial<PickUpPoint>>({});
 
     // Promotions State
     const [promotions, setPromotions] = useState<Promotion[]>([]);
@@ -896,13 +898,28 @@ export default function SettingsView() {
                                         />
                                     </div>
                                     <div>
-                                        <label className="text-[10px] font-bold text-gray-400">COSTO DELIVERY ($)</label>
+                                        <div className="flex items-center justify-between mb-1">
+                                            <label className="text-[10px] font-bold text-gray-400">COSTO DELIVERY ($)</label>
+                                            <label className="flex items-center gap-1.5 cursor-pointer select-none">
+                                                <input
+                                                    type="checkbox"
+                                                    className="w-3.5 h-3.5 accent-[#D91A2A]"
+                                                    checked={!!(newPickup as any).deliveryCostNegotiable}
+                                                    onChange={e => setNewPickup({ ...newPickup, deliveryCostNegotiable: e.target.checked } as any)}
+                                                />
+                                                <span className="text-[9px] font-bold text-[#D91A2A] uppercase">Negociable</span>
+                                            </label>
+                                        </div>
                                         <input
                                             type="number"
-                                            className="w-full bg-white border border-gray-200 rounded-xl p-3 text-sm focus:border-[#F2A900] outline-none"
-                                            value={newPickup.deliveryCost || 2}
+                                            disabled={!!(newPickup as any).deliveryCostNegotiable}
+                                            className="w-full bg-white border border-gray-200 rounded-xl p-3 text-sm focus:border-[#F2A900] outline-none disabled:opacity-40 disabled:bg-gray-100"
+                                            value={(newPickup as any).deliveryCostNegotiable ? 0 : (newPickup.deliveryCost || 2)}
                                             onChange={e => setNewPickup({ ...newPickup, deliveryCost: parseFloat(e.target.value) })}
                                         />
+                                        {(newPickup as any).deliveryCostNegotiable && (
+                                            <p className="text-[9px] text-[#D91A2A] font-bold mt-1">Se coordinara con el gestor de envios</p>
+                                        )}
                                     </div>
                                 </div>
                                 <div className="space-y-2">
@@ -946,30 +963,112 @@ export default function SettingsView() {
                                             </div>
                                             <p className="text-xs text-gray-500">{point.address}</p>
                                         </div>
-                                        <button
-                                            onClick={async () => {
-                                                if (window.confirm("¿Eliminar este punto?")) {
-                                                    const batch = writeBatch(db);
-                                                    batch.delete(doc(db, "pickup_points", point.id));
-                                                    await batch.commit();
-                                                    showAlert("Eliminado", "Punto eliminado", "info");
-                                                }
-                                            }}
-                                            className="text-red-500 p-2 hover:bg-red-50 rounded-full transition-colors"
+                                        <div className="flex items-center gap-1">
+                                            <button
+                                                onClick={() => {
+                                                    if (editingPickupId === point.id) {
+                                                        setEditingPickupId(null);
+                                                        setEditingPickup({});
+                                                    } else {
+                                                        setEditingPickupId(point.id);
+                                                        setEditingPickup({ deliveryRadius: point.deliveryRadius, deliveryCost: point.deliveryCost });
+                                                    }
+                                                }}
+                                                className="text-[#F2A900] p-2 hover:bg-yellow-50 rounded-full transition-colors"
+                                                title="Editar"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
+                                            </button>
+                                            <button
+                                                onClick={async () => {
+                                                    if (window.confirm("¿Eliminar este punto?")) {
+                                                        const batch = writeBatch(db);
+                                                        batch.delete(doc(db, "pickup_points", point.id));
+                                                        await batch.commit();
+                                                        showAlert("Eliminado", "Punto eliminado", "info");
+                                                    }
+                                                }}
+                                                className="text-red-500 p-2 hover:bg-red-50 rounded-full transition-colors"
+                                            >
+                                                <Trash2 size={18} />
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    {editingPickupId === point.id ? (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: -4 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            className="grid grid-cols-2 gap-4 text-xs mb-3"
                                         >
-                                            <Trash2 size={18} />
-                                        </button>
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-4 text-xs">
-                                        <div className="bg-white p-3 rounded-xl border border-gray-100">
-                                            <span className="block text-gray-400 font-bold uppercase mb-1">Radio Delivery</span>
-                                            <span className="font-bold text-[#3E2723]">{point.deliveryRadius} KM</span>
+                                            <div className="space-y-1">
+                                                <label className="block text-gray-400 font-bold uppercase">Radio Delivery (KM)</label>
+                                                <input
+                                                    type="number"
+                                                    min="0.5"
+                                                    step="0.5"
+                                                    value={editingPickup.deliveryRadius ?? point.deliveryRadius}
+                                                    onChange={e => setEditingPickup(p => ({ ...p, deliveryRadius: parseFloat(e.target.value) }))}
+                                                    className="w-full bg-white border-2 border-[#F2A900] rounded-xl p-2 text-sm font-bold focus:outline-none"
+                                                />
+                                            </div>
+                                            <div className="space-y-1">
+                                                <div className="flex items-center justify-between">
+                                                    <label className="block text-gray-400 font-bold uppercase">Costo Delivery ($)</label>
+                                                    <label className="flex items-center gap-1 cursor-pointer">
+                                                        <input
+                                                            type="checkbox"
+                                                            className="w-3 h-3 accent-[#D91A2A]"
+                                                            checked={!!(editingPickup as any).deliveryCostNegotiable}
+                                                            onChange={e => setEditingPickup(p => ({ ...p, deliveryCostNegotiable: e.target.checked } as any))}
+                                                        />
+                                                        <span className="text-[9px] font-bold text-[#D91A2A] uppercase">Negociable</span>
+                                                    </label>
+                                                </div>
+                                                <input
+                                                    type="number"
+                                                    min="0"
+                                                    step="0.5"
+                                                    disabled={!!(editingPickup as any).deliveryCostNegotiable}
+                                                    value={editingPickup.deliveryCost ?? point.deliveryCost}
+                                                    onChange={e => setEditingPickup(p => ({ ...p, deliveryCost: parseFloat(e.target.value) }))}
+                                                    className="w-full bg-white border-2 border-[#F2A900] rounded-xl p-2 text-sm font-bold focus:outline-none disabled:opacity-40 disabled:bg-gray-100"
+                                                />
+                                            </div>
+                                            <button
+                                                onClick={async () => {
+                                                    const isNeg = !!(editingPickup as any).deliveryCostNegotiable;
+                                                    await updateDoc(doc(db, "pickup_points", point.id), {
+                                                        deliveryRadius: editingPickup.deliveryRadius ?? point.deliveryRadius,
+                                                        deliveryCost: isNeg ? 0 : (editingPickup.deliveryCost ?? point.deliveryCost),
+                                                        deliveryCostNegotiable: isNeg,
+                                                    });
+                                                    setEditingPickupId(null);
+                                                    setEditingPickup({});
+                                                    showAlert("¡Guardado!", "Delivery actualizado.", "success");
+                                                }}
+                                                className="col-span-2 bg-[#D91A2A] text-white py-2 rounded-xl text-xs font-bold hover:bg-[#B71524] transition-all"
+                                            >
+                                                GUARDAR CAMBIOS
+                                            </button>
+                                        </motion.div>
+                                    ) : (
+                                        <div className="grid grid-cols-2 gap-4 text-xs">
+                                            <div className="bg-white p-3 rounded-xl border border-gray-100">
+                                                <span className="block text-gray-400 font-bold uppercase mb-1">Radio Delivery</span>
+                                                <span className="font-bold text-[#3E2723]">{point.deliveryRadius} KM</span>
+                                            </div>
+                                            <div className="bg-white p-3 rounded-xl border border-gray-100">
+                                                <span className="block text-gray-400 font-bold uppercase mb-1">Costo Delivery</span>
+                                                {(point as any).deliveryCostNegotiable ? (
+                                                    <span className="font-bold text-[#D91A2A]">A CONVENIR</span>
+                                                ) : (
+                                                    <span className="font-bold text-[#D91A2A]">${point.deliveryCost.toFixed(2)}</span>
+                                                )}
+                                            </div>
                                         </div>
-                                        <div className="bg-white p-3 rounded-xl border border-gray-100">
-                                            <span className="block text-gray-400 font-bold uppercase mb-1">Costo Delivery</span>
-                                            <span className="font-bold text-[#D91A2A]">${point.deliveryCost.toFixed(2)}</span>
-                                        </div>
-                                    </div>
+                                    )}
+
                                     <div className="mt-4 flex items-center gap-2">
                                         <button
                                             onClick={async () => {

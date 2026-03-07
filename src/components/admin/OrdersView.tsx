@@ -53,6 +53,8 @@ interface Order {
     selectedCity: string;
     selectedState: string;
     selectedAgency?: string;
+    address?: string;
+    selectedPickup?: { id: string; name: string; address?: string } | null;
     paymentBank: string;
     paymentReference: string;
     paymentId: string;
@@ -1130,38 +1132,74 @@ export default function OrdersView({ filterByStatus, title, autoOpenOrderId, onM
                                             <h4 className="font-bold text-sm text-[#D91A2A] mb-3 uppercase flex items-center gap-2">
                                                 <Truck size={16} /> Envío
                                             </h4>
-                                            <div className="space-y-2 text-sm">
+                                            <div className="space-y-3 text-sm">
                                                 <p><span className="text-gray-400">Método:</span> <span className="font-bold capitalize">{selectedOrder.shippingMethod}</span></p>
-                                                <p><span className="text-gray-400">Destino:</span> <span className="font-bold">{selectedOrder.selectedState}, {selectedOrder.selectedCity}</span></p>
 
-                                                {selectedOrder.selectedAgency && (() => {
-                                                    // Function to lookup agency details
-                                                    let agencyDetails = selectedOrder.selectedAgency;
+                                                {(() => {
                                                     const method = selectedOrder.shippingMethod?.toLowerCase();
-                                                    const agencyCode = selectedOrder.selectedAgency;
 
+                                                    // MRW
                                                     if (method === 'mrw') {
-                                                        const agency = (mrwData as any[]).find(a => a.codigo === agencyCode);
-                                                        if (agency) {
-                                                            agencyDetails = `${agency.codigo} - ${agency.nombre} - ${agency.direccion}`;
-                                                        }
-                                                    } else if (method === 'zoom') {
-                                                        const agency = (zoomData as any[]).find(a => a.codigo === agencyCode);
-                                                        if (agency) {
-                                                            agencyDetails = `${agency.codigo} - ${agency.nombre} - ${agency.direccion}`;
-                                                        }
+                                                        const agencyCode = selectedOrder.selectedAgency;
+                                                        const agency = agencyCode ? (mrwData as any[]).find(a => a.codigo === agencyCode) : null;
+                                                        return (
+                                                            <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 space-y-1">
+                                                                <p className="text-[10px] font-bold text-blue-500 uppercase mb-1">📦 Agencia MRW de destino</p>
+                                                                <p className="font-bold">{agency ? `${agency.nombre}` : (agencyCode || '—')}</p>
+                                                                {agency && <p className="text-xs text-gray-500">{agency.codigo} · {agency.direccion}</p>}
+                                                                <p className="text-xs text-gray-400">{selectedOrder.selectedState}{selectedOrder.selectedCity ? ` · ${selectedOrder.selectedCity}` : ''}</p>
+                                                            </div>
+                                                        );
                                                     }
 
-                                                    return (
-                                                        <div className="mt-2 p-2 bg-gray-50 rounded-lg border border-gray-200">
-                                                            <p className="text-gray-400 text-xs mb-1">Agencia Seleccionada:</p>
-                                                            <p className="font-bold text-sm leading-snug break-words">
-                                                                {agencyDetails}
-                                                            </p>
-                                                        </div>
-                                                    );
-                                                })()}
+                                                    // ZOOM
+                                                    if (method === 'zoom') {
+                                                        const agencyCode = selectedOrder.selectedAgency;
+                                                        const agency = agencyCode ? (zoomData as any[]).find((a: any) => a.cod_agencia === agencyCode || a.codigo === agencyCode) : null;
+                                                        return (
+                                                            <div className="bg-red-50 border border-red-100 rounded-xl p-3 space-y-1">
+                                                                <p className="text-[10px] font-bold text-red-500 uppercase mb-1">📦 Agencia ZOOM de destino</p>
+                                                                <p className="font-bold">{agency ? `${agency.nombre}` : (agencyCode || '—')}</p>
+                                                                {agency && <p className="text-xs text-gray-500">{agency.cod_agencia ?? agency.codigo} · {agency.direccion}</p>}
+                                                                <p className="text-xs text-gray-400">{selectedOrder.selectedState}{selectedOrder.selectedCity ? ` · ${selectedOrder.selectedCity}` : ''}</p>
+                                                            </div>
+                                                        );
+                                                    }
 
+                                                    // RETIRO
+                                                    if (method === 'retiro') {
+                                                        const pickup = selectedOrder.selectedPickup;
+                                                        return (
+                                                            <div className="bg-green-50 border border-green-100 rounded-xl p-3 space-y-1">
+                                                                <p className="text-[10px] font-bold text-green-600 uppercase mb-1">🏪 Local de Retiro</p>
+                                                                <p className="font-bold">{pickup?.name || selectedOrder.address || selectedOrder.selectedState || '—'}</p>
+                                                                {pickup?.address && <p className="text-xs text-gray-500">{pickup.address}</p>}
+                                                            </div>
+                                                        );
+                                                    }
+
+                                                    // DELIVERY
+                                                    if (method === 'delivery') {
+                                                        return (
+                                                            <div className="bg-[#FDF6E3] border border-[#F2A900]/30 rounded-xl p-3 space-y-2">
+                                                                <p className="text-[10px] font-bold text-[#D91A2A] uppercase mb-1">🚚 Dirección de Entrega</p>
+                                                                <p className="font-bold leading-snug">{selectedOrder.address || <span className="text-gray-400 italic">No especificada</span>}</p>
+                                                                {selectedOrder.userPhone && (
+                                                                    <a
+                                                                        href={`https://wa.me/${selectedOrder.userPhone.replace(/\D/g, '')}`}
+                                                                        target="_blank"
+                                                                        rel="noopener noreferrer"
+                                                                        className="flex items-center gap-2 text-xs font-bold text-[#25D366] hover:underline mt-1"
+                                                                    >
+                                                                        📞 {selectedOrder.userPhone} · Contactar por WhatsApp
+                                                                    </a>
+                                                                )}
+                                                            </div>
+                                                        );
+                                                    }
+
+                                                    return null;
+                                                })()}
                                             </div>
                                         </section>
 

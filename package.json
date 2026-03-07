@@ -25,6 +25,7 @@
         "google-auth-library": "^9.15.0",
         "jspdf": "^4.0.0",
         "leaflet": "^1.9.4",
+        "leaflet-geosearch": "^4.2.2",
         "lucide-react": "^0.469.0",
         "nodemailer": "^7.0.12",
         "react": "18.3.1",
@@ -39,12 +40,14 @@
         "@testing-library/react": "^14.0.0",
         "@testing-library/user-event": "^14.0.0",
         "@types/leaflet": "^1.9.21",
+        "@types/luxon": "^3.7.1",
         "@types/react": "^18.3.3",
         "@types/react-dom": "^18.3.0",
         "@vite-pwa/astro": "^1.2.0",
         "@vitejs/plugin-react": "^4.0.0",
         "dotenv": "^16.4.1",
         "happy-dom": "^12.0.0",
+        "luxon": "^3.7.2",
         "vitest": "^1.2.0"
     }
 }
