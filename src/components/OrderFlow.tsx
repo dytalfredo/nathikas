@@ -98,8 +98,6 @@ export default function OrderFlow({ data }: Props) {
     const [showMap, setShowMap] = useState(false);
     const [userLocation, setUserLocation] = useState<{ lat: number, lng: number } | null>(null);
     const [deliveryValidated, setDeliveryValidated] = useState(false);
-    const [calculatedDeliveryCost, setCalculatedDeliveryCost] = useState(0);
-    const [deliveryCostNegotiable, setDeliveryCostNegotiable] = useState(false);
 
     // Promotions
     const [promotions, setPromotions] = useState<Promotion[]>([]);
@@ -156,8 +154,7 @@ export default function OrderFlow({ data }: Props) {
                 stockMap[doc.id] = d.stock || 0;
                 configMap[doc.id] = {
                     enabled: d.enabled !== false,
-                    price: d.price,
-                    deliveryCost: d.deliveryCost || 0
+                    price: d.price
                 };
             });
             setStocks(stockMap);
@@ -323,8 +320,6 @@ export default function OrderFlow({ data }: Props) {
     useEffect(() => {
         if (shippingMethod === 'Delivery' && userLocation && pickupPoints.length > 0) {
             let foundMatch = false;
-            let minCost = Infinity;
-            let isNegotiable = false;
 
             pickupPoints.forEach(point => {
                 if (point.lat && point.lng && point.deliveryRadius) {
@@ -337,23 +332,13 @@ export default function OrderFlow({ data }: Props) {
 
                     if (dist <= point.deliveryRadius) {
                         foundMatch = true;
-                        if (point.deliveryCostNegotiable) {
-                            isNegotiable = true;
-                            minCost = 0;
-                        } else if (!isNegotiable && point.deliveryCost < minCost) {
-                            minCost = point.deliveryCost;
-                        }
                     }
                 }
             });
 
             if (foundMatch) {
-                setCalculatedDeliveryCost(isNegotiable ? 0 : minCost);
-                setDeliveryCostNegotiable(isNegotiable);
                 setDeliveryValidated(true);
             } else {
-                setCalculatedDeliveryCost(0);
-                setDeliveryCostNegotiable(false);
                 setDeliveryValidated(false);
                 useAlertStore.getState().showAlert(
                     "Fuera de Rango",
@@ -361,10 +346,6 @@ export default function OrderFlow({ data }: Props) {
                     "warning"
                 );
             }
-        } else {
-            setCalculatedDeliveryCost(0);
-            setDeliveryCostNegotiable(false);
-            if (shippingMethod !== 'Delivery') setDeliveryValidated(false);
         }
     }, [userLocation, shippingMethod, pickupPoints]);
 
@@ -372,10 +353,10 @@ export default function OrderFlow({ data }: Props) {
     // Calculate Total in Bs
     useEffect(() => {
         if (exchangeRate) {
-            const finalTotal = subtotal + calculatedDeliveryCost;
+            const finalTotal = subtotal;
             setTotalInBs(finalTotal * exchangeRate);
         }
-    }, [subtotal, calculatedDeliveryCost, exchangeRate]);
+    }, [subtotal, exchangeRate]);
 
     const startTour = async () => {
         // Dynamically import driver.js to avoid SSR 'window is not defined' error
@@ -503,6 +484,8 @@ export default function OrderFlow({ data }: Props) {
             return;
         }
 
+        setIsSubmitting(true);
+
         const currentOrderHash = JSON.stringify({
             items: cartItemsWithDynamicPrice.map(i => ({ id: i.id, q: i.quantity })),
             total,
@@ -516,6 +499,7 @@ export default function OrderFlow({ data }: Props) {
             const lastOrderHash = localStorage.getItem('lastNathikasOrder');
             if (lastOrderHash === currentOrderHash) {
                 setShowDuplicateModal(true);
+                setIsSubmitting(false);
                 return;
             }
         }
@@ -554,19 +538,21 @@ export default function OrderFlow({ data }: Props) {
             message += `- Dirección: ${address}\n`;
         }
 
-        const finalTotal = subtotal + calculatedDeliveryCost;
+        const finalTotal = subtotal;
         message += `\n📦 *PRODUCTOS:*\n`;
         cartItemsWithDynamicPrice.forEach(item => {
             message += `- ${item.name} (x${item.quantity}) - $${(item.price * item.quantity).toFixed(2)}\n`;
         });
 
         message += `\n💵 *Subtotal:* $${subtotal.toFixed(2)}\n`;
-        if (calculatedDeliveryCost > 0) {
-            message += `🚚 *Delivery:* $${calculatedDeliveryCost.toFixed(2)}\n`;
-        } else if (deliveryCostNegotiable) {
-            message += `🚚 *Delivery:* A convenir (se coordina al confirmar el envío)\n`;
+        if (shippingMethod === 'Delivery') {
+            message += `🚚 *Delivery Estimado:* $1 a $3 (A coordinar y cobrar por el motorizado)\n`;
+        } else if (shippingMethod === 'Retiro') {
+            message += `📦 *Modalidad:* Retiro en Tienda\n`;
+        } else {
+            message += `🚚 *Envío Nacional:* Cobro en destino\n`;
         }
-        message += `💰 *TOTAL:* $${finalTotal.toFixed(2)}\n\n`;
+        message += `💰 *TOTAL A PAGAR:* $${finalTotal.toFixed(2)}\n\n`;
 
         message += `\n💳 *DATOS DE PAGO:*\n`;
         message += `- Método: ${paymentBank}\n`;
@@ -582,41 +568,29 @@ export default function OrderFlow({ data }: Props) {
         }
 
         const encodedMessage = encodeURIComponent(message);
-
-        // SAVE TO FIREBASE
+        // SAVE ORDER VIA SECURE BACKEND FUNCTION
         const saveOrder = async () => {
-            setIsSubmitting(true);
             try {
                 // 1. Asegurar Autenticación (Anónima)
                 let currentUser = useAuthStore.getState().user;
                 if (!currentUser) {
-
                     const anonUser = await loginAnonymously();
                     if (!anonUser) throw new Error("No se pudo crear sesión anónima");
-                    currentUser = { uid: anonUser.uid, email: null, role: null };
+                    // We need the full Firebase User object to get the token, not just the state slice
+                    const { getAuth } = await import('firebase/auth');
+                    currentUser = getAuth().currentUser as any;
+                } else {
+                    const { getAuth } = await import('firebase/auth');
+                    currentUser = getAuth().currentUser as any;
                 }
 
-                // 2. Determinar si hay ítems sin stock (backorders)
-                const backorders = cartItemsWithDynamicPrice.filter(item => (stocks[item.id] || 0) < item.quantity);
-                const isBackorder = backorders.length > 0;
+                if (!currentUser) throw new Error("Usuario no autenticado");
 
-                const batch = writeBatch(db);
+                // Get ID Token for backend auth
+                const idToken = await (currentUser as any).getIdToken();
 
-                // Deduct stock (solo lo que haya disponible, no ir a negativo)
-                cartItemsWithDynamicPrice.forEach(item => {
-                    const available = stocks[item.id] || 0;
-                    const toDeduct = Math.min(available, item.quantity);
-                    if (toDeduct > 0) {
-                        const productRef = doc(db, "products", item.id);
-                        batch.update(productRef, {
-                            stock: available - toDeduct
-                        });
-                    }
-                });
-
-                // Save order
-                const orderData = {
-                    customerId: currentUser.uid,
+                // Prepare Payload
+                const orderPayload = {
                     userName,
                     userPhone,
                     userCedula,
@@ -627,17 +601,14 @@ export default function OrderFlow({ data }: Props) {
                         phone: recipientPhone,
                         cedula: recipientCedula
                     } : null,
-                    items: cartItemsWithDynamicPrice.map(i => ({ id: i.id, name: i.name, quantity: i.quantity, price: i.price })),
-                    subtotal,
-                    total,
+                    items: cartItemsWithDynamicPrice.map(i => ({ id: i.id, quantity: i.quantity })),
                     selectedState,
-
                     shippingMethod,
                     selectedAgency,
                     selectedPickup: selectedPickup ? { id: selectedPickup.id, name: selectedPickup.name, address: selectedPickup.address } : null,
                     address,
                     userLocation,
-                    deliveryCost: calculatedDeliveryCost,
+                    deliveryCost: 0, // Not managed by backend anymore
                     paymentBank,
                     paymentSourceBank,
                     paymentReference,
@@ -645,53 +616,32 @@ export default function OrderFlow({ data }: Props) {
                     paymentPhone,
                     zelleEmail,
                     zelleSenderName,
-                    status: 'pendiente',
-                    isBackorder,
-                    appliedPromotion: selectedPromo ? { id: selectedPromo.id, title: selectedPromo.title } : null,
-                    createdAt: serverTimestamp()
+                    appliedPromotion: selectedPromo ? { id: selectedPromo.id, title: selectedPromo.title } : null
                 };
 
-                const orderRef = await addDoc(collection(db, "orders"), orderData);
+                // Send to Netlify Function
+                const response = await fetch('/.netlify/functions/create_order', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${idToken}`
+                    },
+                    body: JSON.stringify(orderPayload)
+                });
 
-                // 3. Si hay backorders, registrarlos en la entidad de producción
-                if (isBackorder) {
-                    for (const item of backorders) {
-                        const available = stocks[item.id] || 0;
-                        const needed = item.quantity - available;
+                const data = await response.json();
 
-                        await addDoc(collection(db, "production_needs"), {
-                            orderId: orderRef.id,
-                            productId: item.id,
-                            productName: item.name,
-                            quantityNeeded: needed,
-                            status: 'pendiente',
-                            createdAt: serverTimestamp()
-                        });
-                    }
+                if (!response.ok) {
+                    throw new Error(data.error || "Error desconocido al crear pedido");
                 }
 
-                await batch.commit();
+                const isBackorder = data.isBackorder;
 
                 // 4. Preparar mensaje de WhatsApp con aviso de backorder
                 if (isBackorder) {
                     message += `\n⚠️ *AVISO DE PRODUCCIÓN:*\nEste pedido incluye productos en producción. Será atendido en las próximas 24-48 horas.`;
                 }
                 const encodedMessage = encodeURIComponent(message);
-
-                // 4. Send Confirmation Email (Non-blocking)
-                if (userEmail) {
-                    fetch('/.netlify/functions/notifications', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            to: userEmail,
-                            userName: userName,
-                            orderId: orderRef.id,
-                            customerId: currentUser.uid,
-                            status: 'pendiente'
-                        })
-                    }).catch(err => console.error("Failed to trigger notification:", err));
-                }
 
                 // 5. Cleanup and Success Message
                 useAlertStore.getState().showAlert(
@@ -708,19 +658,20 @@ export default function OrderFlow({ data }: Props) {
 
                 // Si ya está logueado (no anónimo), sincronizamos perfil por si cambió algo
                 // Nota: Solo sincronizamos los datos del COMPRADOR, no los del receptor.
-                if (user && !user.isAnonymous) {
-                    syncUserProfile(user.uid, {
+                const stateUser = useAuthStore.getState().user;
+                if (stateUser && !stateUser.isAnonymous) {
+                    syncUserProfile(stateUser.uid, {
                         name: userName,
                         phone: userPhone,
                         cedula: userCedula,
                         email: userEmail
                     });
                 }
-            } catch (err) {
+            } catch (err: any) {
                 console.error("Error saving order:", err);
                 useAlertStore.getState().showAlert(
-                    "¡Ups! Algo salió mal",
-                    "Hubo un problema al procesar tu pedido. Es posible que necesites revisar tu conexión o los permisos de Firebase.",
+                    "Error al crear pedido",
+                    err.message || "Hubo un problema al procesar tu pedido. Es posible que necesites revisar tu conexión.",
                     "error"
                 );
             } finally {
@@ -1575,10 +1526,7 @@ export default function OrderFlow({ data }: Props) {
                                                     <div className="bg-[#3E2723]/5 p-3 rounded-xl border border-[#3E2723]/10 flex items-start gap-3 mb-4">
                                                         <Globe size={18} className="text-[#3E2723] mt-0.5 shrink-0" />
                                                         <p className="text-sm text-[#3E2723] font-bold">
-                                                            El delivery solo está habilitado para zonas dentro del radio de cobertura de nuestros locales en:
-                                                            <span className="text-[#D91A2A] ml-1 uppercase">
-                                                                {Array.from(new Set(pickupPoints.map(p => p.city))).filter(c => c).join(', ')}
-                                                            </span>.
+                                                            El delivery tiene un costo aproximado de $1 a $3 dependiendo de la zona. Pagas directo al motorizado.
                                                         </p>
                                                     </div>
                                                 )}
@@ -1591,7 +1539,7 @@ export default function OrderFlow({ data }: Props) {
                                                                 </div>
                                                                 <div>
                                                                     <p className="font-bold text-sm">UBICACIÓN EN EL MAPA</p>
-                                                                    <p className="text-[10px] text-gray-500 font-medium">Obligatorio para validar el costo del delivery</p>
+                                                                    <p className="text-[10px] text-gray-500 font-medium">Recomendado para facilitar la entrega al motorizado</p>
                                                                 </div>
                                                             </div>
                                                             <button
@@ -1607,7 +1555,7 @@ export default function OrderFlow({ data }: Props) {
                                                                     <CheckCircle size={14} />
                                                                     <span>UBICACIÓN FIJADA</span>
                                                                 </div>
-                                                                <p className="text-[10px] text-gray-400">Validated: {deliveryValidated ? 'Yes' : 'No'}</p>
+                                                                <p className="text-[10px] text-gray-400">Cobertura: {deliveryValidated ? 'Aprobada' : 'Fuera de rango'}</p>
                                                             </div>
                                                         )}
                                                     </div>
@@ -1874,7 +1822,33 @@ export default function OrderFlow({ data }: Props) {
                                         <p className="text-center text-xs text-gray-500 mt-4">
                                             Al confirmar, serás redirigido a WhatsApp con tu pedido.
                                         </p>
+
+                                        {/* TEMPORARY HACKER TEST BUTTON */}
+                                        <button
+                                            onClick={async () => {
+                                                try {
+                                                    const { collection, addDoc } = await import('firebase/firestore');
+                                                    const fakeOrder = {
+                                                        customerId: "hacker-test",
+                                                        userName: "Hacker Test",
+                                                        items: [{ id: "powerbank-20k", name: "Power Bank Gratis", quantity: 10, price: 0 }],
+                                                        subtotal: 0,
+                                                        total: 0,
+                                                        status: 'pendiente'
+                                                    };
+                                                    await addDoc(collection(db, "orders"), fakeOrder);
+                                                    alert("❌ ERROR CRÍTICO: El pedido falso pasó. Las reglas son vulnerables.");
+                                                } catch (e: any) {
+                                                    alert("✅ EXCELENTE: El ataque fue bloqueado por Firebase.\nError: " + e.message);
+                                                }
+                                            }}
+                                            className="mt-8 w-full bg-gray-200 text-gray-500 py-2 rounded border border-gray-300 text-xs font-mono hover:bg-gray-300"
+                                        >
+                                            [TEST HACKER] Forzar inyección de pedido falso
+                                        </button>
+
                                     </div>
+
                                 </section>
 
                             </>

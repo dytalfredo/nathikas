@@ -18,12 +18,9 @@ service cloud.firestore {
     // PERFILES DE USUARIO
     match /users/{userId} {
       allow read: if request.auth != null && (request.auth.uid == userId || isStaff());
-      // Permitir escribir el propio perfil SOLO SI NO SE ESTÁ INTENTANDO CAMBIAR EL ROL
       allow write: if request.auth != null && request.auth.uid == userId && (
         !('role' in request.resource.data) || 
         resource.data.role == request.resource.data.role ||
-        // Permitir creación inicial si el rol es 'cliente' (o por defecto) pero esto se maneja usualmente en backend o con reglas más complejas.
-        // Asumimos que la creación inicial crítica (con roles) la hace el Admin SDK.
         !exists(/databases/$(database)/documents/users/$(userId))
       );
     }
@@ -31,26 +28,23 @@ service cloud.firestore {
     // PRODUCTOS (Inventario)
     match /products/{productId} {
       allow read: if true;
-      // Permitir actualizar stock a usuarios autenticados (clientes anónimos incluidos)
-      allow update: if request.auth != null; 
-      allow create, delete: if hasAdminRole('administrator');
+      allow create, update, delete: if hasAdminRole('administrator');
     }
 
     // PEDIDOS (Orders)
     match /orders/{orderId} {
-      // Cualquier cliente autenticado (anónimo o no) puede crear un pedido
-      allow create: if request.auth != null;
-      // Solo el staff administrativo o el propio dueño del pedido pueden leerlo
+      // El backend (Netlify Function con Admin SDK) es el único que crea pedidos
+      allow create: if false; 
       allow read, update: if request.auth != null && (
         isStaff() || resource.data.customerId == request.auth.uid
       );
-      // Permitir borrar solo a administradores
       allow delete: if hasAdminRole('administrator');
     }
 
-    // NUEVO: NECESIDADES DE PRODUCCIÓN
+    // NECESIDADES DE PRODUCCIÓN
     match /production_needs/{needId} {
-      allow create: if request.auth != null;
+      // El backend es el único que crea necesidades
+      allow create: if false;
       allow read, update: if isStaff();
       allow delete: if hasAdminRole('administrator');
     }
@@ -81,23 +75,14 @@ service cloud.firestore {
 
     // INGREDIENTES
     match /ingredients/{ingredientId} {
-      // Permitir lectura a cualquier staff
       allow read: if isStaff();
-      // Permitir escritura solo a administradores o asistentes de producción
       allow write: if hasAdminRole('administrator') || hasAdminRole('asistente');
     }
 
     // COMPRAS
     match /purchases/{purchaseId} {
-      // Permitir lectura a cualquier staff
       allow read: if isStaff();
-      // Permitir escritura solo a administradores o asistentes
       allow write: if hasAdminRole('administrator') || hasAdminRole('asistente');
-    }
-
-    // Asegurar que el administrador pueda editar cualquier campo de productos
-    match /products/{productId} {
-      allow write: if hasAdminRole('administrator');
     }
   }
 }

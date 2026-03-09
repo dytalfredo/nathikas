@@ -32,11 +32,14 @@ export const requestNotificationPermission = async (userId: string) => {
                 scope: '/'
             });
 
+            console.log('Service Worker registered with scope:', registration.scope);
 
+            // Wait for the Service Worker to be fully active
+            await navigator.serviceWorker.ready;
 
             const token = await getToken(messaging, {
                 vapidKey: VAPID_KEY,
-                serviceWorkerRegistration: registration
+                serviceWorkerRegistration: await navigator.serviceWorker.ready
             });
 
             if (token) {
