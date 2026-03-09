@@ -417,6 +417,9 @@ export default function OrderFlow({ data }: Props) {
     };
 
     const handleConfirmOrder = () => {
+        if (isSubmitting) return; // Prevents double click executions while state is updating
+        setIsSubmitting(true);
+
         // Validation check for all required fields
         const missingFields: string[] = [];
 
@@ -467,6 +470,7 @@ export default function OrderFlow({ data }: Props) {
         }
 
         if (missingFields.length > 0) {
+            setIsSubmitting(false);
             useAlertStore.getState().showAlert(
                 "Información Faltante",
                 `Por favor completa los siguientes campos: ${missingFields.join(', ')}`,
@@ -476,6 +480,7 @@ export default function OrderFlow({ data }: Props) {
         }
 
         if (!acceptedTerms) {
+            setIsSubmitting(false);
             useAlertStore.getState().showAlert(
                 "Términos incompletos",
                 "Debes aceptar los términos y condiciones para continuar.",
@@ -483,8 +488,6 @@ export default function OrderFlow({ data }: Props) {
             );
             return;
         }
-
-        setIsSubmitting(true);
 
         const currentOrderHash = JSON.stringify({
             items: cartItemsWithDynamicPrice.map(i => ({ id: i.id, q: i.quantity })),
