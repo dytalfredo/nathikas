@@ -435,7 +435,7 @@ export default function SettingsView() {
                 key={activeTab}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 p-6 md:p-8"
+                className="bg-white rounded-4xl shadow-xl border border-gray-100 p-6 md:p-8"
             >
                 {activeTab === 'pagos' && (
                     <div className="space-y-8">
@@ -763,7 +763,7 @@ export default function SettingsView() {
                             </button>
                         </form>
                         <div className="flex gap-2 p-4 bg-yellow-50 rounded-2xl border border-yellow-100 items-start max-w-xl">
-                            <AlertCircle size={20} className="text-yellow-600 flex-shrink-0 mt-0.5" />
+                            <AlertCircle size={20} className="shrink-0 mt-0.5" />
                             <p className="text-[10px] text-yellow-700 font-bold leading-normal">
                                 Nota: Los nuevos usuarios podrán iniciar sesión con estas credenciales. Se recomienda que cambien su contraseña en su primer ingreso si es posible.
                             </p>
@@ -1131,7 +1131,7 @@ export default function SettingsView() {
                             <button
                                 onClick={() => {
                                     setEditingPromoId(null);
-                                    setNewPromo({ enabled: true, type: 'info' });
+                                    setNewPromo({ enabled: true, type: 'info', image: '' });
                                     setIsAddingPromo(true);
                                 }}
                                 className="bg-[#F2A900] text-[#3E2723] px-4 py-2 rounded-xl font-bold flex items-center gap-2 hover:bg-[#e09b00] transition-all shadow-md"
@@ -1139,6 +1139,9 @@ export default function SettingsView() {
                                 <Plus size={18} /> AGREGAR PROMO
                             </button>
                         </header>
+
+                        {/* URL Normalization Helper */}
+                        {null}
 
                         {isAddingPromo && (
                             <motion.div
@@ -1190,8 +1193,15 @@ export default function SettingsView() {
                                             onChange={e => setNewPromo({ ...newPromo, image: e.target.value })}
                                         />
                                         {newPromo.image && (
-                                            <div className="mt-2 aspect-video rounded-xl overflow-hidden border-2 border-[#F2A900]/20 max-w-[200px]">
-                                                <img src={newPromo.image} alt="Preview" className="w-full h-full object-cover" />
+                                            <div className="mt-2 aspect-video rounded-xl overflow-hidden border-2 border-[#F2A900]/20 max-w-[200px] bg-white">
+                                                <img 
+                                                    src={newPromo.image.startsWith('https://www.nathikas.com') ? newPromo.image.replace('https://www.nathikas.com', '') : newPromo.image} 
+                                                    alt="Preview" 
+                                                    className="w-full h-full object-cover" 
+                                                    onError={(e) => {
+                                                        (e.target as HTMLImageElement).src = '/recursos/recurso1.webp';
+                                                    }}
+                                                />
                                             </div>
                                         )}
                                     </div>
@@ -1301,17 +1311,23 @@ export default function SettingsView() {
                                                 return;
                                             }
 
+                                            // Normalize URL before saving: if it's the full domain, make it relative
+                                            const promoToSave = { ...newPromo };
+                                            if (promoToSave.image && promoToSave.image.startsWith('https://www.nathikas.com')) {
+                                                promoToSave.image = promoToSave.image.replace('https://www.nathikas.com', '');
+                                            }
+
                                             if (editingPromoId) {
-                                                await updateDoc(doc(db, "promotions", editingPromoId), { ...newPromo });
+                                                await updateDoc(doc(db, "promotions", editingPromoId), promoToSave);
                                                 showAlert("Éxito", "Promoción actualizada", "success");
                                             } else {
-                                                await addDoc(collection(db, "promotions"), { ...newPromo, createdAt: serverTimestamp() });
+                                                await addDoc(collection(db, "promotions"), { ...promoToSave, createdAt: serverTimestamp() });
                                                 showAlert("Éxito", "Promoción creada", "success");
                                             }
                                             
                                             setIsAddingPromo(false);
                                             setEditingPromoId(null);
-                                            setNewPromo({ enabled: true, type: 'info' });
+                                            setNewPromo({ enabled: true, type: 'info', image: '' });
                                         }
                                         }
                                         className="bg-[#F2A900] text-[#3E2723] px-6 py-2 rounded-xl font-bold hover:bg-[#e09b00] shadow-md uppercase"
@@ -1367,8 +1383,15 @@ export default function SettingsView() {
                                         </div>
 
                                         {promo.image && (
-                                            <div className="mb-4 aspect-video rounded-xl overflow-hidden border border-gray-100">
-                                                <img src={promo.image} alt={promo.title} className="w-full h-full object-cover" />
+                                            <div className="mb-4 aspect-video rounded-xl overflow-hidden border border-gray-100 bg-gray-50">
+                                                <img 
+                                                    src={promo.image.startsWith('https://www.nathikas.com') ? promo.image.replace('https://www.nathikas.com', '') : promo.image} 
+                                                    alt={promo.title} 
+                                                    className="w-full h-full object-cover" 
+                                                    onError={(e) => {
+                                                        (e.target as HTMLImageElement).src = '/recursos/recurso1.webp';
+                                                    }}
+                                                />
                                             </div>
                                         )}
 
@@ -1421,7 +1444,7 @@ export default function SettingsView() {
                             <h3 className="text-xl font-heading">Zona de Peligro (Developer)</h3>
                         </div>
 
-                        <div className="bg-red-50 p-8 rounded-[2rem] border-2 border-red-100 space-y-6">
+                        <div className="bg-red-50 p-8 rounded-4xl border-2 border-red-100 space-y-6">
                             <div>
                                 <h4 className="font-bold text-red-800">Limpieza de Base de Datos</h4>
                                 <p className="text-sm text-red-600/70 mt-1 font-bold">

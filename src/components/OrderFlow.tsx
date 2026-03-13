@@ -610,7 +610,11 @@ export default function OrderFlow({ data }: Props) {
                         phone: recipientPhone,
                         cedula: recipientCedula
                     } : null,
-                    items: cartItemsWithDynamicPrice.map(i => ({ id: i.id, quantity: i.quantity })),
+                    items: cartItemsWithDynamicPrice.map(i => ({ 
+                        id: i.id, 
+                        quantity: i.quantity,
+                        promotionId: i.promotionId 
+                    })),
                     selectedState,
                     shippingMethod,
                     selectedAgency,
@@ -962,52 +966,56 @@ export default function OrderFlow({ data }: Props) {
                                     {/* Promotion Banners at top of Shop */}
                                     {promotions.length > 0 && (
                                         <div className="mb-10 space-y-4">
-                                            <div className="flex items-center gap-2 mb-4">
-                                                <Sparkles className="text-[#F2A900]" size={20} />
-                                                <h3 className="font-bold text-[#3E2723] uppercase tracking-wider text-sm">PROMOCIONES DESTACADAS</h3>
+                                            <div className="flex items-center gap-3 mb-6 bg-[#FDF6E3] p-3 rounded-2xl border-2 border-[#F2A900]/30 shadow-sm w-fit">
+                                                <div className="bg-[#F2A900] p-2 rounded-xl text-[#3E2723] shadow-md animate-pulse">
+                                                    <Sparkles size={24} />
+                                                </div>
+                                                <div>
+                                                    <h3 className="font-bold text-[#D91A2A] uppercase tracking-widest text-sm font-heading">Promociones de Semana Santa</h3>
+                                                    <p className="text-[10px] text-[#3E2723]/60 font-bold uppercase tracking-wider">Aprovecha nuestras ofertas especiales</p>
+                                                </div>
                                             </div>
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 {promotions.map(promo => (
                                                     <motion.div
-                                                        key={promo.id}
-                                                        className="relative bg-white rounded-3xl overflow-hidden shadow-lg border-2 border-gray-100 group cursor-pointer hover:border-[#F2A900] transition-all"
+                                                        key={`banner-${promo.id}`}
+                                                        className="relative bg-white rounded-3xl overflow-hidden shadow-lg border-2 border-gray-100 group cursor-pointer hover:border-[#F2A900] transition-all flex flex-col"
                                                         whileHover={{ scale: 1.02 }}
-                                                        onClick={() => addPromotionToCart(promo)}
+                                                        onClick={(e) => {
+                                                            // Handle the add action on the whole card
+                                                            addPromotionToCart(promo);
+                                                        }}
                                                     >
-                                                        <div className="aspect-[21/9] w-full overflow-hidden bg-gray-100">
+                                                        <div className="aspect-1/2 w-full overflow-hidden bg-gray-100 relative">
                                                             <img
-                                                                src={promo.image || '/recursos/recurso1.webp'}
+                                                                src={promo.image?.startsWith('https://www.nathikas.com') ? promo.image.replace('https://www.nathikas.com', '') : (promo.image || '/recursos/recurso1.webp')}
                                                                 alt={promo.title}
                                                                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                                                onError={(e) => {
+                                                                    (e.target as HTMLImageElement).src = '/recursos/recurso1.webp';
+                                                                }}
                                                             />
-                                                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-6">
-                                                                <div className="flex justify-between items-end gap-4">
-                                                                    <div className="text-white">
-                                                                        <h4 className="font-bold text-lg md:text-xl font-heading leading-tight">{promo.title}</h4>
-                                                                        <p className="text-white/80 text-xs md:text-sm line-clamp-2 mt-1">{promo.description}</p>
-                                                                    </div>
-                                                                    <div className="text-right shrink-0">
-                                                                        {promo.price && (
-                                                                            <p className="text-[#F2A900] font-bold text-2xl md:text-3xl">${promo.price}</p>
-                                                                        )}
-                                                                        <button
-                                                                            onClick={(e) => { e.stopPropagation(); addPromotionToCart(promo); }}
-                                                                            className="mt-2 bg-[#D91A2A] hover:bg-[#B71524] text-white px-4 py-2 rounded-xl text-xs font-bold transition-colors shadow-lg active:scale-95"
-                                                                        >
-                                                                            AGREGAR
-                                                                        </button>
-                                                                    </div>
-                                                                </div>
+                                                            <div className="absolute top-4 left-4 inline-flex items-center gap-2 bg-[#F2A900] text-[#3E2723] px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-xl border border-white/20 animate-bounce">
+                                                                <Sparkles size={12} className="animate-pulse" />
+                                                                Semana Santa
+                                                            </div>
+                                                            <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                                                        </div>
+                                                        <div className="p-4 flex flex-col grow bg-white">
+                                                            <div className="flex justify-between items-start gap-4 mb-3">
+                                                                <h4 className="font-bold text-lg font-heading leading-tight text-[#D91A2A]">{promo.title}</h4>
+                                                                {promo.price && (
+                                                                    <p className="text-[#F2A900] font-bold text-2xl font-heading shrink-0">${promo.price}</p>
+                                                                )}
+                                                            </div>
+                                                            <p className="text-gray-600 text-sm line-clamp-3 mb-6 grow">{promo.description}</p>
+                                                            <div
+                                                                className="w-full bg-[#D91A2A] group-hover:bg-[#B71524] text-white py-3 rounded-2xl text-sm font-bold transition-all shadow-lg flex items-center justify-center gap-2 mt-auto"
+                                                            >
+                                                                <Plus size={18} />
+                                                                AGREGAR AL CARRITO
                                                             </div>
                                                         </div>
-                                                        {promo.applicableProducts && promo.applicableProducts.length > 0 && (
-                                                            <div className="px-4 py-2 bg-white/10 backdrop-blur-md absolute top-4 left-4 rounded-full border border-white/20">
-                                                                <span className="text-[10px] text-white font-bold uppercase tracking-widest flex items-center gap-2">
-                                                                    <Percent size={12} className="text-[#F2A900]" />
-                                                                    COMBO DISPONIBLE
-                                                                </span>
-                                                            </div>
-                                                        )}
                                                     </motion.div>
                                                 ))}
                                             </div>
@@ -1148,16 +1156,21 @@ export default function OrderFlow({ data }: Props) {
                                     {/* Promotions Section */}
                                     {promotions.length > 0 && (
                                         <div className="mt-10 space-y-4 pt-10 border-t-2 border-dashed border-gray-100">
-                                            <div className="flex items-center gap-2 mb-4">
-                                                <Sparkles className="text-[#F2A900]" size={20} />
-                                                <h3 className="font-bold text-[#3E2723] uppercase tracking-wider">PROMOS Y COMBOS ESPECIALES</h3>
+                                            <div className="flex items-center gap-3 mb-6 bg-[#FDF6E3] p-3 rounded-2xl border-2 border-[#F2A900]/30 shadow-sm w-fit">
+                                                <div className="bg-[#F2A900] p-2 rounded-xl text-[#3E2723] shadow-md animate-pulse">
+                                                    <Sparkles size={24} />
+                                                </div>
+                                                <div>
+                                                    <h3 className="font-bold text-[#D91A2A] uppercase tracking-widest text-sm font-heading">Promociones de Semana Santa</h3>
+                                                    <p className="text-[10px] text-[#3E2723]/60 font-bold uppercase tracking-wider">Combos y ofertas limitadas</p>
+                                                </div>
                                             </div>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 {promotions.map(promo => {
                                                     const isSelected = selectedPromo?.id === promo.id;
                                                     return (
                                                         <button
-                                                            key={promo.id}
+                                                            key={`list-${promo.id}`}
                                                             type="button"
                                                             onClick={() => setSelectedPromo(isSelected ? null : promo)}
                                                             className={`p-4 rounded-2xl border-2 text-left transition-all flex items-start gap-4 ${isSelected ? 'border-[#F2A900] bg-[#F2A900]/5 shadow-md' : 'border-gray-100 bg-gray-50 hover:border-[#F2A900]/50'}`}
@@ -1168,15 +1181,7 @@ export default function OrderFlow({ data }: Props) {
                                                             <div className="flex-grow">
                                                                 <p className="font-bold text-[#3E2723] leading-tight text-sm uppercase">{promo.title}</p>
                                                                 <p className="text-[10px] text-gray-500 mt-1 line-clamp-2">{promo.description}</p>
-                                                                {promo.applicableProducts && promo.applicableProducts.length > 0 && (
-                                                                    <div className="mt-2 flex flex-wrap gap-1">
-                                                                        {promo.applicableProducts.map(ap => (
-                                                                            <span key={ap.productId} className="text-[8px] bg-[#F2A900]/20 text-[#3E2723] px-1.5 py-0.5 rounded-full font-bold uppercase">
-                                                                                {ap.productName} ➔ ${ap.promoPrice}
-                                                                            </span>
-                                                                        ))}
-                                                                    </div>
-                                                                )}
+                                                                {/* Products list hidden as per user request */}
                                                             </div>
                                                             <div className="flex flex-col items-end gap-2 shrink-0">
                                                                 {isSelected ? (
@@ -1208,8 +1213,8 @@ export default function OrderFlow({ data }: Props) {
                                                 Resumen del Pedido
                                             </h3>
                                             <div className="space-y-3 mb-4 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
-                                                {cartItemsWithDynamicPrice.map((item) => (
-                                                    <div key={item.id} className="flex justify-between items-center text-sm border-b border-gray-100 pb-2">
+                                                {cartItemsWithDynamicPrice.map((item, idx) => (
+                                                    <div key={`${item.id}-${item.promotionId || 'reg'}-${idx}`} className="flex justify-between items-center text-sm border-b border-gray-100 pb-2">
                                                         <div className="flex items-center gap-3">
                                                             <div className="w-12 h-12 rounded-md overflow-hidden bg-gray-100 shrink-0">
                                                                 <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
@@ -1420,7 +1425,6 @@ export default function OrderFlow({ data }: Props) {
                                             />
                                         </div>
 
-                                        {/* Shipping Method - Selection */}
                                         <div className="mb-6">
                                             <label className="block text-[#3E2723] font-bold mb-3 ml-1 text-sm uppercase tracking-wider">¿Cómo quieres recibir tu pedido?</label>
                                             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

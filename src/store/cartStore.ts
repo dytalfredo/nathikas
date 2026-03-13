@@ -56,8 +56,21 @@ export const useCartStore = create<CartState>()(
                 }),
             addPromotionToCart: (promotion) =>
                 set((state) => {
+                    // Check if this promotion is already in cart
+                    const existingPromo = state.items.find((item) => item.promotionId === promotion.id);
+                    
+                    if (existingPromo) {
+                        return {
+                            items: state.items.map((item) =>
+                                item.promotionId === promotion.id
+                                    ? { ...item, quantity: item.quantity + 1 }
+                                    : item
+                            ),
+                        };
+                    }
+
                     const promoItem: CartItem = {
-                        id: promotion.id,
+                        id: promotion.id, // For uniqueness in cart summary keys
                         name: promotion.title,
                         price: promotion.price || promotion.value || 0,
                         image: promotion.image || '/recursos/recurso1.webp',
@@ -71,7 +84,6 @@ export const useCartStore = create<CartState>()(
                         }))
                     };
 
-                    // Bundles are usually unique in cart or added as new lines
                     return { items: [...state.items, promoItem] };
                 }),
             removeFromCart: (productId) =>

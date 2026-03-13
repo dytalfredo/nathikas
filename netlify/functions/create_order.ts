@@ -120,92 +120,153 @@ export const handler: Handler = async (event) => {
 
         // --- TRANSACTION START ---
         const result = await db.runTransaction(async (transaction) => {
-            // 1. Fetch current product data and verify stock
-            const productRefs = items.map((item: any) => db.collection('products').doc(item.id));
-            const productDocs = await transaction.getAll(...productRefs);
+            // 1. Pre-fetch all necessary documents (Products and Promotions)
+            const primaryItemRefs = items.map((item: any) => 
+                item.promotionId 
+                    ? db.collection('promotions').doc(item.promotionId)
+                    : db.collection('products').doc(item.id)
+            );
+            const primaryDocs = await transaction.getAll(...primaryItemRefs);
 
-            const updates = [];
-            const backorders = [];
+            const promoDataMap = new Map();
+            const productDataMap = new Map();
+            const productRefsToFetch = new Set<string>();
 
-            for (let i = 0; i < productDocs.length; i++) {
-                const doc = productDocs[i];
-                const requestedItem = items[i];
-
+            // Phase A: Identify all direct products and promotion sub-products
+            primaryDocs.forEach((doc, idx) => {
+                const requestedItem = items[idx];
                 if (!doc.exists) {
-                    throw new Error(`El producto solicitado (${requestedItem.id}) no existe en nuestra base de datos. Pudo haber sido eliminado o intentaron inyectarlo. Actividad sospechosa procesada y bloqueada por Netlify Functions.`);
+                    throw new Error(`El item solicitado (${requestedItem.id}) no existe en nuestra base de datos. Actividad sospechosa procesada y bloqueada.`);
                 }
-
-                const productData = doc.data()!;
-
-                // Allow purchasing if enabled
-                if (productData.enabled === false) {
-                    throw new Error(`El producto ${productData.name} no está disponible actualmente.`);
+                const data = doc.data()!;
+                if (requestedItem.promotionId) {
+                    promoDataMap.set(doc.id, data);
+                    // Add all products in the promo to the fetch set
+                    (data.applicableProducts || []).forEach((p: any) => productRefsToFetch.add(p.productId));
+                } else {
+                    productDataMap.set(doc.id, data);
+                    productRefsToFetch.add(doc.id);
                 }
+            });
 
-                // Calculate Price securely
-                let basePrice = productData.price;
-                const configDeliveryCost = productData.deliveryCost || 0;
+            // Phase B: Fetch all involved unique products for stock validation
+            const uniqueProductRefs = Array.from(productRefsToFetch).map(id => db.collection('products').doc(id));
+            const uniqueProductDocs = uniqueProductRefs.length > 0 ? await transaction.getAll(...uniqueProductRefs) : [];
+            const actualProductData = new Map();
+            uniqueProductDocs.forEach(doc => {
+                if (doc.exists) actualProductData.set(doc.id, doc.data());
+            });
 
-                // Handle Promo Pricing Server Side
-                if (appliedPromotion && appliedPromotion.id) {
-                    const promoDoc = await transaction.get(db.collection('promotions').doc(appliedPromotion.id));
-                    if (promoDoc.exists) {
-                        const promoData = promoDoc.data() as any;
-                        const now = new Date();
-                        const expiresAt = promoData.expiresAt?.toDate ? promoData.expiresAt.toDate() : null;
+            const updates = new Map(); // productId -> newStock
+            const backorders = [];
+            const finalProcessedItems = [];
+            let currentSubtotal = 0;
 
-                        if (promoData.enabled && (!expiresAt || expiresAt > now)) {
-                            // Promo is valid, check if this product has a promo price
-                            const promoProduct = promoData.applicableProducts?.find((p: any) => p.productId === requestedItem.id);
-                            if (promoProduct) {
-                                basePrice = promoProduct.promoPrice;
-                            }
+            // Phase C: Validation, Price Calculation and Stock Deduction
+            for (let i = 0; i < items.length; i++) {
+                const requestedItem = items[i];
+                
+                if (requestedItem.promotionId) {
+                    // --- HANDLE PROMOTION ---
+                    const promoData = promoDataMap.get(requestedItem.promotionId);
+                    if (!promoData.enabled) throw new Error(`La promoción ${promoData.title} ya no está disponible.`);
+                    
+                    const now = new Date();
+                    const expiresAt = promoData.expiresAt?.toDate ? promoData.expiresAt.toDate() : null;
+                    if (expiresAt && expiresAt < now) throw new Error(`La promoción ${promoData.title} ha caducado.`);
+
+                    const promoPrice = promoData.price || 0;
+                    currentSubtotal += (promoPrice * requestedItem.quantity);
+
+                    // Deduct stock for each product in the promo
+                    (promoData.applicableProducts || []).forEach((ap: any) => {
+                        const pData = actualProductData.get(ap.productId);
+                        if (!pData) return;
+
+                        const totalQuantityInPromo = (ap.quantity || 1) * requestedItem.quantity;
+                        const currentStock = updates.has(ap.productId) ? updates.get(ap.productId) : (pData.stock || 0);
+                        const canDeduct = Math.min(currentStock, totalQuantityInPromo);
+                        
+                        if (canDeduct > 0) {
+                            updates.set(ap.productId, currentStock - canDeduct);
+                        }
+
+                        if (currentStock < totalQuantityInPromo) {
+                            isBackorder = true;
+                            backorders.push({
+                                productId: ap.productId,
+                                productName: pData.name,
+                                quantityNeeded: totalQuantityInPromo - currentStock
+                            });
+                        }
+                    });
+
+                    finalProcessedItems.push({
+                        id: requestedItem.id,
+                        name: promoData.title,
+                        quantity: requestedItem.quantity,
+                        price: promoPrice,
+                        isPromotion: true
+                    });
+
+                } else {
+                    // --- HANDLE REGULAR PRODUCT ---
+                    const pData = actualProductData.get(requestedItem.id);
+                    if (!pData || pData.enabled === false) {
+                        throw new Error(`El producto solicitado no está disponible.`);
+                    }
+
+                    let basePrice = pData.price;
+                    const configDeliveryCost = pData.deliveryCost || 0;
+                    
+                    // Handle Promo Pricing Server Side for non-combo banners if necessary
+                    // (Old logic kept for safety with appliedPromotion field)
+                    if (appliedPromotion && appliedPromotion.id) {
+                        const promoDoc = await transaction.get(db.collection('promotions').doc(appliedPromotion.id));
+                        if (promoDoc.exists) {
+                            const pDocData = promoDoc.data() as any;
+                            const promoProduct = pDocData.applicableProducts?.find((p: any) => p.productId === requestedItem.id);
+                            if (promoProduct) basePrice = promoProduct.promoPrice;
                         }
                     }
-                }
 
-                const finalPricePerUnit = basePrice + configDeliveryCost;
+                    const finalPricePerUnit = basePrice + configDeliveryCost;
+                    const currentStock = updates.has(requestedItem.id) ? updates.get(requestedItem.id) : (pData.stock || 0);
+                    const toDeduct = Math.min(currentStock, requestedItem.quantity);
 
-                // Handle Stock Management
-                const currentStock = productData.stock || 0;
-                let toDeduct = Math.min(currentStock, requestedItem.quantity);
+                    if (toDeduct > 0) {
+                        updates.set(requestedItem.id, currentStock - toDeduct);
+                    }
 
-                if (toDeduct > 0) {
-                    updates.push({
-                        ref: doc.ref,
-                        newStock: currentStock - toDeduct
+                    if (currentStock < requestedItem.quantity) {
+                        isBackorder = true;
+                        backorders.push({
+                            productId: requestedItem.id,
+                            productName: pData.name,
+                            quantityNeeded: requestedItem.quantity - currentStock
+                        });
+                    }
+
+                    let percentDiscount = 0;
+                    if (!appliedPromotion && globalDiscounts && requestedItem.quantity >= 6) {
+                        percentDiscount = globalDiscounts.tier1 || 0;
+                    }
+
+                    const itemTotal = (finalPricePerUnit * requestedItem.quantity);
+                    const discountForItem = itemTotal * (percentDiscount / 100);
+                    currentSubtotal += (itemTotal - discountForItem);
+
+                    finalProcessedItems.push({
+                        id: requestedItem.id,
+                        name: pData.name,
+                        quantity: requestedItem.quantity,
+                        price: finalPricePerUnit
                     });
                 }
-
-                if (currentStock < requestedItem.quantity) {
-                    isBackorder = true;
-                    backorders.push({
-                        productId: doc.id,
-                        productName: productData.name, // Uso el nombre REAL de la bbdd
-                        quantityNeeded: requestedItem.quantity - currentStock
-                    });
-                }
-
-                // Append validated item to final order list
-                finalItems.push({
-                    id: doc.id,
-                    name: productData.name, // Siempre confiamos en el catálogo real
-                    quantity: requestedItem.quantity,
-                    price: finalPricePerUnit // Precio validado y calculado desde backend
-                });
-
-                // Calculate subtotal
-
-                let percentDiscount = 0;
-                if (!appliedPromotion && globalDiscounts && requestedItem.quantity >= 6) {
-                    percentDiscount = globalDiscounts.tier1 || 0;
-                }
-
-                const itemTotal = (finalPricePerUnit * requestedItem.quantity);
-                const discountForItem = itemTotal * (percentDiscount / 100);
-
-                subtotal += (itemTotal - discountForItem);
             }
+
+            subtotal = currentSubtotal;
+            finalItems = finalProcessedItems;
 
             // Total = subtotal
             // El delivery se cobra aparte por WhatsApp según requerimiento del cliente
@@ -245,8 +306,8 @@ export const handler: Handler = async (event) => {
             };
 
             // 3. Write Stock Updates
-            updates.forEach(u => {
-                transaction.update(u.ref, { stock: u.newStock });
+            updates.forEach((newStock, productId) => {
+                transaction.update(db.collection('products').doc(productId), { stock: newStock });
             });
 
             // 4. Create Order

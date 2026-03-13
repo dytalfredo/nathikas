@@ -57,11 +57,14 @@ const Shop = memo(function Shop({ data }: Props) {
             {promotions.length > 0 && (
                 <section className="py-12 bg-white overflow-hidden">
                     <div className="container mx-auto px-4">
-                        <div className="flex items-center gap-3 mb-8">
-                            <div className="bg-[#F2A900] p-2 rounded-xl text-[#3E2723]">
-                                <Sparkles size={24} />
+                        <div className="flex items-center gap-4 mb-10 bg-[#FDF6E3] p-4 rounded-3xl border-2 border-[#F2A900]/30 shadow-md w-fit mx-auto md:mx-0">
+                            <div className="bg-[#F2A900] p-3 rounded-2xl text-[#3E2723] shadow-xl animate-pulse">
+                                <Sparkles size={32} />
                             </div>
-                            <h2 className="text-2xl md:text-3xl font-bold font-heading text-[#D91A2A]">PROMOCIONES IMPERDIBLES</h2>
+                            <div>
+                                <h2 className="text-2xl md:text-4xl font-bold font-heading text-[#D91A2A] uppercase tracking-tighter">Promociones de Semana Santa</h2>
+                                <p className="text-xs md:text-sm text-[#3E2723]/70 font-bold uppercase tracking-widest mt-1">¡Ofertas que no se volverán a repetir!</p>
+                            </div>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -71,37 +74,39 @@ const Shop = memo(function Shop({ data }: Props) {
                                     initial={{ opacity: 0, y: 20 }}
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
-                                    className="group relative rounded-3xl overflow-hidden shadow-2xl border-4 border-[#F2A900]/10 hover:border-[#F2A900] transition-all cursor-pointer bg-[#FDF6E3]"
+                                    className="group relative rounded-3xl overflow-hidden shadow-2xl border-4 border-[#F2A900]/10 hover:border-[#F2A900] transition-all cursor-pointer bg-white flex flex-col md:flex-row"
                                     onClick={() => window.location.href = '/shop'}
                                 >
-                                    <div className="aspect-[16/9] md:aspect-[21/9] overflow-hidden">
+                                    <div className="aspect-3/4 md:w-1/2 overflow-hidden shrink-0 relative">
                                         <img
-                                            src={promo.image || '/recursos/recurso1.webp'}
+                                            src={promo.image?.startsWith('https://www.nathikas.com') ? promo.image.replace('https://www.nathikas.com', '') : (promo.image || '/recursos/recurso1.webp')}
                                             alt={promo.title}
                                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                            onError={(e) => {
+                                                (e.target as HTMLImageElement).src = '/recursos/recurso1.webp';
+                                            }}
                                         />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-6 md:p-8">
-                                            <div className="flex justify-between items-end gap-6">
-                                                <div className="space-y-2">
-                                                    <div className="inline-flex items-center gap-2 bg-[#F2A900] text-[#3E2723] px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">
-                                                        <Percent size={12} />
-                                                        Oferta Especial
-                                                    </div>
-                                                    <h3 className="text-2xl md:text-3xl font-bold text-white font-heading leading-tight">{promo.title}</h3>
-                                                    <p className="text-white/80 text-sm md:text-base line-clamp-2 max-w-lg">{promo.description}</p>
+                                        <div className="absolute top-6 left-6 inline-flex items-center gap-3 bg-[#F2A900] text-[#3E2723] px-4 py-2 rounded-2xl text-xs font-bold uppercase tracking-[0.2em] shadow-2xl border-2 border-white/30 animate-bounce z-10">
+                                            <Sparkles size={16} className="animate-pulse" />
+                                            Semana Santa
+                                        </div>
+                                        <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                                    </div>
+                                    <div className="p-8 flex flex-col justify-between grow">
+                                        <div>
+                                            <h3 className="text-2xl md:text-3xl font-bold text-[#D91A2A] font-heading leading-tight mb-4">{promo.title}</h3>
+                                            <p className="text-gray-600 text-sm md:text-base line-clamp-4 leading-relaxed">{promo.description}</p>
+                                        </div>
+                                        <div className="mt-8 flex items-center justify-between gap-6">
+                                            {promo.price && (
+                                                <div className="bg-[#FDF6E3] px-4 py-2 rounded-2xl border-2 border-[#F2A900]/20">
+                                                    <p className="text-gray-400 text-[10px] font-bold uppercase tracking-wider mb-1">Precio Final</p>
+                                                    <p className="text-[#F2A900] text-3xl font-bold font-heading">${promo.price}</p>
                                                 </div>
-                                                <div className="text-right shrink-0">
-                                                    {promo.price && (
-                                                        <div className="bg-white/10 backdrop-blur-md p-3 rounded-2xl border border-white/20 mb-3">
-                                                            <p className="text-white/60 text-xs font-bold uppercase">Desde</p>
-                                                            <p className="text-[#F2A900] text-3xl md:text-4xl font-bold font-heading">${promo.price}</p>
-                                                        </div>
-                                                    )}
-                                                    <div className="bg-[#D91A2A] text-white px-6 py-3 rounded-2xl font-bold hover:bg-[#B71524] transition-all shadow-lg flex items-center gap-2 group-hover:translate-x-1">
-                                                        <span>LO QUIERO</span>
-                                                        <ArrowRight size={20} />
-                                                    </div>
-                                                </div>
+                                            )}
+                                            <div className="bg-[#D91A2A] text-white px-8 py-4 rounded-2xl font-bold hover:bg-[#B71524] transition-all shadow-xl flex items-center gap-3 group-hover:translate-x-1">
+                                                <span>LO QUIERO</span>
+                                                <ArrowRight size={20} />
                                             </div>
                                         </div>
                                     </div>
