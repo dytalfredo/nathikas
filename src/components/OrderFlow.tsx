@@ -45,7 +45,7 @@ interface Props {
 }
 
 export default function OrderFlow({ data }: Props) {
-    const { items, addToCart, removeFromCart, updateQuantity } = useCartStore();
+    const { items, addToCart, addPromotionToCart, removeFromCart, updateQuantity } = useCartStore();
     const { user } = useAuthStore();
     const [step, setStep] = useState(1);
     const [showSuccess, setShowSuccess] = useState(false);
@@ -195,9 +195,14 @@ export default function OrderFlow({ data }: Props) {
 
     // Derived state with dynamic pricing
     const cartItemsWithDynamicPrice = items.map(item => {
+        // If it's already a promotion item, use its inherent price
+        if (item.promotionId) {
+            return item;
+        }
+
         const config = productConfig[item.id];
 
-        // Prioritize product-specific promo price if selectedPromo exists
+        // Prioritize product-specific promo price if selectedPromo exists (Legacy behavior)
         const promoItem = selectedPromo?.applicableProducts?.find(p => p.productId === item.id);
 
         let basePrice = config?.price ?? item.price;
@@ -280,6 +285,7 @@ export default function OrderFlow({ data }: Props) {
     };
 
     const discountAmount = selectedPromo ? 0 : cartItemsWithDynamicPrice.reduce((acc, item) => {
+        if (item.promotionId) return acc; // Promotions/Bundles already have their own fixed price
         const percent = getDiscountForItem(item.quantity);
         return acc + (item.price * item.quantity * (percent / 100));
     }, 0);
@@ -949,9 +955,64 @@ export default function OrderFlow({ data }: Props) {
                                         <div className="bg-[#F2A900] text-[#3E2723] w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl font-heading shadow-lg border-2 border-white shrink-0">1</div>
                                         <div>
                                             <h2 className="text-2xl md:text-3xl font-bold font-heading text-[#D91A2A]">ELIGE TU ANTOJO</h2>
-                                            <p className="text-gray-500 text-sm">Selecciona las gomitas que más te gusten</p>
+                                            <p className="text-gray-500 text-sm">Selecciona las gomitas que más te gusten o elige uno de nuestros combos</p>
                                         </div>
                                     </div>
+
+                                    {/* Promotion Banners at top of Shop */}
+                                    {promotions.length > 0 && (
+                                        <div className="mb-10 space-y-4">
+                                            <div className="flex items-center gap-2 mb-4">
+                                                <Sparkles className="text-[#F2A900]" size={20} />
+                                                <h3 className="font-bold text-[#3E2723] uppercase tracking-wider text-sm">PROMOCIONES DESTACADAS</h3>
+                                            </div>
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                {promotions.map(promo => (
+                                                    <motion.div
+                                                        key={promo.id}
+                                                        className="relative bg-white rounded-3xl overflow-hidden shadow-lg border-2 border-gray-100 group cursor-pointer hover:border-[#F2A900] transition-all"
+                                                        whileHover={{ scale: 1.02 }}
+                                                        onClick={() => addPromotionToCart(promo)}
+                                                    >
+                                                        <div className="aspect-[21/9] w-full overflow-hidden bg-gray-100">
+                                                            <img
+                                                                src={promo.image || '/recursos/recurso1.webp'}
+                                                                alt={promo.title}
+                                                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                                            />
+                                                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-6">
+                                                                <div className="flex justify-between items-end gap-4">
+                                                                    <div className="text-white">
+                                                                        <h4 className="font-bold text-lg md:text-xl font-heading leading-tight">{promo.title}</h4>
+                                                                        <p className="text-white/80 text-xs md:text-sm line-clamp-2 mt-1">{promo.description}</p>
+                                                                    </div>
+                                                                    <div className="text-right shrink-0">
+                                                                        {promo.price && (
+                                                                            <p className="text-[#F2A900] font-bold text-2xl md:text-3xl">${promo.price}</p>
+                                                                        )}
+                                                                        <button
+                                                                            onClick={(e) => { e.stopPropagation(); addPromotionToCart(promo); }}
+                                                                            className="mt-2 bg-[#D91A2A] hover:bg-[#B71524] text-white px-4 py-2 rounded-xl text-xs font-bold transition-colors shadow-lg active:scale-95"
+                                                                        >
+                                                                            AGREGAR
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        {promo.applicableProducts && promo.applicableProducts.length > 0 && (
+                                                            <div className="px-4 py-2 bg-white/10 backdrop-blur-md absolute top-4 left-4 rounded-full border border-white/20">
+                                                                <span className="text-[10px] text-white font-bold uppercase tracking-widest flex items-center gap-2">
+                                                                    <Percent size={12} className="text-[#F2A900]" />
+                                                                    COMBO DISPONIBLE
+                                                                </span>
+                                                            </div>
+                                                        )}
+                                                    </motion.div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
 
                                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                                         {!productsLoaded ? (
@@ -1826,29 +1887,7 @@ export default function OrderFlow({ data }: Props) {
                                             Al confirmar, serás redirigido a WhatsApp con tu pedido.
                                         </p>
 
-                                        {/* TEMPORARY HACKER TEST BUTTON */}
-                                        <button
-                                            onClick={async () => {
-                                                try {
-                                                    const { collection, addDoc } = await import('firebase/firestore');
-                                                    const fakeOrder = {
-                                                        customerId: "hacker-test",
-                                                        userName: "Hacker Test",
-                                                        items: [{ id: "powerbank-20k", name: "Power Bank Gratis", quantity: 10, price: 0 }],
-                                                        subtotal: 0,
-                                                        total: 0,
-                                                        status: 'pendiente'
-                                                    };
-                                                    await addDoc(collection(db, "orders"), fakeOrder);
-                                                    alert("❌ ERROR CRÍTICO: El pedido falso pasó. Las reglas son vulnerables.");
-                                                } catch (e: any) {
-                                                    alert("✅ EXCELENTE: El ataque fue bloqueado por Firebase.\nError: " + e.message);
-                                                }
-                                            }}
-                                            className="mt-8 w-full bg-gray-200 text-gray-500 py-2 rounded border border-gray-300 text-xs font-mono hover:bg-gray-300"
-                                        >
-                                            [TEST HACKER] Forzar inyección de pedido falso
-                                        </button>
+
 
                                     </div>
 

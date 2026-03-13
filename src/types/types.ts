@@ -62,6 +62,7 @@ export interface PromotionalProduct {
     productId: string;
     productName: string;
     promoPrice: number;
+    quantity?: number; // Cantidad de este producto en el combo
 }
 
 // Promoción / Promotion
@@ -72,6 +73,7 @@ export interface Promotion {
     image: string;
     type: 'discount' | 'fixed' | 'info' | 'combo';
     value?: number;
+    price?: number; // Precio total de la promoción (para combos o fijos)
     expiresAt: any; // Firebase Timestamp or Date
     enabled: boolean;
     applicableProducts?: PromotionalProduct[];

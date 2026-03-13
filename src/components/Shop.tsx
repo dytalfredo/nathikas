@@ -11,6 +11,10 @@ import B2BSection from './B2BSection';
 import FAQSection from './FAQSection';
 import ProductInfoSection from './ProductInfoSection';
 import Footer from './Footer';
+import { db } from '../lib/firebase';
+import { collection, onSnapshot } from 'firebase/firestore';
+import type { Promotion } from '../types/types';
+import { Percent, Sparkles, ArrowRight } from 'lucide-react';
 
 interface Props {
     data: any;
@@ -20,11 +24,25 @@ const EMPTY_ARRAY: any[] = [];
 
 const Shop = memo(function Shop({ data }: Props) {
     const [isHydrated, setIsHydrated] = useState(false);
+    const [promotions, setPromotions] = useState<Promotion[]>([]);
 
     useEffect(() => {
         startTransition(() => {
             setIsHydrated(true);
         });
+
+        // Fetch promotions
+        const unsub = onSnapshot(collection(db, "promotions"), (snapshot) => {
+            const now = new Date();
+            const promos = snapshot.docs.map(doc => {
+                const data = doc.data() as any;
+                const expiresAt = data.expiresAt?.toDate ? data.expiresAt.toDate() : null;
+                return { id: doc.id, ...data, expiresAt } as Promotion;
+            });
+            setPromotions(promos.filter(p => p.enabled && (!p.expiresAt || p.expiresAt > now)));
+        });
+
+        return () => unsub();
     }, []);
 
     const cartItems = useCartStore((state) => isHydrated ? state.items : EMPTY_ARRAY);
@@ -34,6 +52,65 @@ const Shop = memo(function Shop({ data }: Props) {
         <div className="min-h-screen bg-[#FDF6E3] relative">
             {/* 1. Hero Section - CTA navigates to /shop directly now */}
             <HeroSection scrollToStore={() => window.location.href = '/shop'} />
+
+            {/* 1.5 Promotions Section (New) */}
+            {promotions.length > 0 && (
+                <section className="py-12 bg-white overflow-hidden">
+                    <div className="container mx-auto px-4">
+                        <div className="flex items-center gap-3 mb-8">
+                            <div className="bg-[#F2A900] p-2 rounded-xl text-[#3E2723]">
+                                <Sparkles size={24} />
+                            </div>
+                            <h2 className="text-2xl md:text-3xl font-bold font-heading text-[#D91A2A]">PROMOCIONES IMPERDIBLES</h2>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            {promotions.map((promo) => (
+                                <motion.div
+                                    key={promo.id}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    className="group relative rounded-3xl overflow-hidden shadow-2xl border-4 border-[#F2A900]/10 hover:border-[#F2A900] transition-all cursor-pointer bg-[#FDF6E3]"
+                                    onClick={() => window.location.href = '/shop'}
+                                >
+                                    <div className="aspect-[16/9] md:aspect-[21/9] overflow-hidden">
+                                        <img
+                                            src={promo.image || '/recursos/recurso1.webp'}
+                                            alt={promo.title}
+                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-6 md:p-8">
+                                            <div className="flex justify-between items-end gap-6">
+                                                <div className="space-y-2">
+                                                    <div className="inline-flex items-center gap-2 bg-[#F2A900] text-[#3E2723] px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">
+                                                        <Percent size={12} />
+                                                        Oferta Especial
+                                                    </div>
+                                                    <h3 className="text-2xl md:text-3xl font-bold text-white font-heading leading-tight">{promo.title}</h3>
+                                                    <p className="text-white/80 text-sm md:text-base line-clamp-2 max-w-lg">{promo.description}</p>
+                                                </div>
+                                                <div className="text-right shrink-0">
+                                                    {promo.price && (
+                                                        <div className="bg-white/10 backdrop-blur-md p-3 rounded-2xl border border-white/20 mb-3">
+                                                            <p className="text-white/60 text-xs font-bold uppercase">Desde</p>
+                                                            <p className="text-[#F2A900] text-3xl md:text-4xl font-bold font-heading">${promo.price}</p>
+                                                        </div>
+                                                    )}
+                                                    <div className="bg-[#D91A2A] text-white px-6 py-3 rounded-2xl font-bold hover:bg-[#B71524] transition-all shadow-lg flex items-center gap-2 group-hover:translate-x-1">
+                                                        <span>LO QUIERO</span>
+                                                        <ArrowRight size={20} />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            )}
 
             {/* 2. The Ritual (Steps) */}
             <RitualSteps steps={data.ritualSteps || []} />

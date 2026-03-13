@@ -20,11 +20,14 @@ export interface Product {
 
 export interface CartItem extends Product {
     quantity: number;
+    promotionId?: string;
+    promoProducts?: { id: string, name: string, quantity: number }[];
 }
 
 interface CartState {
     items: CartItem[];
     addToCart: (product: Product, quantity: number) => void;
+    addPromotionToCart: (promotion: any) => void;
     removeFromCart: (productId: string) => void;
     updateQuantity: (productId: string, quantity: number) => void;
     clearCart: () => void;
@@ -38,17 +41,38 @@ export const useCartStore = create<CartState>()(
             addToCart: (product, quantity) =>
                 set((state) => {
                     if (quantity <= 0) return state;
-                    const existingItem = state.items.find((item) => item.id === product.id);
+                    // Dont merge regular products with bundles
+                    const existingItem = state.items.find((item) => item.id === product.id && !item.promotionId);
                     if (existingItem) {
                         return {
                             items: state.items.map((item) =>
-                                item.id === product.id
+                                item.id === product.id && !item.promotionId
                                     ? { ...item, quantity: item.quantity + quantity }
                                     : item
                             ),
                         };
                     }
                     return { items: [...state.items, { ...product, quantity }] };
+                }),
+            addPromotionToCart: (promotion) =>
+                set((state) => {
+                    const promoItem: CartItem = {
+                        id: promotion.id,
+                        name: promotion.title,
+                        price: promotion.price || promotion.value || 0,
+                        image: promotion.image || '/recursos/recurso1.webp',
+                        description: promotion.description,
+                        quantity: 1,
+                        promotionId: promotion.id,
+                        promoProducts: (promotion.applicableProducts || []).map((p: any) => ({
+                            id: p.productId,
+                            name: p.productName,
+                            quantity: p.quantity || 1
+                        }))
+                    };
+
+                    // Bundles are usually unique in cart or added as new lines
+                    return { items: [...state.items, promoItem] };
                 }),
             removeFromCart: (productId) =>
                 set((state) => ({

@@ -24,7 +24,8 @@ import {
     Truck,
     Tag,
     Clock,
-    Store
+    Store,
+    Edit
 } from 'lucide-react';
 import { useAlertStore } from '../../store/alertStore';
 import type { PickUpPoint, Promotion } from '../../types/types';
@@ -103,6 +104,7 @@ export default function SettingsView() {
     // Promotions State
     const [promotions, setPromotions] = useState<Promotion[]>([]);
     const [isAddingPromo, setIsAddingPromo] = useState(false);
+    const [editingPromoId, setEditingPromoId] = useState<string | null>(null); // New state for editing
     const [newPromo, setNewPromo] = useState<Partial<Promotion>>({
         enabled: true,
         type: 'info'
@@ -1127,7 +1129,11 @@ export default function SettingsView() {
                                 <p className="text-xs text-gray-500 font-bold mt-1">Destaca ofertas con tiempo limitado en la tienda.</p>
                             </div>
                             <button
-                                onClick={() => setIsAddingPromo(true)}
+                                onClick={() => {
+                                    setEditingPromoId(null);
+                                    setNewPromo({ enabled: true, type: 'info' });
+                                    setIsAddingPromo(true);
+                                }}
                                 className="bg-[#F2A900] text-[#3E2723] px-4 py-2 rounded-xl font-bold flex items-center gap-2 hover:bg-[#e09b00] transition-all shadow-md"
                             >
                                 <Plus size={18} /> AGREGAR PROMO
@@ -1183,6 +1189,22 @@ export default function SettingsView() {
                                             value={newPromo.image || ''}
                                             onChange={e => setNewPromo({ ...newPromo, image: e.target.value })}
                                         />
+                                        {newPromo.image && (
+                                            <div className="mt-2 aspect-video rounded-xl overflow-hidden border-2 border-[#F2A900]/20 max-w-[200px]">
+                                                <img src={newPromo.image} alt="Preview" className="w-full h-full object-cover" />
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] font-bold text-gray-400">PRECIO TOTAL DE PROMO ($)</label>
+                                        <input
+                                            type="number"
+                                            step="0.01"
+                                            placeholder="Ej: 9.99"
+                                            className="w-full bg-white border border-gray-200 rounded-xl p-3 text-sm focus:border-[#F2A900] outline-none"
+                                            value={newPromo.price || ''}
+                                            onChange={e => setNewPromo({ ...newPromo, price: parseFloat(e.target.value) })}
+                                        />
                                     </div>
                                 </div>
 
@@ -1220,21 +1242,40 @@ export default function SettingsView() {
                                                         </div>
                                                     </div>
                                                     {isSelected && (
-                                                        <div className="flex items-center gap-2">
-                                                            <span className="text-[10px] font-bold text-[#F2A900]">$ PROMO:</span>
-                                                            <input
-                                                                type="number"
-                                                                className="w-20 bg-white border border-[#F2A900] rounded-lg p-1 text-xs font-bold focus:outline-none"
-                                                                value={promoProduct?.promoPrice || 0}
-                                                                onChange={(e) => {
-                                                                    const updated = [...(newPromo.applicableProducts || [])];
-                                                                    const index = updated.findIndex(p => p.productId === product.id);
-                                                                    if (index > -1) {
-                                                                        updated[index].promoPrice = parseFloat(e.target.value);
-                                                                        setNewPromo({ ...newPromo, applicableProducts: updated });
-                                                                    }
-                                                                }}
-                                                            />
+                                                        <div className="flex items-center gap-4">
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="text-[10px] font-bold text-[#F2A900]">CANT:</span>
+                                                                <input
+                                                                    type="number"
+                                                                    min="1"
+                                                                    className="w-16 bg-white border border-[#F2A900] rounded-lg p-1 text-xs font-bold focus:outline-none"
+                                                                    value={promoProduct?.quantity || 1}
+                                                                    onChange={(e) => {
+                                                                        const updated = [...(newPromo.applicableProducts || [])];
+                                                                        const index = updated.findIndex(p => p.productId === product.id);
+                                                                        if (index > -1) {
+                                                                            updated[index].quantity = parseInt(e.target.value);
+                                                                            setNewPromo({ ...newPromo, applicableProducts: updated });
+                                                                        }
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="text-[10px] font-bold text-[#F2A900]">$ UNIT:</span>
+                                                                <input
+                                                                    type="number"
+                                                                    className="w-20 bg-white border border-[#F2A900] rounded-lg p-1 text-xs font-bold focus:outline-none"
+                                                                    value={promoProduct?.promoPrice || 0}
+                                                                    onChange={(e) => {
+                                                                        const updated = [...(newPromo.applicableProducts || [])];
+                                                                        const index = updated.findIndex(p => p.productId === product.id);
+                                                                        if (index > -1) {
+                                                                            updated[index].promoPrice = parseFloat(e.target.value);
+                                                                            setNewPromo({ ...newPromo, applicableProducts: updated });
+                                                                        }
+                                                                    }}
+                                                                />
+                                                            </div>
                                                         </div>
                                                     )}
                                                 </div>
@@ -1245,7 +1286,10 @@ export default function SettingsView() {
 
                                 <div className="flex justify-end gap-3 pt-4">
                                     <button
-                                        onClick={() => setIsAddingPromo(false)}
+                                        onClick={() => {
+                                            setIsAddingPromo(false);
+                                            setEditingPromoId(null);
+                                        }}
                                         className="px-4 py-2 text-gray-500 font-bold hover:text-gray-700"
                                     >
                                         CANCELAR
@@ -1256,14 +1300,23 @@ export default function SettingsView() {
                                                 showAlert("Error", "Título y Fecha son requeridos", "error");
                                                 return;
                                             }
-                                            await addDoc(collection(db, "promotions"), { ...newPromo, createdAt: serverTimestamp() });
+
+                                            if (editingPromoId) {
+                                                await updateDoc(doc(db, "promotions", editingPromoId), { ...newPromo });
+                                                showAlert("Éxito", "Promoción actualizada", "success");
+                                            } else {
+                                                await addDoc(collection(db, "promotions"), { ...newPromo, createdAt: serverTimestamp() });
+                                                showAlert("Éxito", "Promoción creada", "success");
+                                            }
+                                            
                                             setIsAddingPromo(false);
+                                            setEditingPromoId(null);
                                             setNewPromo({ enabled: true, type: 'info' });
-                                            showAlert("Éxito", "Promoción creada", "success");
-                                        }}
-                                        className="bg-[#F2A900] text-[#3E2723] px-6 py-2 rounded-xl font-bold hover:bg-[#e09b00] shadow-md"
+                                        }
+                                        }
+                                        className="bg-[#F2A900] text-[#3E2723] px-6 py-2 rounded-xl font-bold hover:bg-[#e09b00] shadow-md uppercase"
                                     >
-                                        GUARDAR PROMO
+                                        {editingPromoId ? 'Actualizar Promo' : 'Guardar Promo'}
                                     </button>
                                 </div>
                             </motion.div>
@@ -1274,25 +1327,50 @@ export default function SettingsView() {
                                 const isExpired = promo.expiresAt?.toDate ? promo.expiresAt.toDate() < new Date() : false;
                                 return (
                                     <div key={promo.id} className={`p-6 rounded-3xl border shadow-sm relative overflow-hidden flex flex-col justify-between ${isExpired ? 'bg-gray-50 border-gray-200 opacity-75' : 'bg-white border-gray-100'}`}>
-                                        <div className="flex justify-between items-start mb-4">
+                                            <div className="flex justify-between items-start mb-4">
                                             <div className="flex items-center gap-2">
                                                 <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isExpired ? 'bg-gray-200 text-gray-400' : 'bg-[#F2A900] text-[#3E2723]'}`}>
                                                     <Tag size={16} />
                                                 </div>
                                                 <h4 className="font-bold text-[#3E2723] text-sm">{promo.title}</h4>
                                             </div>
-                                            <button
-                                                onClick={async () => {
-                                                    if (window.confirm("¿Eliminar promo?")) {
-                                                        await deleteDoc(doc(db, "promotions", promo.id));
-                                                        showAlert("Eliminada", "Promoción eliminada", "info");
-                                                    }
-                                                }}
-                                                className="text-red-500 p-2 hover:bg-red-50 rounded-full transition-colors"
-                                            >
-                                                <Trash2 size={18} />
-                                            </button>
+                                            <div className="flex items-center gap-1">
+                                                <button
+                                                    onClick={() => {
+                                                        const editablePromo = { ...promo };
+                                                        // Convert dates back for the form if they are Firestore Timestamps
+                                                        if ((editablePromo.expiresAt as any)?.toDate) {
+                                                            editablePromo.expiresAt = (editablePromo.expiresAt as any).toDate();
+                                                        }
+                                                        setNewPromo(editablePromo);
+                                                        setEditingPromoId(promo.id);
+                                                        setIsAddingPromo(true);
+                                                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                                                    }}
+                                                    className="text-[#F2A900] p-2 hover:bg-[#F2A900]/10 rounded-full transition-colors"
+                                                    title="Editar Promo"
+                                                >
+                                                    <Edit size={18} />
+                                                </button>
+                                                <button
+                                                    onClick={async () => {
+                                                        if (window.confirm("¿Eliminar promo?")) {
+                                                            await deleteDoc(doc(db, "promotions", promo.id));
+                                                            showAlert("Eliminada", "Promoción eliminada", "info");
+                                                        }
+                                                    }}
+                                                    className="text-red-500 p-2 hover:bg-red-50 rounded-full transition-colors"
+                                                >
+                                                    <Trash2 size={18} />
+                                                </button>
+                                            </div>
                                         </div>
+
+                                        {promo.image && (
+                                            <div className="mb-4 aspect-video rounded-xl overflow-hidden border border-gray-100">
+                                                <img src={promo.image} alt={promo.title} className="w-full h-full object-cover" />
+                                            </div>
+                                        )}
 
                                         <p className="text-xs text-gray-500 mb-4 line-clamp-2">{promo.description}</p>
 
@@ -1302,10 +1380,13 @@ export default function SettingsView() {
                                                 <div className="flex flex-wrap gap-1">
                                                     {promo.applicableProducts.map(p => (
                                                         <span key={p.productId} className="text-[9px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-bold">
-                                                            {p.productName}: ${p.promoPrice}
+                                                            {p.productName} (x{p.quantity || 1}): ${p.promoPrice}
                                                         </span>
                                                     ))}
                                                 </div>
+                                                {promo.price && (
+                                                    <p className="text-xs font-bold text-[#D91A2A] mt-2">PRECIO TOTAL: ${promo.price}</p>
+                                                )}
                                             </div>
                                         )}
 
