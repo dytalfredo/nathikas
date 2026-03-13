@@ -1153,49 +1153,6 @@ export default function OrderFlow({ data }: Props) {
                                         })()}
                                     </div>
 
-                                    {/* Promotions Section */}
-                                    {promotions.length > 0 && (
-                                        <div className="mt-10 space-y-4 pt-10 border-t-2 border-dashed border-gray-100">
-                                            <div className="flex items-center gap-3 mb-6 bg-[#FDF6E3] p-3 rounded-2xl border-2 border-[#F2A900]/30 shadow-sm w-fit">
-                                                <div className="bg-[#F2A900] p-2 rounded-xl text-[#3E2723] shadow-md animate-pulse">
-                                                    <Sparkles size={24} />
-                                                </div>
-                                                <div>
-                                                    <h3 className="font-bold text-[#D91A2A] uppercase tracking-widest text-sm font-heading">Promociones de Semana Santa</h3>
-                                                    <p className="text-[10px] text-[#3E2723]/60 font-bold uppercase tracking-wider">Combos y ofertas limitadas</p>
-                                                </div>
-                                            </div>
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                {promotions.map(promo => {
-                                                    const isSelected = selectedPromo?.id === promo.id;
-                                                    return (
-                                                        <button
-                                                            key={`list-${promo.id}`}
-                                                            type="button"
-                                                            onClick={() => setSelectedPromo(isSelected ? null : promo)}
-                                                            className={`p-4 rounded-2xl border-2 text-left transition-all flex items-start gap-4 ${isSelected ? 'border-[#F2A900] bg-[#F2A900]/5 shadow-md' : 'border-gray-100 bg-gray-50 hover:border-[#F2A900]/50'}`}
-                                                        >
-                                                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${isSelected ? 'bg-[#F2A900] text-[#3E2723]' : 'bg-white text-gray-400 border border-gray-100'}`}>
-                                                                <Percent size={20} />
-                                                            </div>
-                                                            <div className="flex-grow">
-                                                                <p className="font-bold text-[#3E2723] leading-tight text-sm uppercase">{promo.title}</p>
-                                                                <p className="text-[10px] text-gray-500 mt-1 line-clamp-2">{promo.description}</p>
-                                                                {/* Products list hidden as per user request */}
-                                                            </div>
-                                                            <div className="flex flex-col items-end gap-2 shrink-0">
-                                                                {isSelected ? (
-                                                                    <CheckCircle size={20} className="text-[#F2A900]" />
-                                                                ) : (
-                                                                    <div className="w-5 h-5 rounded-full border-2 border-gray-200" />
-                                                                )}
-                                                            </div>
-                                                        </button>
-                                                    );
-                                                })}
-                                            </div>
-                                        </div>
-                                    )}
                                 </section>
 
                                 {/* Cart Summary (Visible on mobile or when items change) */}
