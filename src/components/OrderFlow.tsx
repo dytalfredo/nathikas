@@ -168,10 +168,12 @@ export default function OrderFlow({ data }: Props) {
             }
         });
 
+        /* 
         const unsubPickups = onSnapshot(collection(db, "pickup_points"), (snapshot) => {
             const points = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             setPickupPoints(points.filter((p: any) => p.enabled));
         });
+        */
 
         const unsubPromos = onSnapshot(collection(db, "promotions"), (snapshot) => {
             const now = new Date();
@@ -186,7 +188,7 @@ export default function OrderFlow({ data }: Props) {
         return () => {
             unsubProducts();
             unsubSettings();
-            unsubPickups();
+            // unsubPickups();
             unsubPromos();
         };
     }, []);
@@ -323,6 +325,7 @@ export default function OrderFlow({ data }: Props) {
         fetchRate();
     }, []);
 
+    /* 
     useEffect(() => {
         if (shippingMethod === 'Delivery' && userLocation && pickupPoints.length > 0) {
             let foundMatch = false;
@@ -354,6 +357,7 @@ export default function OrderFlow({ data }: Props) {
             }
         }
     }, [userLocation, shippingMethod, pickupPoints]);
+    */
 
 
     // Calculate Total in Bs
@@ -442,6 +446,7 @@ export default function OrderFlow({ data }: Props) {
             if (!recipientCedula) missingFields.push("Cédula de quien recibe");
         }
 
+        /* 
         if (shippingMethod === 'Retiro') {
             if (!selectedPickup) missingFields.push("Punto de Retiro");
         } else if (shippingMethod === 'Delivery') {
@@ -449,10 +454,11 @@ export default function OrderFlow({ data }: Props) {
             if (!address) missingFields.push("Dirección de Entrega");
             if (userLocation && !deliveryValidated) missingFields.push("Ubicación dentro de cobertura");
         } else {
+        */
             // MRW/Zoom
             if (!selectedState) missingFields.push("Estado de Envío");
             if (!selectedAgency) missingFields.push("Agencia de Envío");
-        }
+        // }
 
         // Payment Info (Specific to method)
         if (paymentBank === 'Zelle') {
@@ -534,6 +540,7 @@ export default function OrderFlow({ data }: Props) {
             message += `- WhatsApp: ${recipientPhone}\n`;
         }
 
+        /* 
         if (shippingMethod === 'Retiro' && selectedPickup) {
             message += `- Punto de Retiro: ${selectedPickup.name}\n`;
         } else if (shippingMethod === 'Delivery') {
@@ -542,10 +549,11 @@ export default function OrderFlow({ data }: Props) {
                 message += `- Ubicación: https://www.google.com/maps?q=${userLocation.lat},${userLocation.lng}\n`;
             }
         } else {
+        */
             message += `- Estado: ${selectedState}\n`;
             message += `- Agencia: ${selectedAgency}\n`;
             message += `- Dirección: ${address}\n`;
-        }
+        // }
 
         const finalTotal = subtotal;
         message += `\n📦 *PRODUCTOS:*\n`;
@@ -554,13 +562,15 @@ export default function OrderFlow({ data }: Props) {
         });
 
         message += `\n💵 *Subtotal:* $${subtotal.toFixed(2)}\n`;
+        /* 
         if (shippingMethod === 'Delivery') {
             message += `🚚 *Delivery Estimado:* $1 a $3 (A coordinar y cobrar por el motorizado)\n`;
         } else if (shippingMethod === 'Retiro') {
             message += `📦 *Modalidad:* Retiro en Tienda\n`;
         } else {
+        */
             message += `🚚 *Envío Nacional:* Cobro en destino\n`;
-        }
+        // }
         message += `💰 *TOTAL A PAGAR:* $${finalTotal.toFixed(2)}\n\n`;
 
         message += `\n💳 *DATOS DE PAGO:*\n`;
@@ -1401,6 +1411,7 @@ export default function OrderFlow({ data }: Props) {
                                                     <Truck size={20} />
                                                     <span className="text-xs">Zoom</span>
                                                 </button>
+                                                {/* 
                                                 <button
                                                     type="button"
                                                     className={`p-4 rounded-2xl border-2 flex flex-col items-center justify-center gap-2 font-bold transition-all ${shippingMethod === 'Retiro' ? 'border-[#F2A900] bg-[#F2A900]/5 text-[#F2A900] shadow-md scale-[1.02]' : 'border-gray-100 text-gray-400 bg-gray-50'}`}
@@ -1417,6 +1428,7 @@ export default function OrderFlow({ data }: Props) {
                                                     <Globe size={20} />
                                                     <span className="text-xs">Delivery</span>
                                                 </button>
+                                                */}
                                             </div>
                                         </div>
 
@@ -1476,7 +1488,7 @@ export default function OrderFlow({ data }: Props) {
                                         )}
 
                                         {/* Pick-up Point Selection */}
-                                        {shippingMethod === 'Retiro' && (
+                                        {/* {shippingMethod === 'Retiro' && (
                                             <motion.div
                                                 initial={{ opacity: 0, height: 0 }}
                                                 animate={{ opacity: 1, height: "auto" }}
@@ -1525,10 +1537,10 @@ export default function OrderFlow({ data }: Props) {
                                                     )}
                                                 </div>
                                             </motion.div>
-                                        )}
+                                        )} */}
 
                                         {/* Delivery/Retiro Address & Map Toggle */}
-                                        {(shippingMethod === 'Delivery' || (shippingMethod === 'Retiro' && selectedPickup)) && (
+                                        {/* {(shippingMethod === 'Delivery' || (shippingMethod === 'Retiro' && selectedPickup)) && (
                                             <motion.div
                                                 initial={{ opacity: 0, height: 0 }}
                                                 animate={{ opacity: 1, height: "auto" }}
@@ -1586,7 +1598,7 @@ export default function OrderFlow({ data }: Props) {
                                                     </div>
                                                 )}
                                             </motion.div>
-                                        )}
+                                        )} */}
                                     </div>
                                 </section>
 
@@ -1835,20 +1847,29 @@ export default function OrderFlow({ data }: Props) {
                                             </label>
                                         </div>
 
-                                        <button
-                                            onClick={handleConfirmOrder}
-                                            className="w-full bg-[#007A33] text-white py-4 rounded-xl font-bold text-xl shadow-[0_4px_14px_0_rgba(0,122,51,0.39)] hover:bg-[#006028] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
-                                        >
-                                            <span>CONFIRMAR PEDIDO</span>
-                                            <div className="bg-white/20 rounded-full p-1">
-                                                <ArrowRight className="w-5 h-5" />
-                                            </div>
-                                        </button>
-                                        <p className="text-center text-xs text-gray-500 mt-4">
-                                            Al confirmar, serás redirigido a WhatsApp con tu pedido.
-                                        </p>
-
-
+                                        <div className="lg:hidden mt-6">
+                                            <button
+                                                onClick={handleConfirmOrder}
+                                                disabled={isSubmitting}
+                                                className={`transition-all duration-300 shadow-lg flex items-center justify-center gap-2 disabled:opacity-80
+                                                    ${isSubmitting
+                                                        ? 'w-full h-14 rounded-full bg-[#F2A900] text-[#3E2723]'
+                                                        : 'w-full bg-[#007A33] text-white py-4 rounded-xl font-bold text-xl hover:bg-[#006028]'
+                                                    }`}
+                                            >
+                                                {isSubmitting ? (
+                                                    <Loader2 className="animate-spin w-8 h-8 mx-auto" />
+                                                ) : (
+                                                    <>
+                                                        Finalizar Pedido
+                                                        <CheckCircle size={24} />
+                                                    </>
+                                                )}
+                                            </button>
+                                            <p className="text-center text-xs text-gray-500 mt-4">
+                                                Al confirmar, serás redirigido a WhatsApp con tu pedido.
+                                            </p>
+                                        </div>
 
                                     </div>
 
