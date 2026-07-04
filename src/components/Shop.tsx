@@ -11,6 +11,7 @@ import B2BSection from './B2BSection';
 import FAQSection from './FAQSection';
 import ProductInfoSection from './ProductInfoSection';
 import Footer from './Footer';
+import StandRentalSection from './StandRentalSection';
 import { db } from '../lib/firebase';
 import { collection, onSnapshot } from 'firebase/firestore';
 import type { Promotion } from '../types/types';
@@ -131,6 +132,9 @@ const Shop = memo(function Shop({ data }: Props) {
             </div>
 
             <TikTokSection />
+
+            {/* 6. Alquiler de Stand & Eventos Section */}
+            <StandRentalSection />
 
             {/* 6.5 B2B Partnership Section */}
             <B2BSection />
