@@ -4,6 +4,6 @@ import OrderFlow from "../components/OrderFlow";
 import appData from "../data/app-config.json";
 ---
 
-<Layout title="Nathikas - Realizar Pedido" enablePWA={true}>
+<Layout title="Nathikas - Realizar Pedido" showLoading={false} enablePWA={true}>
     <OrderFlow client:only="react" data={appData} />
 </Layout>

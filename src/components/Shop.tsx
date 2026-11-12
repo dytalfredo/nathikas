@@ -1,9 +1,8 @@
 import { useState, useEffect, memo, startTransition } from 'react';
-import { ShoppingCart } from 'lucide-react';
+import { ShoppingCart, Sparkles, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useCartStore } from '../store/cartStore';
 import HeroSection from './HeroSection';
-// Direct imports to reduce request count and bundle sections together
 import RitualSteps from './RitualSteps';
 import BenefitsSection from './BenefitsSection';
 import TikTokSection from './TikTokSection';
@@ -15,7 +14,6 @@ import StandRentalSection from './StandRentalSection';
 import { db } from '../lib/firebase';
 import { collection, onSnapshot } from 'firebase/firestore';
 import type { Promotion } from '../types/types';
-import { Percent, Sparkles, ArrowRight } from 'lucide-react';
 
 interface Props {
     data: any;
@@ -32,18 +30,30 @@ const Shop = memo(function Shop({ data }: Props) {
             setIsHydrated(true);
         });
 
-        // Fetch promotions
-        const unsub = onSnapshot(collection(db, "promotions"), (snapshot) => {
-            const now = new Date();
-            const promos = snapshot.docs.map(doc => {
-                const data = doc.data() as any;
-                const expiresAt = data.expiresAt?.toDate ? data.expiresAt.toDate() : null;
-                return { id: doc.id, ...data, expiresAt } as Promotion;
-            });
-            setPromotions(promos.filter(p => p.enabled && (!p.expiresAt || p.expiresAt > now)));
-        });
+        // Guard against null Firestore db so React never crashes on mount
+        if (!db) return;
 
-        return () => unsub();
+        try {
+            const unsub = onSnapshot(
+                collection(db, "promotions"),
+                (snapshot) => {
+                    const now = new Date();
+                    const promos = snapshot.docs.map(doc => {
+                        const docData = doc.data() as any;
+                        const expiresAt = docData.expiresAt?.toDate ? docData.expiresAt.toDate() : null;
+                        return { id: doc.id, ...docData, expiresAt } as Promotion;
+                    });
+                    setPromotions(promos.filter(p => p.enabled && (!p.expiresAt || p.expiresAt > now)));
+                },
+                (err) => {
+                    console.warn("Promociones en vivo no disponibles:", err);
+                }
+            );
+
+            return () => unsub();
+        } catch (err) {
+            console.warn("Error conectando promociones:", err);
+        }
     }, []);
 
     const cartItems = useCartStore((state) => isHydrated ? state.items : EMPTY_ARRAY);
@@ -63,7 +73,7 @@ const Shop = memo(function Shop({ data }: Props) {
                                 <Sparkles size={32} />
                             </div>
                             <div>
-                                <h2 className="text-2xl md:text-4xl font-bold font-heading text-[#D91A2A] uppercase tracking-tighter">Promociones de Semana Santa</h2>
+                                <h2 className="text-2xl md:text-4xl font-bold font-heading text-[#D91A2A] uppercase tracking-tighter">Promociones Especiales</h2>
                                 <p className="text-xs md:text-sm text-[#3E2723]/70 font-bold uppercase tracking-widest mt-1">¡Ofertas que no se volverán a repetir!</p>
                             </div>
                         </div>
@@ -89,7 +99,7 @@ const Shop = memo(function Shop({ data }: Props) {
                                         />
                                         <div className="absolute top-6 left-6 inline-flex items-center gap-3 bg-[#F2A900] text-[#3E2723] px-4 py-2 rounded-2xl text-xs font-bold uppercase tracking-[0.2em] shadow-2xl border-2 border-white/30 animate-bounce z-10">
                                             <Sparkles size={16} className="animate-pulse" />
-                                            Semana Santa
+                                            Promo
                                         </div>
                                         <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                                     </div>
@@ -121,7 +131,7 @@ const Shop = memo(function Shop({ data }: Props) {
             {/* 2. The Ritual (Steps) */}
             <RitualSteps steps={data.ritualSteps || []} />
 
-            {/* 3. Benefits Section (New) */}
+            {/* 3. Benefits Section */}
             <BenefitsSection />
 
             {/* 3.5 Product Info Section */}
@@ -139,9 +149,8 @@ const Shop = memo(function Shop({ data }: Props) {
             {/* 6.5 B2B Partnership Section */}
             <B2BSection />
 
-            {/* 7. FAQ Section (New) */}
+            {/* 7. FAQ Section */}
             {data.faq && <FAQSection faqs={data.faq} contact={data.contact} />}
-
 
             {/* 9. Footer */}
             <Footer
@@ -150,36 +159,31 @@ const Shop = memo(function Shop({ data }: Props) {
                 social={data.social}
             />
 
-
-
             {/* Floating Cart Button & Mascot */}
-            {
-                totalItems > 0 && (
-                    <div className="fixed bottom-8 right-8 z-50 flex flex-col items-center">
-                        {/* Jumping Skull Mascot */}
-                        <motion.div
-                            animate={{ y: [0, -10, 0] }}
-                            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                            className="w-12 md:w-16 mb-[-10px] pointer-events-none drop-shadow-xl z-20"
-                        >
-                            <img src="/recursos/recurso1.webp" alt="Mascota" className="w-full h-auto" />
-                        </motion.div>
+            {totalItems > 0 && (
+                <div className="fixed bottom-8 right-8 z-50 flex flex-col items-center">
+                    <motion.div
+                        animate={{ y: [0, -10, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                        className="w-12 md:w-16 mb-[-10px] pointer-events-none drop-shadow-xl z-20"
+                    >
+                        <img src="/recursos/recurso1.webp" alt="Mascota" className="w-full h-auto" />
+                    </motion.div>
 
-                        <a
-                            href="/shop"
-                            className="bg-[#F2A900] text-[#3E2723] p-5 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:bg-[#e09b00] hover:shadow-[0_8px_30px_rgba(242,169,0,0.4)] transition-all hover:scale-110 flex items-center gap-3 border-4 border-white animate-bounce-in relative z-10"
-                        >
-                            <div className="relative">
-                                <ShoppingCart size={28} />
-                                <span className="absolute -top-2 -right-2 bg-[#D91A2A] text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
-                                    {totalItems}
-                                </span>
-                            </div>
-                            <span className="font-bold text-xl hidden md:block">Ver Carrito</span>
-                        </a>
-                    </div>
-                )
-            }
+                    <a
+                        href="/shop"
+                        className="bg-[#F2A900] text-[#3E2723] p-5 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:bg-[#e09b00] hover:shadow-[0_8px_30px_rgba(242,169,0,0.4)] transition-all hover:scale-110 flex items-center gap-3 border-4 border-white animate-bounce-in relative z-10"
+                    >
+                        <div className="relative">
+                            <ShoppingCart size={28} />
+                            <span className="absolute -top-2 -right-2 bg-[#D91A2A] text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
+                                {totalItems}
+                            </span>
+                        </div>
+                        <span className="font-bold text-xl hidden md:block">Ver Carrito</span>
+                    </a>
+                </div>
+            )}
         </div>
     );
 });

@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Big+Shoulders+Display:wght@800;900&family=League+Gothic:wdth@75..100&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -81,4 +82,233 @@
     50% {
         transform: translateY(-8px) rotate(5deg);
     }
+}
+
+
+/* =========================================================
+   NATHIKA INFLUENCER LANDING - CUSTOM STYLES & SCROLL CSS
+   ========================================================= */
+
+.font-anton {
+    font-family: 'League Gothic', 'Big Shoulders Display', 'Bebas Neue', Impact, sans-serif;
+    font-variation-settings: "wdth" 88;
+    letter-spacing: 0.015em;
+}
+
+.font-bebas {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+}
+
+.font-mono-zine {
+    font-family: 'Space Mono', monospace;
+}
+
+.font-fancy {
+    font-family: 'Playfair Display', Georgia, serif;
+}
+
+.font-editorial {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.font-urban {
+    font-family: 'Syne', sans-serif;
+}
+
+/* Torn Paper Clip Paths */
+.torn-paper-btn {
+    clip-path: polygon(
+        0% 8%, 3% 0%, 12% 4%, 22% 1%, 35% 5%, 48% 0%, 62% 4%, 75% 1%, 88% 5%, 97% 0%, 100% 10%,
+        99% 35%, 100% 65%, 98% 92%,
+        95% 100%, 84% 95%, 71% 99%, 58% 94%, 43% 100%, 29% 95%, 15% 99%, 4% 94%, 0% 90%,
+        1% 60%, 0% 30%
+    );
+}
+
+.torn-paper-corner-left {
+    clip-path: polygon(
+        0% 0%, 100% 0%, 96% 18%, 100% 36%, 93% 55%, 98% 74%, 92% 92%, 75% 97%, 52% 93%, 28% 100%, 0% 95%
+    );
+}
+
+.torn-paper-corner-right {
+    clip-path: polygon(
+        0% 0%, 100% 0%, 100% 96%, 82% 100%, 64% 93%, 45% 99%, 24% 92%, 6% 97%, 2% 76%, 6% 52%, 0% 28%
+    );
+}
+
+.kraft-strip-left {
+    clip-path: polygon(
+        0% 0%, 88% 3%, 96% 14%, 85% 27%, 98% 41%, 89% 56%, 97% 71%, 86% 86%, 95% 97%, 0% 100%
+    );
+}
+
+.kraft-strip-right {
+    clip-path: polygon(
+        12% 0%, 100% 0%, 100% 100%, 8% 97%, 16% 84%, 4% 70%, 15% 54%, 3% 39%, 14% 24%, 5% 11%
+    );
+}
+
+/* Halftone Zine Texture */
+.halftone-overlay {
+    background-image: radial-gradient(rgba(0, 0, 0, 0.28) 1px, transparent 0);
+    background-size: 4px 4px;
+}
+
+.halftone-light {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 0);
+    background-size: 6px 6px;
+}
+
+/* Infinite Vertical Marquee Carousels */
+@keyframes marquee-vertical-up {
+    0% {
+        transform: translateY(0%);
+    }
+    100% {
+        transform: translateY(-50%);
+    }
+}
+
+@keyframes marquee-vertical-down {
+    0% {
+        transform: translateY(-50%);
+    }
+    100% {
+        transform: translateY(0%);
+    }
+}
+
+.animate-marquee-up {
+    animation: marquee-vertical-up 28s linear infinite;
+}
+
+.animate-marquee-down {
+    animation: marquee-vertical-down 28s linear infinite;
+}
+
+.animate-marquee-up:hover,
+.animate-marquee-down:hover {
+    animation-play-state: paused;
+}
+
+/* Modern CSS Scroll-Driven Animations (animation-timeline: view()) */
+@keyframes css-giant-shrink-dock {
+    0% {
+        opacity: 0;
+        transform: translate3d(0, 95px, 0) scale(1.95);
+        filter: blur(6px);
+    }
+    30% {
+        opacity: 1;
+        transform: translate3d(0, 45px, 0) scale(1.55);
+        filter: blur(0px);
+    }
+    100% {
+        opacity: 1;
+        transform: translate3d(0, 0px, 0) scale(1);
+        filter: blur(0px);
+    }
+}
+
+@keyframes css-scroll-assemble {
+    0% {
+        opacity: 0.12;
+        transform: translateY(36px) scale(0.95) rotateX(-15deg);
+        filter: blur(6px);
+    }
+    45% {
+        opacity: 0.65;
+        transform: translateY(10px) scale(0.99) rotateX(-3deg);
+        filter: blur(1px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0px) scale(1) rotateX(0deg);
+        filter: blur(0px);
+    }
+}
+
+@supports (animation-timeline: view()) {
+    .scroll-giant-dock-item {
+        transform-origin: left top;
+        animation: css-giant-shrink-dock cubic-bezier(0.16, 1, 0.3, 1) both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 46%;
+        will-change: transform, opacity, filter;
+    }
+
+    .scroll-assemble-block {
+        animation: css-scroll-assemble linear both;
+        animation-timeline: view();
+        animation-range: entry 5% cover 42%;
+    }
+}
+
+/* Hide scrollbar for clean urban drag carousel */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+
+/* =========================================================
+   MÉTRICAS Y ESTADÍSTICAS - SCRAPBOOK / ZINE UTILITIES
+   ========================================================= */
+.torn-paper-card {
+    clip-path: polygon(
+        0% 2%, 5% 0%, 14% 2%, 24% 0%, 36% 2%, 48% 0%, 60% 2%, 74% 0%, 86% 2%, 95% 0%, 100% 3%,
+        99% 22%, 100% 45%, 98% 68%, 100% 90%, 97% 99%,
+        88% 98%, 75% 100%, 61% 98%, 47% 100%, 33% 98%, 19% 100%, 7% 98%, 0% 96%,
+        2% 72%, 0% 48%, 1% 24%
+    );
+}
+
+.washi-tape-red {
+    background-color: #7D191E;
+    background-image:
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.22) 0px, rgba(255,255,255,0.22) 1px, transparent 1px, transparent 7px),
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.22) 0px, rgba(255,255,255,0.22) 1px, transparent 1px, transparent 7px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+}
+
+.washi-tape-beige {
+    background-color: #C7B299;
+    background-image:
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.35) 0px, rgba(255,255,255,0.35) 1px, transparent 1px, transparent 8px),
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.35) 0px, rgba(255,255,255,0.35) 1px, transparent 1px, transparent 8px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.chalkboard-grid {
+    background-color: #161618;
+    background-image:
+        linear-gradient(to right, rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+    background-size: 16px 16px;
+}
+
+.sketched-bar-red {
+    background-color: #9E1B22;
+    background-image: repeating-linear-gradient(
+        -45deg,
+        rgba(255, 255, 255, 0.14) 0px,
+        rgba(255, 255, 255, 0.14) 2px,
+        transparent 2px,
+        transparent 5px
+    );
+}
+
+.sketched-bar-white {
+    background-color: #EAE6DF;
+    background-image: repeating-linear-gradient(
+        -35deg,
+        rgba(20, 20, 22, 0.18) 0px,
+        rgba(20, 20, 22, 0.18) 2px,
+        transparent 2px,
+        transparent 5px
+    );
 }

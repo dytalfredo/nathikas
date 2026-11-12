@@ -84,13 +84,21 @@ export default function OrderFlow({ data }: Props) {
     const [totalInBs, setTotalInBs] = useState<number>(0);
     const [rateLoading, setRateLoading] = useState(false);
 
-    const [stocks, setStocks] = useState<Record<string, number>>({});
+    const [stocks, setStocks] = useState<Record<string, number>>(() => {
+        const initial: Record<string, number> = {};
+        if (data?.products) {
+            data.products.forEach((p: any) => {
+                initial[p.id] = 20;
+            });
+        }
+        return initial;
+    });
     const [productConfig, setProductConfig] = useState<Record<string, { enabled: boolean, price?: number, deliveryCost?: number }>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [dynamicSettings, setDynamicSettings] = useState<any>(null);
     const [hasMessaging, setHasMessaging] = useState(!!getMessagingInstance());
     const [gridCols, setGridCols] = useState(2);
-    const [productsLoaded, setProductsLoaded] = useState(false);
+    const [productsLoaded, setProductsLoaded] = useState(true);
 
     // Pick-up and Delivery logic
     const [pickupPoints, setPickupPoints] = useState<any[]>([]);
@@ -142,6 +150,7 @@ export default function OrderFlow({ data }: Props) {
         // Listen to live stock
         if (!db) {
             console.warn("Firestore 'db' is not initialized. Stock updates disabled.");
+            setProductsLoaded(true);
             return;
         }
 
@@ -157,8 +166,13 @@ export default function OrderFlow({ data }: Props) {
                     price: d.price
                 };
             });
-            setStocks(stockMap);
-            setProductConfig(configMap);
+            if (snapshot.size > 0) {
+                setStocks(stockMap);
+                setProductConfig(configMap);
+            }
+            setProductsLoaded(true);
+        }, (err) => {
+            console.warn("Error leyendo productos en vivo:", err);
             setProductsLoaded(true);
         });
 
@@ -166,6 +180,8 @@ export default function OrderFlow({ data }: Props) {
             if (doc.exists()) {
                 setDynamicSettings(doc.data());
             }
+        }, (err) => {
+            console.warn("Error leyendo settings en vivo:", err);
         });
 
         /* 
@@ -183,6 +199,8 @@ export default function OrderFlow({ data }: Props) {
                 return { id: doc.id, ...data, expiresAt } as Promotion;
             });
             setPromotions(promos.filter(p => p.enabled && (!p.expiresAt || p.expiresAt > now)));
+        }, (err) => {
+            console.warn("Error leyendo promociones en vivo:", err);
         });
 
         return () => {
@@ -822,7 +840,7 @@ export default function OrderFlow({ data }: Props) {
         <div className="min-h-screen bg-[#FDF6E3] font-sans text-[#3E2723] pb-20 relative">
             {/* Header */}
             <header className="sticky top-0 z-50 bg-[#FDF6E3]/95 backdrop-blur-sm shadow-sm border-b-4 border-[#F2A900] px-4 py-3 flex items-center justify-between gap-4">
-                <a href="/" className="flex items-center gap-2 shrink-0">
+                <a href="/tienda" className="flex items-center gap-2 shrink-0">
                     <ArrowLeft size={24} className="text-[#D91A2A]" />
                     <span className="font-bold text-[#D91A2A] hidden sm:inline">Volver</span>
                 </a>

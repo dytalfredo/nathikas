@@ -1,9 +1,14 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Shop from "../components/Shop";
+import InfluencerLanding from "../components/influencer/InfluencerLanding";
 import appData from "../data/app-config.json";
 ---
 
-<Layout title="Nathikas - Gomitas y Chamoy" enablePWA={true}>
-    <Shop client:load data={appData} />
+<Layout 
+    title="Soy Nathika | Lifestyle, Sport & Travelling" 
+    description="Más allá de crear contenido, creo comunidades. Estrategia, guionismo, dirección creativa, edición y métricas para marcas que buscan impacto real."
+    showLoading={false}
+    enablePWA={false}
+>
+    <InfluencerLanding client:load data={appData} />
 </Layout>
