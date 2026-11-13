@@ -536,3 +536,34 @@
         backdrop-filter: blur(14px) saturate(1.12);
     }
 }
+
+/* =========================================================
+   REELS & FAQ - SUNNY COASTAL / BEACH POSTER UTILITIES (ACT 3)
+   ========================================================= */
+.comic-outline-white {
+    color: #ffffff;
+    -webkit-text-stroke: 2px #1a1610;
+    paint-order: stroke fill;
+    text-shadow:
+        0 4px 0 #1a1610,
+        2px 4px 0 #1a1610,
+        -2px 2px 0 #1a1610;
+}
+
+.comic-outline-yellow {
+    color: #ffd835;
+    -webkit-text-stroke: 2px #1a1610;
+    paint-order: stroke fill;
+    text-shadow:
+        0 4px 0 #1a1610,
+        2px 4px 0 #1a1610,
+        -2px 2px 0 #1a1610;
+}
+
+.beach-photo-frame {
+    background: #faf7ee;
+    padding: 8px;
+    border-radius: 4px;
+    box-shadow: 0 18px 36px rgba(32, 22, 6, 0.28);
+    border: 1px solid rgba(26, 22, 16, 0.12);
+}

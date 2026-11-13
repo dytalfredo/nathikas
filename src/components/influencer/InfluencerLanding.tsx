@@ -366,15 +366,37 @@ export default function InfluencerLanding({ data }: Props) {
     const plantsFgScale = useTransform(metricsSmoothProgress, [0, 1], [1.03, 1]);
     const sunbeamsOpacity = useTransform(metricsSmoothProgress, [0, 0.35, 1], [0.2, 0.85, 0.65]);
 
+    // "Servicios" Act 2.5 (Herencia Bosque/Hada): siluetas tenues de palomas cruzando al hacer scroll
+    const servicesRef = useRef<HTMLElement>(null);
+    const servicesRawProgress = useMotionValue(0);
+    const servicesSmoothProgress = useSpring(servicesRawProgress, {
+        stiffness: 70,
+        damping: 24,
+        mass: 0.55
+    });
+    const dovesLtoRX = useTransform(servicesSmoothProgress, [0.02, 0.88], ['-18vw', '110vw']);
+    const dovesLtoRY = useTransform(servicesSmoothProgress, [0.02, 0.88], [40, -70]);
+    const dovesRtoLX = useTransform(servicesSmoothProgress, [0.14, 0.96], ['110vw', '-18vw']);
+    const dovesRtoLY = useTransform(servicesSmoothProgress, [0.14, 0.96], [28, -52]);
+
     useEffect(() => {
         const updateMetricsScroll = () => {
-            const el = metricsRef.current;
-            if (!el) return;
-            const rect = el.getBoundingClientRect();
             const vh = window.innerHeight || document.documentElement.clientHeight || 800;
-            const totalTravel = vh + rect.height;
-            const raw = totalTravel > 0 ? (vh - rect.top) / totalTravel : 0.35;
-            metricsRawProgress.set(Math.max(0, Math.min(1, raw)));
+            const el = metricsRef.current;
+            if (el) {
+                const rect = el.getBoundingClientRect();
+                const totalTravel = vh + rect.height;
+                const raw = totalTravel > 0 ? (vh - rect.top) / totalTravel : 0.35;
+                metricsRawProgress.set(Math.max(0, Math.min(1, raw)));
+            }
+
+            const srvEl = servicesRef.current;
+            if (srvEl) {
+                const srvRect = srvEl.getBoundingClientRect();
+                const srvTotal = vh + srvRect.height;
+                const srvRaw = srvTotal > 0 ? (vh - srvRect.top) / srvTotal : 0;
+                servicesRawProgress.set(Math.max(0, Math.min(1, srvRaw)));
+            }
         };
 
         updateMetricsScroll();
@@ -384,7 +406,7 @@ export default function InfluencerLanding({ data }: Props) {
             window.removeEventListener('scroll', updateMetricsScroll, true);
             window.removeEventListener('resize', updateMetricsScroll);
         };
-    }, [metricsRawProgress]);
+    }, [metricsRawProgress, servicesRawProgress]);
 
     const whatsappNumber = '584128919386';
 
@@ -944,7 +966,7 @@ export default function InfluencerLanding({ data }: Props) {
                 {/* Puente atmosférico inferior hacia Sección 2 (suaviza el corte del recorte sin tapar íconos z-30) */}
                 <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute inset-x-0 bottom-0 h-28 sm:h-36 bg-linear-to-b from-transparent via-[#0B0204]/80 to-[#090204] z-[25]"
+                    className="pointer-events-none absolute inset-x-0 bottom-0 h-32 sm:h-44 lg:h-64 xl:h-72 bg-linear-to-b from-transparent via-[#0B0204]/80 to-[#090204] z-[25]"
                 />
             </section>
 
@@ -953,14 +975,14 @@ export default function InfluencerLanding({ data }: Props) {
                ===================================================================== */}
             <section
                 id="sobre-nathika"
-                className="relative w-full py-28 sm:py-36 lg:py-44 bg-linear-to-br from-[#4D0B13] via-[#3A070E] to-[#220408] text-[#F7F3EE] overflow-x-clip"
+                className="relative w-full pt-32 pb-36 sm:pt-44 sm:pb-48 lg:pt-64 lg:pb-64 bg-linear-to-br from-[#4D0B13] via-[#3A070E] to-[#220408] text-[#F7F3EE] overflow-x-clip"
             >
                 {/* Background ambient glow wrapped in overflow-hidden so sticky works */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
                     {/* Puente atmosférico superior desde el Hero (mismo estilo nocturno/carmesí, sin corte duro) */}
                     <div
                         aria-hidden="true"
-                        className="absolute inset-x-0 top-0 h-36 sm:h-48 bg-linear-to-b from-[#090204] via-[#240408]/75 to-transparent"
+                        className="absolute inset-x-0 top-0 h-40 sm:h-56 lg:h-80 xl:h-96 bg-linear-to-b from-[#090204] via-[#240408]/75 to-transparent"
                     />
                     <div className="absolute top-1/4 right-10 w-[550px] h-[550px] bg-[#D91424]/15 rounded-full blur-[160px]" />
                     <div className="absolute bottom-1/4 left-10 w-[450px] h-[450px] bg-[#FF1E38]/10 rounded-full blur-[150px]" />
@@ -1325,7 +1347,7 @@ export default function InfluencerLanding({ data }: Props) {
                 {/* Atmospheric nocturnal bridge: softens deep crimson into dark forest obsidian */}
                 <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute inset-x-0 bottom-0 h-36 sm:h-48 bg-linear-to-b from-transparent via-[#160507]/85 to-[#080D0A] z-0"
+                    className="pointer-events-none absolute inset-x-0 bottom-0 h-44 sm:h-60 lg:h-80 xl:h-96 bg-linear-to-b from-transparent via-[#160507]/85 to-[#080D0A] z-0"
                 />
             </section>
 
@@ -1335,7 +1357,7 @@ export default function InfluencerLanding({ data }: Props) {
             <section
                 ref={metricsRef}
                 id="metricas"
-                className="relative w-full py-32 sm:py-44 lg:py-52 bg-[#080D0A] text-[#F4F9F5] overflow-hidden select-none"
+                className="relative w-full pt-36 pb-36 sm:pt-48 sm:pb-48 lg:pt-64 lg:pb-60 bg-[#080D0A] text-[#F4F9F5] overflow-hidden select-none"
             >
                 {/* LAYER 1 (z-1): Bosque profundo de fondo (parallax suave al hacer scroll) */}
                 <motion.div
@@ -1382,7 +1404,7 @@ export default function InfluencerLanding({ data }: Props) {
                 {/* Puente nocturno superior desde Acto 1 */}
                 <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute inset-x-0 top-0 h-28 sm:h-36 bg-linear-to-b from-[#080D0A] to-transparent z-[4]"
+                    className="pointer-events-none absolute inset-x-0 top-0 h-36 sm:h-52 lg:h-80 xl:h-96 bg-linear-to-b from-[#080D0A] to-transparent z-[4]"
                 />
 
                 {/* Nota: Sin z-index en container/grids superiores para que z-[10], z-[15], z-[20], z-[25] y z-[30] intercalen en 3D real */}
@@ -1842,92 +1864,164 @@ export default function InfluencerLanding({ data }: Props) {
 
                 </div>
 
-                {/* Bottom atmospheric bridge back to Act 3 (#servicios) */}
+                {/* Bottom atmospheric bridge into Act 2.5 (#servicios botanical continuation) */}
                 <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute inset-x-0 bottom-0 h-28 sm:h-36 bg-linear-to-b from-transparent via-[#0B150E]/90 to-[#1B0306] z-0"
+                    className="pointer-events-none absolute inset-x-0 bottom-0 h-36 sm:h-52 lg:h-72 xl:h-80 bg-linear-to-b from-transparent via-[#07110B]/85 to-[#060E09] z-0"
                 />
             </section>
 
             {/* =====================================================================
-                SECTION 4: DEDICATED SERVICES SECTION ("RELÁJATE TÚ QUE YO ME ENCARGO DE:")
+                SECTION 4: SERVICIOS 360° (HERENCIA BOSQUE/HADA · 3 NIVELES DE 2 · PALOMAS EN VUELO)
                ===================================================================== */}
             <section
+                ref={servicesRef}
                 id="servicios"
-                className="relative w-full py-28 sm:py-36 lg:py-44 bg-linear-to-b from-[#1B0306] via-[#260509] to-[#140204] text-[#F7F3EE] border-t border-white/10 overflow-hidden"
+                className="relative w-full pt-32 pb-36 sm:pt-44 sm:pb-48 lg:pt-56 lg:pb-64 bg-[#060E09] text-[#F4F9F5] overflow-hidden select-none"
             >
-                <div className="absolute inset-0 halftone-light opacity-20 pointer-events-none" />
-                <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-[#D91424]/12 rounded-full blur-[160px] pointer-events-none" />
+                {/* Fondo natural heredado del Hada (eco suave del bosque + luz crepuscular) */}
+                <div aria-hidden="true" className="absolute inset-0 pointer-events-none z-0">
+                    <img
+                        src={HADA_BG_SRC}
+                        alt=""
+                        className="w-full h-full object-cover object-bottom opacity-30 blur-[2px] scale-105"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-b from-[#060E09] via-[#0B1910]/65 to-[#060E09]" />
+                </div>
 
-                <div className="container mx-auto px-4 sm:px-6 lg:px-12 max-w-6xl relative z-10">
-                    
-                    {/* Section Header */}
-                    <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20 space-y-3">
-                        <span className="font-editorial text-xs sm:text-sm font-extrabold uppercase tracking-[0.28em] text-[#FF3347] block">
-                            SERVICIOS & PRODUCCIÓN 360°
-                        </span>
-                        <h2 className="font-anton text-6xl sm:text-8xl md:text-9xl uppercase leading-[0.86] tracking-tight text-white">
+                {/* Puente atmosférico superior largo desde #metricas */}
+                <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-x-0 top-0 h-36 sm:h-52 lg:h-72 xl:h-80 bg-linear-to-b from-[#060E09] via-[#060E09]/70 to-transparent z-[1]"
+                />
+
+                {/* Brillos radiales verde salvia y niebla luminosa */}
+                <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden z-[2]">
+                    <div className="absolute top-[18%] left-[12%] w-[440px] h-[440px] rounded-full bg-[#79B485]/12 blur-[140px]" />
+                    <div className="absolute bottom-[20%] right-[10%] w-[480px] h-[480px] rounded-full bg-[#C7E0CD]/10 blur-[160px]" />
+                    {[
+                        { left: '12%', top: '24%', delay: 0.2 },
+                        { left: '84%', top: '32%', delay: 0.9 },
+                        { left: '20%', top: '72%', delay: 1.4 },
+                        { left: '78%', top: '80%', delay: 0.5 }
+                    ].map((sp, i) => (
+                        <motion.span
+                            key={i}
+                            animate={{ y: [0, -12, 0], opacity: [0.18, 0.65, 0.18], scale: [0.85, 1.2, 0.85] }}
+                            transition={{ duration: 4.5 + i * 0.45, repeat: Infinity, ease: 'easeInOut', delay: sp.delay }}
+                            style={{ left: sp.left, top: sp.top }}
+                            className="absolute w-1.5 h-1.5 rounded-full bg-[#EDF7EF] shadow-[0_0_12px_rgba(220,248,225,0.8)]"
+                        />
+                    ))}
+                </div>
+
+                {/* Bandadas de palomas en silueta muy tenue que cruzan al bajar por la sección */}
+                <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden z-[5]">
+                    {/* Bandada 1: Izquierda a Derecha en ascenso suave */}
+                    <motion.div
+                        style={{ x: dovesLtoRX, y: dovesLtoRY }}
+                        className="absolute top-[16%] sm:top-[18%] left-0 will-change-transform"
+                    >
+                        <div className="relative w-52 h-28">
+                            {[
+                                { x: 'left-0 top-10', size: 'w-14 h-9', opacity: 'opacity-[0.18]', dur: 2.3, delay: 0 },
+                                { x: 'left-16 top-2', size: 'w-11 h-7', opacity: 'opacity-[0.13]', dur: 2.6, delay: 0.35 },
+                                { x: 'left-28 top-14', size: 'w-9 h-6', opacity: 'opacity-[0.10]', dur: 2.1, delay: 0.7 }
+                            ].map((bird, idx) => (
+                                <motion.svg
+                                    key={idx}
+                                    viewBox="0 0 64 40"
+                                    animate={{ y: [0, -6, 0], scaleY: [1, 0.9, 1] }}
+                                    transition={{ duration: bird.dur, repeat: Infinity, ease: 'easeInOut', delay: bird.delay }}
+                                    className={`absolute ${bird.x} ${bird.size} ${bird.opacity} text-[#E8F6EC] mix-blend-screen`}
+                                >
+                                    <path
+                                        d="M8,24 C17,22 25,18 31,12 C33,6 37,3 41,2 C39,8 40,12 43,15 C48,11 54,8 61,9 C55,14 50,18 44,21 C39,24 34,27 29,27 C24,27 17,29 9,33 C12,28 11,26 8,24 Z"
+                                        fill="currentColor"
+                                    />
+                                </motion.svg>
+                            ))}
+                        </div>
+                    </motion.div>
+
+                    {/* Bandada 2: Derecha a Izquierda más lejana en formación paralela */}
+                    <motion.div
+                        style={{ x: dovesRtoLX, y: dovesRtoLY }}
+                        className="absolute top-[54%] sm:top-[52%] left-0 will-change-transform"
+                    >
+                        <div className="relative w-44 h-24">
+                            {[
+                                { x: 'left-4 top-2', size: 'w-12 h-8', opacity: 'opacity-[0.13]', dur: 2.5, delay: 0.2 },
+                                { x: 'left-20 top-11', size: 'w-9 h-6', opacity: 'opacity-[0.09]', dur: 2.2, delay: 0.65 }
+                            ].map((bird, idx) => (
+                                <motion.svg
+                                    key={idx}
+                                    viewBox="0 0 64 40"
+                                    animate={{ y: [0, -5, 0], scaleY: [1, 0.9, 1] }}
+                                    transition={{ duration: bird.dur, repeat: Infinity, ease: 'easeInOut', delay: bird.delay }}
+                                    className={`absolute ${bird.x} ${bird.size} ${bird.opacity} scale-x-[-1] text-[#E8F6EC] mix-blend-screen`}
+                                >
+                                    <path
+                                        d="M8,24 C17,22 25,18 31,12 C33,6 37,3 41,2 C39,8 40,12 43,15 C48,11 54,8 61,9 C55,14 50,18 44,21 C39,24 34,27 29,27 C24,27 17,29 9,33 C12,28 11,26 8,24 Z"
+                                        fill="currentColor"
+                                    />
+                                </motion.svg>
+                            ))}
+                        </div>
+                    </motion.div>
+                </div>
+
+                <div className="container mx-auto px-4 sm:px-6 lg:px-10 max-w-5xl relative z-10">
+
+                    {/* Encabezado editorial estilo Hada (blanco frío + verde salvia) */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 24 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, amount: 0.25 }}
+                        transition={{ duration: 0.85, ease: EASE_OUT_EXPO }}
+                        className="text-center max-w-3xl mx-auto mb-16 sm:mb-24 lg:mb-28"
+                    >
+                        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/12 backdrop-blur-md border border-white/25 mb-5 sm:mb-6">
+                            <Sparkles size={13} className="text-[#D8F0DD]" />
+                            <span className="font-mono-zine text-[10px] sm:text-xs font-bold uppercase tracking-[0.24em] text-[#ECF6EE]">
+                                04 // FLUJO &amp; LIBERTAD CREATIVA
+                            </span>
+                        </div>
+
+                        <h2 className="font-editorial text-4xl sm:text-6xl lg:text-7xl font-extrabold uppercase tracking-tight leading-[0.95] text-[#F4F9F5] drop-shadow-[0_6px_26px_rgba(0,0,0,0.45)]">
                             RELÁJATE TÚ QUE YO <br />
-                            <span className="text-[#FF3347]">ME ENCARGO DE:</span>
+                            <span className="text-[#B8E4C1]">ME ENCARGO DE:</span>
                         </h2>
-                    </div>
+                    </motion.div>
 
-                    {/* 5 Services Scrapbook / Editorial Bento Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 sm:gap-8">
+                    {/* Grilla Botánica de 3 niveles de 2 elementos (5 servicios + 1 tarjeta CTA = 3x2) */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-7 sm:gap-9 lg:gap-11 max-w-5xl mx-auto relative z-10">
                         {SERVICES_LIST.map((srv, idx) => {
-                            const isLightCard = idx === 0 || idx === 3;
-                            const isCreamCard = idx === 2;
+                            const useGridGlass = idx % 2 === 1;
                             return (
                                 <motion.div
                                     key={idx}
-                                    initial={{ opacity: 0, y: 28 }}
+                                    initial={{ opacity: 0, y: 26 }}
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true, margin: '-40px' }}
-                                    transition={{ duration: 0.45, delay: idx * 0.08 }}
+                                    transition={{ duration: 0.55, delay: idx * 0.08, ease: EASE_OUT_EXPO }}
                                     whileHover={{ y: -6 }}
-                                    className={`relative p-7 sm:p-8 rounded-sm shadow-[0_20px_45px_rgba(0,0,0,0.65)] flex flex-col justify-between min-h-[240px] ${
-                                        isLightCard
-                                            ? '[--paper:#F3F1EC] text-[#141518] torn-paper-card -rotate-1'
-                                            : isCreamCard
-                                            ? '[--paper:#EFE5B4] text-[#141518] torn-paper-card rotate-1'
-                                            : 'chalkboard-grid text-[#F7F3EE] border-2 border-[#B3946E]/60 rotate-0'
-                                    }`}
+                                    className={`relative p-7 sm:p-9 lg:p-10 rounded-[22px] sm:rounded-[26px] ${
+                                        useGridGlass ? 'glass-forest-grid-card' : 'glass-forest-card'
+                                    } text-[#18221A] flex flex-col justify-between min-h-[220px] sm:min-h-[250px] transition-transform duration-300`}
                                 >
-                                    {/* Decorative washi tape on alternating cards */}
-                                    {idx % 2 === 0 ? (
-                                        <div className="absolute -top-3 left-8 w-24 h-6 washi-tape-red -rotate-3 pointer-events-none" />
-                                    ) : (
-                                        <div className="absolute -top-3 right-8 w-24 h-6 washi-tape-beige rotate-6 pointer-events-none" />
-                                    )}
-
-                                    <div className="flex items-center justify-between mb-4">
-                                        <span
-                                            className={`font-anton text-5xl sm:text-6xl leading-none ${
-                                                isLightCard || isCreamCard ? 'text-[#B81922]' : 'text-[#FF3347]'
-                                            }`}
-                                        >
+                                    <div className="flex items-center justify-between mb-5">
+                                        <span className="font-editorial text-3xl sm:text-4xl font-extrabold tracking-tight leading-none text-[#497552]">
                                             0{idx + 1}
                                         </span>
-                                        <span
-                                            className={`w-2.5 h-2.5 rounded-full ${
-                                                isLightCard || isCreamCard ? 'bg-[#141518]' : 'bg-[#FF3347]'
-                                            }`}
-                                        />
+                                        <span className="w-2.5 h-2.5 rounded-full bg-[#6D9B74]/75 ring-4 ring-[#6D9B74]/20" />
                                     </div>
 
-                                    <div className="space-y-2.5 my-auto">
-                                        <h3
-                                            className={`font-anton text-3xl sm:text-4xl uppercase tracking-wide leading-[0.95] ${
-                                                isLightCard || isCreamCard ? 'text-[#121316]' : 'text-white'
-                                            }`}
-                                        >
+                                    <div className="space-y-3 my-auto">
+                                        <h3 className="font-editorial text-xl sm:text-2xl lg:text-[26px] font-extrabold uppercase tracking-tight leading-tight text-[#141E16]">
                                             {srv.bold}
                                         </h3>
-                                        <p
-                                            className={`text-sm sm:text-base font-medium leading-relaxed ${
-                                                isLightCard || isCreamCard ? 'text-[#25262B]' : 'text-[#F4EFEA]/85'
-                                            }`}
-                                        >
+                                        <p className="font-editorial text-sm sm:text-base font-medium leading-relaxed text-[#243326]">
                                             {srv.rest}
                                         </p>
                                     </div>
@@ -1935,28 +2029,28 @@ export default function InfluencerLanding({ data }: Props) {
                             );
                         })}
 
-                        {/* 6th Card: Direct Quote CTA Card */}
+                        {/* 6to elemento (cierre del 3er nivel de 2 elementos): CTA Botánica */}
                         <motion.div
-                            initial={{ opacity: 0, y: 28 }}
+                            initial={{ opacity: 0, y: 26 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true, margin: '-40px' }}
-                            transition={{ duration: 0.45, delay: 0.4 }}
+                            transition={{ duration: 0.55, delay: 0.4, ease: EASE_OUT_EXPO }}
                             whileHover={{ y: -6 }}
-                            className="relative p-7 sm:p-8 rounded-sm [--paper:#8E1B20] text-white torn-paper-card rotate-1 shadow-[0_20px_45px_rgba(0,0,0,0.65)] flex flex-col justify-between min-h-[240px]"
+                            className="relative p-7 sm:p-9 lg:p-10 rounded-[22px] sm:rounded-[26px] glass-forest-card bg-linear-to-br from-[#EAF5EC]/90 to-[#CBE4D0]/82 text-[#141E16] flex flex-col justify-between min-h-[220px] sm:min-h-[250px] transition-transform duration-300"
                         >
-                            <div className="space-y-2">
-                                <span className="font-mono-zine text-xs uppercase tracking-widest text-white/80 block">
+                            <div className="space-y-3">
+                                <span className="font-mono-zine text-[11px] font-bold uppercase tracking-[0.2em] text-[#3F6B48] block">
                                     // TODO EN UN SOLO LUGAR
                                 </span>
-                                <h3 className="font-anton text-4xl sm:text-5xl uppercase leading-[0.92]">
-                                    ¿CREAMOS ALGO BRUTAL JUNTOS?
+                                <h3 className="font-editorial text-2xl sm:text-3xl lg:text-[32px] font-extrabold uppercase tracking-tight leading-[0.98] text-[#141E16]">
+                                    ¿CREAMOS ALGO MÁGICO JUNTOS?
                                 </h3>
                             </div>
 
                             <button
                                 type="button"
                                 onClick={() => openWhatsApp('Cotización de Servicios 360°')}
-                                className="mt-6 w-full py-3.5 px-5 [--paper:#F3F1EC] hover:[--paper:#ffffff] text-[#121316] font-mono-zine font-bold text-xs sm:text-sm uppercase tracking-wider torn-paper-btn shadow-xl transition-transform hover:scale-105 flex items-center justify-center gap-2 cursor-pointer"
+                                className="mt-7 w-full py-3.5 px-6 rounded-full bg-[#18261B] hover:bg-[#223627] text-[#F4F9F5] font-editorial font-bold text-xs sm:text-sm uppercase tracking-wider shadow-[0_12px_28px_rgba(12,32,18,0.28)] transition-all hover:scale-[1.02] flex items-center justify-center gap-2 cursor-pointer"
                             >
                                 <span>COTIZAR TU PRESUPUESTO</span>
                                 <ArrowRight size={16} />
@@ -1965,19 +2059,67 @@ export default function InfluencerLanding({ data }: Props) {
                     </div>
 
                 </div>
+
+                {/* Puente atmosférico largo desde el bosque del Hada (#060E09) hacia el horizonte playero (#16748B) */}
+                <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-x-0 bottom-0 h-40 sm:h-56 lg:h-72 xl:h-80 bg-linear-to-b from-transparent via-[#0B3230]/88 to-[#16748B] z-[4]"
+                />
             </section>
 
             {/* =====================================================================
-                SECTION 5: FULL-WIDTH VERTICAL VIDEO CAROUSEL + DRAG & DROP + CONTACT FORM
+                SECTION 5: CAROUSEL DE VIDEOS + FORMULARIO (ACTO 3: PLAYERO · ALEGRE · AMARILLO)
                ===================================================================== */}
-            <section id="reels-carousel" className="relative w-full max-w-full py-20 sm:py-28 lg:py-36 bg-[#07080A] overflow-hidden select-none border-t border-white/10">
+            <section
+                id="reels-carousel"
+                className="relative w-full max-w-full pt-28 pb-32 sm:pt-36 sm:pb-44 lg:pt-48 lg:pb-56 bg-linear-to-b from-[#16748B] via-[#3FB7E3] via-[38%] to-[#FFE066] text-[#1A1610] overflow-hidden select-none"
+            >
+                {/* Puente atmosférico superior desde la transición océano/bosque */}
+                <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-x-0 top-0 h-32 sm:h-48 lg:h-64 xl:h-72 bg-linear-to-b from-[#16748B] via-[#218CA8]/65 to-transparent z-[1]"
+                />
+
+                {/* Sol difuso y destellos cálidos en el cielo */}
+                <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden z-[2]">
+                    <div className="absolute -top-12 right-[8%] w-72 h-72 sm:w-96 sm:h-96 rounded-full bg-[#FFF5B8]/45 blur-[90px]" />
+                    <div className="absolute bottom-[18%] -left-16 w-80 h-80 rounded-full bg-[#FFE885]/55 blur-[110px]" />
+                </div>
+
+                {/* Encabezado playero alegre antes del carrusel */}
+                <div className="container mx-auto px-4 sm:px-6 max-w-5xl relative z-10 text-center mb-10 sm:mb-14">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, amount: 0.25 }}
+                        transition={{ duration: 0.75, ease: EASE_OUT_EXPO }}
+                        className="space-y-3"
+                    >
+                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#FAF7EE]/90 border-2 border-[#1A1610]/15 shadow-sm">
+                            <Sparkles size={14} className="text-[#E09F1F]" />
+                            <span className="font-mono-zine text-[10px] sm:text-xs font-bold uppercase tracking-[0.22em] text-[#1A1610]">
+                                05 // VIBRA PLAYERA &amp; CONTENIDO EN ACCIÓN
+                            </span>
+                        </div>
+
+                        <h2 className="font-anton text-5xl sm:text-7xl lg:text-8xl uppercase tracking-tight leading-[0.92]">
+                            <span className="comic-outline-white">REELS</span>{' '}
+                            <span className="comic-outline-yellow">Y CAMPAÑAS</span>
+                        </h2>
+
+                        <p className="font-editorial text-xs sm:text-sm font-bold text-[#14303D]/90 max-w-lg mx-auto">
+                            Desliza para explorar los reels o toca cualquiera para activar el sonido · Al final puedes cotizar directo.
+                        </p>
+                    </motion.div>
+                </div>
+
                 {/* DRAGGABLE FULL-WIDTH VIEWPORT */}
                 <div
                     ref={carouselViewportRef}
                     onPointerDown={() => setShowSwipeHint(false)}
-                    className="relative w-full max-w-full overflow-hidden cursor-grab active:cursor-grabbing"
+                    className="relative z-10 w-full max-w-full overflow-hidden cursor-grab active:cursor-grabbing py-2"
                 >
-                    {/* TRANSIENT ANIMATED DRAGGING FINGER HINT (Appears & Disappears Automatically) */}
+                    {/* TRANSIENT ANIMATED DRAGGING FINGER HINT */}
                     <AnimatePresence>
                         {showSwipeHint && (
                             <motion.div
@@ -1987,21 +2129,19 @@ export default function InfluencerLanding({ data }: Props) {
                                 transition={{ duration: 0.35 }}
                                 className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none"
                             >
-                                <div className="relative flex flex-col items-center gap-3 bg-black/55 backdrop-blur-md px-7 py-5 rounded-3xl border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.85)]">
+                                <div className="relative flex flex-col items-center gap-3 bg-[#FAF7EE]/92 backdrop-blur-md px-7 py-5 rounded-3xl border-2 border-[#1A1610] shadow-[0_14px_34px_rgba(26,22,16,0.28)]">
                                     {/* Animated Swipe Track + Finger SVG */}
                                     <div className="relative w-36 h-16 flex items-center justify-center">
-                                        {/* Drag trail line */}
                                         <motion.div
                                             animate={{
                                                 width: ['20px', '96px', '20px'],
-                                                opacity: [0.2, 0.85, 0.2],
+                                                opacity: [0.3, 0.95, 0.3],
                                                 x: [28, -8, 28]
                                             }}
                                             transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-                                            className="h-1.5 rounded-full bg-linear-to-r from-[#FF3347] to-white/80"
+                                            className="h-2 rounded-full bg-linear-to-r from-[#FF9F1C] to-[#FFD835]"
                                         />
 
-                                        {/* Animated Hand / Finger Dragging Left */}
                                         <motion.div
                                             animate={{
                                                 x: [38, -38, 38],
@@ -2011,28 +2151,26 @@ export default function InfluencerLanding({ data }: Props) {
                                             transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
                                             className="absolute top-1 flex flex-col items-center"
                                         >
-                                            {/* Touch ripple circle at fingertip */}
                                             <motion.span
                                                 animate={{ scale: [0.8, 1.6, 0.8], opacity: [0.9, 0, 0.9] }}
                                                 transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut' }}
-                                                className="w-6 h-6 rounded-full border-2 border-[#FF3347] bg-[#FF3347]/30 -mb-3"
+                                                className="w-6 h-6 rounded-full border-2 border-[#FF9F1C] bg-[#FFD835]/40 -mb-3"
                                             />
-                                            {/* Hand / Pointing Finger SVG */}
                                             <svg
                                                 viewBox="0 0 36 44"
-                                                className="w-10 h-12 text-white drop-shadow-[0_6px_12px_rgba(0,0,0,0.8)]"
+                                                className="w-10 h-12 text-white drop-shadow-[0_4px_8px_rgba(26,22,16,0.45)]"
                                             >
                                                 <path
                                                     d="M14,4 C14,1.8 15.8,0 18,0 C20.2,0 22,1.8 22,4 L22,16 L24.5,16 C26.4,16 28,17.6 28,19.5 L28,21 L30.5,21 C32.4,21 34,22.6 34,24.5 L34,31 C34,38.2 28.2,44 21,44 L15,44 C9.5,44 5,39.5 5,34 L5,25 C5,23.1 6.6,21.5 8.5,21.5 C10.4,21.5 12,23.1 12,25 L12,28 L14,28 L14,4 Z"
                                                     fill="currentColor"
-                                                    stroke="#121316"
-                                                    strokeWidth="2"
+                                                    stroke="#1A1610"
+                                                    strokeWidth="2.2"
                                                 />
                                             </svg>
                                         </motion.div>
                                     </div>
 
-                                    <span className="font-mono-zine text-[11px] font-bold uppercase tracking-[0.2em] text-white/90">
+                                    <span className="font-mono-zine text-[11px] font-bold uppercase tracking-[0.2em] text-[#1A1610]">
                                         DESLIZA PARA VER MÁS
                                     </span>
                                 </div>
@@ -2050,9 +2188,9 @@ export default function InfluencerLanding({ data }: Props) {
                             setShowSwipeHint(false);
                         }}
                         onDragEnd={() => setTimeout(() => setIsDragging(false), 120)}
-                        className="flex flex-row items-stretch w-max"
+                        className="flex flex-row items-stretch w-max gap-4 sm:gap-5 px-4 sm:px-6"
                     >
-                        {/* 5 CLEAN VERTICAL VIDEO PANELS SIDE-BY-SIDE (Full device width on mobile!) */}
+                        {/* 5 CLEAN VERTICAL VIDEO PANELS SIDE-BY-SIDE IN SUNNY COASTAL FRAMES */}
                         {URBAN_VIDEOS.map((vid, idx) => {
                             const isUnmuted = unmutedVideoIdx === idx;
 
@@ -2060,7 +2198,7 @@ export default function InfluencerLanding({ data }: Props) {
                                 <div
                                     key={vid.id}
                                     onClick={() => toggleVideoSound(idx)}
-                                    className="relative w-screen sm:w-[48vw] md:w-[33.333vw] lg:w-[25vw] xl:w-[22vw] h-[82vh] sm:h-[85vh] min-h-[620px] max-h-[880px] shrink-0 overflow-hidden bg-[#101217] group"
+                                    className="relative w-[84vw] sm:w-[46vw] md:w-[32vw] lg:w-[24vw] xl:w-[21vw] h-[74vh] sm:h-[78vh] min-h-[540px] max-h-[820px] shrink-0 overflow-hidden rounded-[24px] border-3 border-[#FAF7EE] bg-[#163646] shadow-[0_18px_40px_rgba(24,44,54,0.28)] group"
                                 >
                                     <video
                                         ref={(el) => {
@@ -2079,21 +2217,33 @@ export default function InfluencerLanding({ data }: Props) {
                                         }}
                                         className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-700 pointer-events-none"
                                     />
+                                    {/* Subtle audio status pill */}
+                                    <div className="pointer-events-none absolute top-3.5 right-3.5 px-2.5 py-1 rounded-full bg-[#FAF7EE]/90 border border-[#1A1610]/20 text-[10px] font-mono-zine font-bold uppercase tracking-wider text-[#1A1610] shadow-sm">
+                                        {isUnmuted ? '🔊 AUDIO ON' : '🔇 TOCA AUDIO'}
+                                    </div>
                                 </div>
                             );
                         })}
 
-                        {/* 6TH PANEL INSIDE THE SAME CAROUSEL: UPGRADED CONTACT FORM (Marca + Teléfono + Correo + Custom Selector) */}
+                        {/* 6TH PANEL INSIDE THE SAME CAROUSEL: SUNNY BEACH POSTER CONTACT FORM */}
                         <div
                             id="cta-slide"
-                            className="relative w-screen sm:w-[74vw] md:w-[58vw] lg:w-[46vw] xl:w-[40vw] h-[82vh] sm:h-[85vh] min-h-[620px] max-h-[880px] shrink-0 bg-linear-to-br from-[#2B060B] via-[#130609] to-[#08090C] p-6 sm:p-9 md:p-11 flex flex-col justify-between relative overflow-y-auto no-scrollbar"
+                            className="relative w-[90vw] sm:w-[72vw] md:w-[56vw] lg:w-[44vw] xl:w-[38vw] h-[74vh] sm:h-[78vh] min-h-[540px] max-h-[820px] shrink-0 rounded-[26px] border-3 border-[#1A1610] bg-linear-to-b from-[#23A3E5] via-[#89DCF9] via-[26%] to-[#FAF7EE] to-[48%] p-6 sm:p-8 md:p-10 flex flex-col justify-between overflow-y-auto no-scrollbar shadow-[0_22px_50px_rgba(24,44,54,0.3)]"
                         >
-                            <div className="space-y-2.5 relative z-10">
-                                <h3 className="font-anton text-5xl sm:text-6xl md:text-7xl uppercase text-white leading-[0.88] tracking-tight">
-                                    ¿LISTO PARA QUE TU MARCA <span className="text-[#FF3347]">CONECTE DE VERDAD?</span>
+                            {/* Decorative Nathikas round sticker */}
+                            <img
+                                src="/images/logo.webp"
+                                alt="Nathikas"
+                                className="hidden sm:block pointer-events-none absolute top-5 right-5 w-16 h-16 rounded-full border-2 border-[#1A1610] shadow-md rotate-6 object-cover z-10"
+                            />
+
+                            <div className="space-y-2.5 relative z-10 pr-0 sm:pr-16">
+                                <h3 className="font-anton text-4xl sm:text-5xl md:text-6xl uppercase leading-[0.9] tracking-tight">
+                                    <span className="comic-outline-white">¿LISTO PARA QUE TU MARCA </span>
+                                    <span className="comic-outline-yellow">CONECTE DE VERDAD?</span>
                                 </h3>
-                                <p className="text-xs sm:text-sm text-white/80 font-medium leading-relaxed max-w-md">
-                                    Cero formatos repetidos. Armemos una estrategia personalizada donde mi comunidad viva la experiencia de tu marca.
+                                <p className="text-xs sm:text-sm text-[#1A1610]/85 font-semibold leading-relaxed max-w-md">
+                                    Cero formatos repetidos. Armemos una estrategia fresca y auténtica donde mi comunidad viva la experiencia de tu marca.
                                 </p>
                             </div>
 
@@ -2104,7 +2254,7 @@ export default function InfluencerLanding({ data }: Props) {
                             >
                                 {/* Field 1: Marca o Proyecto */}
                                 <div className="space-y-1">
-                                    <label className="font-mono-zine text-[10px] uppercase tracking-widest text-white/75 block">
+                                    <label className="font-mono-zine text-[10px] font-bold uppercase tracking-widest text-[#1A1610]/80 block">
                                         TU MARCA O PROYECTO
                                     </label>
                                     <input
@@ -2112,15 +2262,15 @@ export default function InfluencerLanding({ data }: Props) {
                                         value={brandName}
                                         onChange={(e) => setBrandName(e.target.value)}
                                         placeholder="Ej: Red Bull, Nike, Tu Marca..."
-                                        className="w-full px-3.5 py-2.5 rounded-xl bg-black/65 border border-white/20 text-white placeholder-white/40 text-sm focus:outline-none focus:border-[#FF3347] transition-colors"
+                                        className="w-full px-3.5 py-2.5 rounded-xl bg-white/95 border-2 border-[#1A1610]/20 text-[#1A1610] placeholder-[#1A1610]/45 text-sm font-medium focus:outline-none focus:border-[#E09F1F] transition-colors"
                                     />
                                 </div>
 
-                                {/* Field 2 & 3: Teléfono + Correo Electrónico (2 cols on sm+) */}
+                                {/* Field 2 & 3: Teléfono + Correo Electrónico */}
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                                     <div className="space-y-1">
-                                        <label className="font-mono-zine text-[10px] uppercase tracking-widest text-white/75 flex items-center gap-1.5">
-                                            <Phone size={11} className="text-[#FF3347]" />
+                                        <label className="font-mono-zine text-[10px] font-bold uppercase tracking-widest text-[#1A1610]/80 flex items-center gap-1.5">
+                                            <Phone size={11} className="text-[#D97706]" />
                                             <span>TELÉFONO / WHATSAPP</span>
                                         </label>
                                         <input
@@ -2128,13 +2278,13 @@ export default function InfluencerLanding({ data }: Props) {
                                             value={contactPhone}
                                             onChange={(e) => setContactPhone(e.target.value)}
                                             placeholder="+58 412 000 0000"
-                                            className="w-full px-3.5 py-2.5 rounded-xl bg-black/65 border border-white/20 text-white placeholder-white/40 text-sm focus:outline-none focus:border-[#FF3347] transition-colors"
+                                            className="w-full px-3.5 py-2.5 rounded-xl bg-white/95 border-2 border-[#1A1610]/20 text-[#1A1610] placeholder-[#1A1610]/45 text-sm font-medium focus:outline-none focus:border-[#E09F1F] transition-colors"
                                         />
                                     </div>
 
                                     <div className="space-y-1">
-                                        <label className="font-mono-zine text-[10px] uppercase tracking-widest text-white/75 flex items-center gap-1.5">
-                                            <Mail size={11} className="text-[#FF3347]" />
+                                        <label className="font-mono-zine text-[10px] font-bold uppercase tracking-widest text-[#1A1610]/80 flex items-center gap-1.5">
+                                            <Mail size={11} className="text-[#D97706]" />
                                             <span>CORREO ELECTRÓNICO</span>
                                         </label>
                                         <input
@@ -2142,15 +2292,15 @@ export default function InfluencerLanding({ data }: Props) {
                                             value={contactEmail}
                                             onChange={(e) => setContactEmail(e.target.value)}
                                             placeholder="contacto@tumarca.com"
-                                            className="w-full px-3.5 py-2.5 rounded-xl bg-black/65 border border-white/20 text-white placeholder-white/40 text-sm focus:outline-none focus:border-[#FF3347] transition-colors"
+                                            className="w-full px-3.5 py-2.5 rounded-xl bg-white/95 border-2 border-[#1A1610]/20 text-[#1A1610] placeholder-[#1A1610]/45 text-sm font-medium focus:outline-none focus:border-[#E09F1F] transition-colors"
                                         />
                                     </div>
                                 </div>
 
                                 {/* Field 4: Custom Interactive Service Selector */}
                                 <div className="space-y-1 relative" ref={selectorRef}>
-                                    <label className="font-mono-zine text-[10px] uppercase tracking-widest text-white/75 flex items-center gap-1.5">
-                                        <Sparkles size={11} className="text-[#FF3347]" />
+                                    <label className="font-mono-zine text-[10px] font-bold uppercase tracking-widest text-[#1A1610]/80 flex items-center gap-1.5">
+                                        <Sparkles size={11} className="text-[#D97706]" />
                                         <span>¿QUÉ NECESITAS QUE ME ENCARGUE?</span>
                                     </label>
 
@@ -2163,26 +2313,26 @@ export default function InfluencerLanding({ data }: Props) {
                                                 <button
                                                     type="button"
                                                     onClick={() => setServiceDropdownOpen((prev) => !prev)}
-                                                    className={`w-full px-3.5 py-2.5 rounded-xl bg-black/75 border text-left transition-all flex items-center justify-between gap-3 cursor-pointer ${
+                                                    className={`w-full px-3.5 py-2.5 rounded-xl bg-white/95 border-2 text-left transition-all flex items-center justify-between gap-3 cursor-pointer ${
                                                         serviceDropdownOpen
-                                                            ? 'border-[#FF3347] shadow-[0_0_20px_rgba(255,51,71,0.25)]'
-                                                            : 'border-white/20 hover:border-white/40'
+                                                            ? 'border-[#1A1610] shadow-[0_6px_18px_rgba(26,22,16,0.14)]'
+                                                            : 'border-[#1A1610]/20 hover:border-[#1A1610]/45'
                                                     }`}
                                                 >
                                                     <div className="flex items-center gap-2.5 min-w-0">
-                                                        <span className="w-2.5 h-2.5 rounded-full bg-[#FF3347] shrink-0 shadow-[0_0_8px_#FF3347]" />
+                                                        <span className="w-2.5 h-2.5 rounded-full bg-[#FFD62E] border border-[#1A1610] shrink-0" />
                                                         <div className="truncate">
                                                             <div className="flex items-center gap-2">
-                                                                <span className="text-sm font-bold text-white truncate">
+                                                                <span className="text-sm font-bold text-[#1A1610] truncate">
                                                                     {currentOption.label}
                                                                 </span>
                                                                 {currentOption.badge && (
-                                                                    <span className="hidden sm:inline-block px-2 py-0.5 text-[9px] font-mono-zine font-bold uppercase bg-[#D91424] text-white rounded-full">
+                                                                    <span className="hidden sm:inline-block px-2 py-0.5 text-[9px] font-mono-zine font-bold uppercase bg-[#E12D39] text-white rounded-full">
                                                                         {currentOption.badge}
                                                                     </span>
                                                                 )}
                                                             </div>
-                                                            <p className="text-[11px] text-white/55 truncate">
+                                                            <p className="text-[11px] text-[#1A1610]/65 truncate">
                                                                 {currentOption.desc}
                                                             </p>
                                                         </div>
@@ -2193,8 +2343,8 @@ export default function InfluencerLanding({ data }: Props) {
                                                         transition={{ duration: 0.25 }}
                                                         className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
                                                             serviceDropdownOpen
-                                                                ? 'bg-[#FF3347] text-white'
-                                                                : 'bg-white/10 text-white/80'
+                                                                ? 'bg-[#FFD62E] text-[#1A1610] border border-[#1A1610]'
+                                                                : 'bg-[#1A1610]/8 text-[#1A1610]'
                                                         }`}
                                                     >
                                                         <ChevronDown size={16} />
@@ -2208,7 +2358,7 @@ export default function InfluencerLanding({ data }: Props) {
                                                             animate={{ opacity: 1, y: 0, scale: 1 }}
                                                             exit={{ opacity: 0, y: 8, scale: 0.98 }}
                                                             transition={{ duration: 0.18 }}
-                                                            className="absolute left-0 right-0 bottom-full mb-2 z-50 bg-[#140407]/98 backdrop-blur-xl border border-[#FF3347]/50 rounded-2xl p-1.5 shadow-[0_24px_60px_rgba(0,0,0,0.95)] max-h-[250px] overflow-y-auto"
+                                                            className="absolute left-0 right-0 bottom-full mb-2 z-50 bg-[#FFFDF7] border-2 border-[#1A1610] rounded-2xl p-1.5 shadow-[0_18px_40px_rgba(26,22,16,0.28)] max-h-[250px] overflow-y-auto"
                                                         >
                                                             {SERVICE_OPTIONS.map((opt) => {
                                                                 const active = opt.value === selectedService;
@@ -2222,22 +2372,22 @@ export default function InfluencerLanding({ data }: Props) {
                                                                         }}
                                                                         className={`w-full px-3 py-2.5 rounded-xl text-left flex items-center justify-between gap-2 transition-colors cursor-pointer ${
                                                                             active
-                                                                                ? 'bg-[#D91424]/25 border border-[#FF3347]/50 text-white'
-                                                                                : 'hover:bg-white/8 text-white/85 border border-transparent'
+                                                                                ? 'bg-[#FFE57A]/65 border border-[#1A1610]/30 text-[#1A1610]'
+                                                                                : 'hover:bg-[#1A1610]/6 text-[#1A1610] border border-transparent'
                                                                         }`}
                                                                     >
                                                                         <div className="min-w-0">
                                                                             <div className="flex items-center gap-2">
-                                                                                <span className="text-xs sm:text-sm font-bold text-white truncate">
+                                                                                <span className="text-xs sm:text-sm font-bold text-[#1A1610] truncate">
                                                                                     {opt.label}
                                                                                 </span>
                                                                                 {opt.badge && (
-                                                                                    <span className="px-1.5 py-0.5 text-[8px] font-mono-zine font-bold uppercase bg-[#D91424] text-white rounded-full">
+                                                                                    <span className="px-1.5 py-0.5 text-[8px] font-mono-zine font-bold uppercase bg-[#E12D39] text-white rounded-full">
                                                                                         {opt.badge}
                                                                                     </span>
                                                                                 )}
                                                                             </div>
-                                                                            <p className="text-[11px] text-white/55 truncate">
+                                                                            <p className="text-[11px] text-[#1A1610]/65 truncate">
                                                                                 {opt.desc}
                                                                             </p>
                                                                         </div>
@@ -2245,8 +2395,8 @@ export default function InfluencerLanding({ data }: Props) {
                                                                         <div
                                                                             className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${
                                                                                 active
-                                                                                    ? 'bg-[#FF3347] text-white'
-                                                                                    : 'border border-white/20 text-transparent'
+                                                                                    ? 'bg-[#FFD62E] text-[#1A1610] border border-[#1A1610]'
+                                                                                    : 'border border-[#1A1610]/25 text-transparent'
                                                                             }`}
                                                                         >
                                                                             <Check size={12} strokeWidth={3} />
@@ -2265,7 +2415,7 @@ export default function InfluencerLanding({ data }: Props) {
                                 <button
                                     type="button"
                                     onClick={() => openWhatsApp()}
-                                    className="w-full py-3.5 px-6 [--paper:#F4F1EA] hover:[--paper:#D91424] text-[#0B0C0E] hover:text-white font-mono-zine font-bold text-xs sm:text-sm uppercase tracking-wider torn-paper-btn shadow-2xl transition-all flex items-center justify-center gap-3 cursor-pointer mt-1"
+                                    className="w-full py-3.5 px-6 rounded-full bg-[#FFD62E] hover:bg-[#FFE359] text-[#1A1610] border-2 border-[#1A1610] font-editorial font-extrabold text-xs sm:text-sm uppercase tracking-wider shadow-[0_5px_0_#1A1610] hover:shadow-[0_3px_0_#1A1610] hover:translate-y-[2px] transition-all flex items-center justify-center gap-2.5 cursor-pointer mt-1"
                                 >
                                     <MessageCircle size={18} />
                                     <span>COTIZAR AHORA CON NATHIKA</span>
@@ -2274,13 +2424,13 @@ export default function InfluencerLanding({ data }: Props) {
                             </div>
 
                             <div
-                                className="pt-2.5 border-t border-white/15 flex items-center justify-between text-xs font-mono-zine relative z-10"
+                                className="pt-2.5 border-t border-[#1A1610]/15 flex items-center justify-between text-xs font-mono-zine relative z-10"
                                 onPointerDown={(e) => e.stopPropagation()}
                             >
-                                <span className="text-white/60">¿BUSCAS GOMITAS & CHAMOY?</span>
+                                <span className="text-[#1A1610]/70 font-semibold">¿BUSCAS GOMITAS &amp; CHAMOY?</span>
                                 <a
                                     href="/tienda"
-                                    className="text-[#FF4D5E] hover:text-white font-bold uppercase flex items-center gap-1 underline underline-offset-4"
+                                    className="text-[#D91424] hover:text-[#1A1610] font-bold uppercase flex items-center gap-1 underline underline-offset-4"
                                 >
                                     <span>IR A LA TIENDA</span>
                                     <ArrowUpRight size={15} />
@@ -2290,103 +2440,262 @@ export default function InfluencerLanding({ data }: Props) {
 
                     </motion.div>
                 </div>
+
+                {/* Puente cálido inferior hacia #faq (amarillo arena dorado continuo) */}
+                <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-x-0 bottom-0 h-28 sm:h-40 lg:h-56 bg-linear-to-b from-transparent to-[#FFE066] z-[4]"
+                />
             </section>
 
             {/* =====================================================================
-                SECTION 6: PREGUNTAS FRECUENTES (FAQ EDITORIAL / REBELDE)
+                SECTION 6: PREGUNTAS FRECUENTES (ESTILO PLAYERO · ALEGRE · SOL & ARENA)
                ===================================================================== */}
             <section
                 id="faq"
-                className="relative w-full py-28 sm:py-36 lg:py-44 bg-linear-to-b from-[#170306] via-[#1E0408] to-[#0D0204] text-[#F7F3EE] border-t border-white/10 overflow-hidden"
+                className="relative w-full pt-24 pb-36 sm:pt-32 sm:pb-48 lg:pt-40 lg:pb-60 bg-linear-to-b from-[#FFE066] via-[#FFD24A] to-[#FFE787] text-[#1A1610] overflow-hidden select-none"
             >
-                <div className="absolute inset-0 halftone-light opacity-20 pointer-events-none" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[350px] bg-[#D91424]/10 rounded-full blur-[160px] pointer-events-none" />
+                {/* Bloques geométricos playeros laterales inspirados en el póster (rojo coral y naranja sol) */}
+                <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden z-0">
+                    <div className="absolute -top-12 -left-16 w-48 sm:w-72 h-72 bg-[#E12D39]/90 rotate-6 rounded-3xl" />
+                    <div className="absolute top-[28%] -left-10 w-36 sm:w-64 h-64 bg-[#FF9E3B]/80 -rotate-3 rounded-2xl" />
+                    <div className="absolute top-[24%] -right-14 w-44 sm:w-72 h-80 bg-[#E12D39]/88 -rotate-6 rounded-3xl" />
+                    <div className="absolute top-[10%] right-4 w-56 h-56 rounded-full bg-[#FFF7C2]/55 blur-[70px]" />
 
-                <div className="container mx-auto px-4 sm:px-6 lg:px-10 max-w-4xl relative z-10">
-                    
-                    {/* FAQ Header */}
-                    <div className="text-center mb-14 sm:mb-18 space-y-3">
-                        <span className="font-editorial text-xs sm:text-sm font-extrabold uppercase tracking-[0.28em] text-[#FF3347] block">
-                            DUDAS & COLABORACIONES
-                        </span>
-                        <h2 className="font-anton text-6xl sm:text-8xl md:text-9xl uppercase leading-[0.86] tracking-tight text-white">
-                            PREGUNTAS <span className="text-[#FF3347]">FRECUENTES</span>
-                        </h2>
-                    </div>
-
-                    {/* Accordion List */}
-                    <div className="space-y-4">
-                        {INFLUENCER_FAQS.map((item, idx) => {
-                            const isOpen = openFaqIdx === idx;
-                            return (
-                                <div
-                                    key={idx}
-                                    className={`rounded-2xl border transition-all duration-300 overflow-hidden ${
-                                        isOpen
-                                            ? 'bg-[#2A060B]/90 border-[#FF3347]/70 shadow-[0_16px_40px_rgba(0,0,0,0.65)]'
-                                            : 'bg-black/40 border-white/12 hover:border-white/25'
-                                    }`}
-                                >
-                                    <button
-                                        type="button"
-                                        onClick={() => setOpenFaqIdx(isOpen ? null : idx)}
-                                        className="w-full px-6 py-5 sm:px-8 sm:py-6 text-left flex items-center justify-between gap-4 cursor-pointer"
-                                    >
-                                        <div className="flex items-center gap-4">
-                                            <span
-                                                className={`font-anton text-2xl sm:text-3xl leading-none shrink-0 ${
-                                                    isOpen ? 'text-[#FF3347]' : 'text-white/45'
-                                                }`}
-                                            >
-                                                0{idx + 1}
-                                            </span>
-                                            <span className="font-editorial font-bold text-base sm:text-lg md:text-xl text-white leading-snug">
-                                                {item.question}
-                                            </span>
-                                        </div>
-
-                                        <motion.span
-                                            animate={{ rotate: isOpen ? 180 : 0 }}
-                                            transition={{ duration: 0.25 }}
-                                            className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 transition-colors ${
-                                                isOpen
-                                                    ? 'bg-[#FF3347] text-white'
-                                                    : 'bg-white/10 text-white/75'
-                                            }`}
-                                        >
-                                            <ChevronDown size={18} />
-                                        </motion.span>
-                                    </button>
-
-                                    <AnimatePresence initial={false}>
-                                        {isOpen && (
-                                            <motion.div
-                                                initial={{ height: 0, opacity: 0 }}
-                                                animate={{ height: 'auto', opacity: 1 }}
-                                                exit={{ height: 0, opacity: 0 }}
-                                                transition={{ duration: 0.28, ease: 'easeInOut' }}
-                                            >
-                                                <div className="px-6 pb-6 sm:px-8 sm:pb-7 pt-0 pl-14 sm:pl-18">
-                                                    <div className="h-px w-full bg-white/10 mb-4" />
-                                                    <p className="text-sm sm:text-base text-[#F7F3EE]/85 leading-relaxed font-medium">
-                                                        {item.answer}
-                                                    </p>
-                                                </div>
-                                            </motion.div>
-                                        )}
-                                    </AnimatePresence>
-                                </div>
-                            );
-                        })}
-                    </div>
-
+                    {/* Palmeras decorativas asomando en la esquina superior derecha */}
+                    <svg viewBox="0 0 180 220" className="absolute -top-2 -right-4 w-36 sm:w-52 h-auto text-[#4C8E4B]/80">
+                        <path d="M165,210 C150,155 138,105 130,68" fill="none" stroke="#6E4E2E" strokeWidth="7" strokeLinecap="round" />
+                        <path d="M130,68 C100,45 70,52 50,74 C82,68 106,70 130,68 Z" fill="currentColor" />
+                        <path d="M130,68 C105,28 74,22 52,32 C85,38 110,50 130,68 Z" fill="currentColor" />
+                        <path d="M130,68 C142,28 168,18 182,30 C162,40 144,52 130,68 Z" fill="currentColor" />
+                        <path d="M130,68 C156,48 175,62 182,82 C160,74 144,72 130,68 Z" fill="currentColor" />
+                    </svg>
                 </div>
+
+                {/* Escenario central + Polaroids laterales */}
+                <div className="container mx-auto px-4 sm:px-6 lg:px-10 max-w-6xl relative z-10">
+
+                    {/* Tira compacta de fotos playeras en móvil y tablet (<lg) */}
+                    <div className="flex lg:hidden items-center justify-center gap-3 sm:gap-5 mb-8 px-1">
+                        {[
+                            { src: '/influencer/beach-1.jpg', alt: 'Nathika disfrutando el sol', rot: '-rotate-3' },
+                            { src: '/influencer/beach-2.jpg', alt: 'Nathika con gorro amarillo en la playa', rot: 'rotate-2' },
+                            { src: '/influencer/beach-3.jpg', alt: 'Nathika vibra veraniega', rot: '-rotate-2' }
+                        ].map((ph, i) => (
+                            <motion.div
+                                key={i}
+                                initial={{ opacity: 0, y: 18 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true, amount: 0.2 }}
+                                transition={{ duration: 0.5, delay: i * 0.08 }}
+                                className={`beach-photo-frame w-24 sm:w-32 aspect-[3/4] ${ph.rot} shrink-0`}
+                            >
+                                <img src={ph.src} alt={ph.alt} className="w-full h-full object-cover object-top" loading="lazy" />
+                            </motion.div>
+                        ))}
+                    </div>
+
+                    <div className="relative max-w-2xl xl:max-w-3xl mx-auto">
+
+                        {/* FOTOS LATERALES DE NATHIKA FLANKING EL PÓSTER EN ESCRITORIO (lg+) */}
+                        <motion.div
+                            initial={{ opacity: 0, x: -30, rotate: -6 }}
+                            whileInView={{ opacity: 1, x: 0, rotate: -3 }}
+                            viewport={{ once: true, amount: 0.2 }}
+                            transition={{ duration: 0.7, ease: EASE_OUT_EXPO }}
+                            whileHover={{ rotate: 0, scale: 1.03 }}
+                            className="hidden lg:block absolute top-28 -left-32 xl:-left-40 w-40 xl:w-48 aspect-[3/4] beach-photo-frame z-30"
+                        >
+                            <img
+                                src="/influencer/beach-1.jpg"
+                                alt="Nathika con visera blanca y franela amarilla"
+                                loading="lazy"
+                                className="w-full h-full object-cover object-top"
+                            />
+                        </motion.div>
+
+                        <motion.div
+                            initial={{ opacity: 0, x: -24, rotate: 4 }}
+                            whileInView={{ opacity: 1, x: 0, rotate: 2 }}
+                            viewport={{ once: true, amount: 0.2 }}
+                            transition={{ duration: 0.7, delay: 0.12, ease: EASE_OUT_EXPO }}
+                            whileHover={{ rotate: -1, scale: 1.03 }}
+                            className="hidden lg:block absolute bottom-16 -left-28 xl:-left-36 w-40 xl:w-48 aspect-[3/4] beach-photo-frame z-30"
+                        >
+                            <img
+                                src="/influencer/beach-3.jpg"
+                                alt="Nathika con gorro amarillo y falda roja"
+                                loading="lazy"
+                                className="w-full h-full object-cover object-top"
+                            />
+                        </motion.div>
+
+                        <motion.div
+                            initial={{ opacity: 0, x: 30, rotate: 5 }}
+                            whileInView={{ opacity: 1, x: 0, rotate: 2.5 }}
+                            viewport={{ once: true, amount: 0.2 }}
+                            transition={{ duration: 0.7, delay: 0.1, ease: EASE_OUT_EXPO }}
+                            whileHover={{ rotate: 0, scale: 1.03 }}
+                            className="hidden lg:block absolute top-52 -right-32 xl:-right-40 w-40 xl:w-48 aspect-[3/4] beach-photo-frame z-30"
+                        >
+                            <img
+                                src="/influencer/beach-2.jpg"
+                                alt="Nathika bajo cielo azul y sol playero"
+                                loading="lazy"
+                                className="w-full h-full object-cover object-top"
+                            />
+                        </motion.div>
+
+                        {/* EMBLEMA CIRCULAR NATHIKAS EN LA ESQUINA SUPERIOR DERECHA */}
+                        <motion.img
+                            src="/images/logo.webp"
+                            alt="Logo Nathikas"
+                            initial={{ opacity: 0, scale: 0.6, rotate: 18 }}
+                            whileInView={{ opacity: 1, scale: 1, rotate: 8 }}
+                            viewport={{ once: true, amount: 0.2 }}
+                            transition={{ type: 'spring', stiffness: 220, damping: 14, delay: 0.2 }}
+                            className="pointer-events-none absolute -top-5 -right-2 sm:-top-8 sm:-right-8 w-20 h-20 sm:w-28 sm:h-28 rounded-full border-3 border-[#1A1610] shadow-[0_14px_30px_rgba(26,22,16,0.28)] object-cover z-30"
+                        />
+
+                        {/* TARJETA CENTRAL PÓSTER PLAYERO (Cielo Azul -> Crema Arena -> Ola Dorada) */}
+                        <div className="relative z-20 rounded-[28px] sm:rounded-[34px] border-3 border-[#1A1610]/12 shadow-[0_28px_70px_rgba(110,68,8,0.28)] overflow-hidden bg-linear-to-b from-[#1B9EE6] via-[#7AD5F5] via-[22%] to-[#FAF7EE] to-[42%]">
+
+                            {/* Encabezado Cómico de Verano + Doodles */}
+                            <div className="relative pt-10 pb-8 sm:pt-14 sm:pb-10 px-6 sm:px-14 text-center">
+                                {/* Doodle Sol a la izquierda */}
+                                <svg viewBox="0 0 64 64" className="hidden sm:block absolute left-10 top-10 w-12 h-12 text-[#FFD835]">
+                                    <circle cx="32" cy="32" r="13" fill="currentColor" stroke="#1A1610" strokeWidth="2.5" />
+                                    {[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => (
+                                        <line
+                                            key={deg}
+                                            x1="32"
+                                            y1="7"
+                                            x2="32"
+                                            y2="14"
+                                            stroke="#1A1610"
+                                            strokeWidth="2.4"
+                                            strokeLinecap="round"
+                                            transform={`rotate(${deg} 32 32)`}
+                                        />
+                                    ))}
+                                </svg>
+
+                                {/* Doodle Isla con Palmera arriba derecha */}
+                                <svg viewBox="0 0 64 64" className="hidden sm:block absolute right-24 top-10 w-12 h-12">
+                                    <path d="M12,50 Q32,42 52,50 Z" fill="#FBBF24" stroke="#1A1610" strokeWidth="2.2" />
+                                    <path d="M32,45 Q30,30 34,20" fill="none" stroke="#6E4E2E" strokeWidth="3.5" strokeLinecap="round" />
+                                    <path d="M34,20 C24,14 18,18 14,24 C22,22 28,22 34,20 Z" fill="#4C8E4B" stroke="#1A1610" strokeWidth="1.6" />
+                                    <path d="M34,20 C42,14 48,17 52,23 C45,21 39,21 34,20 Z" fill="#4C8E4B" stroke="#1A1610" strokeWidth="1.6" />
+                                </svg>
+
+                                {/* Doodle Olas del mar */}
+                                <svg viewBox="0 0 72 34" className="hidden sm:block absolute left-12 bottom-7 w-14 h-7 text-[#1A1610]">
+                                    <path d="M4,14 Q14,4 24,14 T44,14 T64,14" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+                                    <path d="M8,24 Q18,14 28,24 T48,24 T68,24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+                                </svg>
+
+                                <span className="font-mono-zine text-[10px] sm:text-xs font-bold uppercase tracking-[0.26em] text-[#102E3D] block mb-2">
+                                    06 // DUDAS &amp; COLABORACIONES
+                                </span>
+
+                                <h2 className="font-anton text-5xl sm:text-7xl md:text-[5.2rem] uppercase leading-[0.88] tracking-tight">
+                                    <span className="comic-outline-white block">PREGUNTAS</span>
+                                    <span className="comic-outline-yellow block">FRECUENTES</span>
+                                </h2>
+                            </div>
+
+                            {/* Lista Acordeón de Preguntas sobre Fondo Crema Cálido */}
+                            <div className="px-6 sm:px-14 md:px-16 pb-14 sm:pb-16 divide-y divide-[#1A1610]/20">
+                                {INFLUENCER_FAQS.map((item, idx) => {
+                                    const isOpen = openFaqIdx === idx;
+                                    return (
+                                        <div key={idx} className="py-5 sm:py-6">
+                                            <button
+                                                type="button"
+                                                onClick={() => setOpenFaqIdx(isOpen ? null : idx)}
+                                                className="w-full text-left flex items-start justify-between gap-4 cursor-pointer group"
+                                            >
+                                                <div className="flex items-baseline gap-3 sm:gap-4 pr-2">
+                                                    <span className="font-anton text-xl sm:text-2xl text-[#E12D39] shrink-0">
+                                                        0{idx + 1}.
+                                                    </span>
+                                                    <span className="font-editorial font-extrabold text-lg sm:text-xl md:text-2xl text-[#1A1610] leading-snug group-hover:text-[#0F6E9C] transition-colors">
+                                                        {item.question}
+                                                    </span>
+                                                </div>
+
+                                                <motion.span
+                                                    animate={{ rotate: isOpen ? 180 : 0 }}
+                                                    transition={{ duration: 0.25 }}
+                                                    className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-[#1A1610] bg-[#1A1610]/6 group-hover:bg-[#FFD835] transition-colors mt-0.5"
+                                                >
+                                                    <ChevronDown size={20} strokeWidth={2.6} />
+                                                </motion.span>
+                                            </button>
+
+                                            <AnimatePresence initial={false}>
+                                                {isOpen && (
+                                                    <motion.div
+                                                        initial={{ height: 0, opacity: 0 }}
+                                                        animate={{ height: 'auto', opacity: 1 }}
+                                                        exit={{ height: 0, opacity: 0 }}
+                                                        transition={{ duration: 0.28, ease: 'easeInOut' }}
+                                                        className="overflow-hidden"
+                                                    >
+                                                        <div className="pt-3.5 pl-8 sm:pl-11 pr-2 flex items-start justify-between gap-4">
+                                                            <p className="font-editorial text-sm sm:text-base text-[#28231B]/90 leading-relaxed font-medium">
+                                                                {item.answer}
+                                                            </p>
+
+                                                            {/* Micro doodle playero al lado de la respuesta abierta */}
+                                                            <svg
+                                                                viewBox="0 0 40 40"
+                                                                aria-hidden="true"
+                                                                className="hidden sm:block w-9 h-9 shrink-0 mt-0.5 text-[#FFD835]"
+                                                            >
+                                                                <circle cx="20" cy="20" r="10" fill="currentColor" stroke="#1A1610" strokeWidth="1.8" />
+                                                                <circle cx="16.5" cy="18.5" r="1.3" fill="#1A1610" />
+                                                                <circle cx="23.5" cy="18.5" r="1.3" fill="#1A1610" />
+                                                                <path d="M16.5,22.5 Q20,25.5 23.5,22.5" fill="none" stroke="#1A1610" strokeWidth="1.6" strokeLinecap="round" />
+                                                            </svg>
+                                                        </div>
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+
+                            {/* Onda inferior de arena dorada cerrando el póster */}
+                            <svg
+                                viewBox="0 0 1200 72"
+                                preserveAspectRatio="none"
+                                aria-hidden="true"
+                                className="block w-full h-10 sm:h-14 text-[#FFE066]"
+                            >
+                                <path
+                                    d="M0,36 C160,8 310,64 490,34 C670,4 830,62 1010,30 C1105,14 1160,26 1200,34 L1200,72 L0,72 Z"
+                                    fill="currentColor"
+                                />
+                            </svg>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                {/* Puente cálido crepuscular hacia el Footer */}
+                <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-x-0 bottom-0 h-32 sm:h-44 lg:h-60 bg-linear-to-b from-transparent via-[#281E12]/72 to-[#0B0E12] z-[5]"
+                />
             </section>
 
             {/* =====================================================================
                 SECTION 7: SIMPLE FOOTER (SOCIAL BUTTONS + NORMAL "Nathika" TEXT + COPYRIGHT + ALFREDO MENDOZA LINK)
                ===================================================================== */}
-            <footer className="w-full py-12 sm:py-14 bg-[#08090C] border-t border-white/10 text-[#F6F2EB]">
+            <footer className="w-full py-14 sm:py-16 bg-[#0B0E12] text-[#F6F2EB]">
                 <div className="container mx-auto px-4 sm:px-6 max-w-5xl flex flex-col items-center text-center gap-6">
                     
                     {/* Social Network Buttons */}
@@ -2397,7 +2706,7 @@ export default function InfluencerLanding({ data }: Props) {
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label="Instagram"
-                            className="w-11 h-11 rounded-full bg-white/8 hover:bg-[#D91424] border border-white/15 hover:border-[#D91424] text-white flex items-center justify-center transition-all hover:scale-110"
+                            className="w-11 h-11 rounded-full bg-white/8 hover:bg-[#FFD62E] border border-white/15 hover:border-[#FFD62E] text-white hover:text-[#1A1610] flex items-center justify-center transition-all hover:scale-110"
                         >
                             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <rect x="2" y="2" width="20" height="20" rx="5" />
@@ -2412,7 +2721,7 @@ export default function InfluencerLanding({ data }: Props) {
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label="TikTok"
-                            className="w-11 h-11 rounded-full bg-white/8 hover:bg-[#D91424] border border-white/15 hover:border-[#D91424] text-white flex items-center justify-center transition-all hover:scale-110"
+                            className="w-11 h-11 rounded-full bg-white/8 hover:bg-[#FFD62E] border border-white/15 hover:border-[#FFD62E] text-white hover:text-[#1A1610] flex items-center justify-center transition-all hover:scale-110"
                         >
                             <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
                                 <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
@@ -2425,7 +2734,7 @@ export default function InfluencerLanding({ data }: Props) {
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label="YouTube"
-                            className="w-11 h-11 rounded-full bg-white/8 hover:bg-[#D91424] border border-white/15 hover:border-[#D91424] text-white flex items-center justify-center transition-all hover:scale-110"
+                            className="w-11 h-11 rounded-full bg-white/8 hover:bg-[#FFD62E] border border-white/15 hover:border-[#FFD62E] text-white hover:text-[#1A1610] flex items-center justify-center transition-all hover:scale-110"
                         >
                             <Play size={18} className="fill-current ml-0.5" />
                         </a>
@@ -2436,7 +2745,7 @@ export default function InfluencerLanding({ data }: Props) {
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label="Facebook"
-                            className="w-11 h-11 rounded-full bg-white/8 hover:bg-[#D91424] border border-white/15 hover:border-[#D91424] text-white flex items-center justify-center font-editorial font-bold text-lg transition-all hover:scale-110"
+                            className="w-11 h-11 rounded-full bg-white/8 hover:bg-[#FFD62E] border border-white/15 hover:border-[#FFD62E] text-white hover:text-[#1A1610] flex items-center justify-center font-editorial font-bold text-lg transition-all hover:scale-110"
                         >
                             f
                         </a>
@@ -2446,7 +2755,7 @@ export default function InfluencerLanding({ data }: Props) {
                             type="button"
                             onClick={() => openWhatsApp('Contacto desde el Footer')}
                             aria-label="WhatsApp"
-                            className="w-11 h-11 rounded-full bg-white/8 hover:bg-[#D91424] border border-white/15 hover:border-[#D91424] text-white flex items-center justify-center transition-all hover:scale-110 cursor-pointer"
+                            className="w-11 h-11 rounded-full bg-white/8 hover:bg-[#FFD62E] border border-white/15 hover:border-[#FFD62E] text-white hover:text-[#1A1610] flex items-center justify-center transition-all hover:scale-110 cursor-pointer"
                         >
                             <MessageCircle size={19} />
                         </button>
@@ -2470,7 +2779,7 @@ export default function InfluencerLanding({ data }: Props) {
                                 href="https://alfredomendoza.netlify.app/"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="font-bold text-[#FF3347] hover:text-white transition-colors underline underline-offset-4"
+                                className="font-bold text-[#FFD62E] hover:text-white transition-colors underline underline-offset-4"
                             >
                                 Alfredo Mendoza
                             </a>
