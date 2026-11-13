@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Big+Shoulders+Display:wght@800;900&family=League+Gothic:wdth@75..100&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Big+Shoulders+Display:wght@800;900&family=Caveat:wght@600;700&family=Instrument+Serif:ital@0;1&family=League+Gothic:wdth@75..100&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -115,38 +115,225 @@
     font-family: 'Syne', sans-serif;
 }
 
-/* Torn Paper Clip Paths */
-.torn-paper-btn {
-    clip-path: polygon(
-        0% 8%, 3% 0%, 12% 4%, 22% 1%, 35% 5%, 48% 0%, 62% 4%, 75% 1%, 88% 5%, 97% 0%, 100% 10%,
-        99% 35%, 100% 65%, 98% 92%,
-        95% 100%, 84% 95%, 71% 99%, 58% 94%, 43% 100%, 29% 95%, 15% 99%, 4% 94%, 0% 90%,
-        1% 60%, 0% 30%
-    );
+/* Elegant editorial serif for accent words (pairs with League Gothic + Jakarta) */
+.font-serif-display {
+    font-family: 'Instrument Serif', 'Playfair Display', Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -0.01em;
 }
 
-.torn-paper-corner-left {
-    clip-path: polygon(
-        0% 0%, 100% 0%, 96% 18%, 100% 36%, 93% 55%, 98% 74%, 92% 92%, 75% 97%, 52% 93%, 28% 100%, 0% 95%
-    );
+/* Handwritten marker/pen accent font */
+.font-hand {
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
 }
 
-.torn-paper-corner-right {
-    clip-path: polygon(
-        0% 0%, 100% 0%, 100% 96%, 82% 100%, 64% 93%, 45% 99%, 24% 92%, 6% 97%, 2% 76%, 6% 52%, 0% 28%
-    );
+/* Grain overlay for the "Sobre mí" section */
+.grain-overlay {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
+}
+
+@layer components {
+:root {
+    --edge-top: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 12' preserveAspectRatio='none'%3E%3Cpath d='M0 12 L0 5 L1.2 3.93 L2.53 4.36 L5.18 4.65 L7.16 5.74 L8.76 5.17 L12.27 2.91 L14.08 5.19 L16.83 3.58 L18.9 2.58 L20.64 5.73 L21.88 6.52 L24.54 9.32 L28.42 6.58 L29.67 6.16 L33.53 3.28 L36.97 5.82 L40.97 4.47 L42.88 2.63 L46.75 4.11 L50.4 9.57 L54.26 5.58 L56.89 4.48 L60.68 4.44 L64.16 3.54 L65.49 10 L67 5 L69.25 3 L71.51 5.1 L74.25 2.97 L78.2 6.01 L80.98 6.4 L83.99 3.9 L86.68 6.86 L89.47 3.19 L91.12 5.63 L93.13 4.16 L96.79 4.82 L98.64 10 L102.28 5.93 L104.43 4.48 L105.64 6.72 L108.4 6.16 L110.48 6.98 L113.06 3.3 L116.09 3.62 L118.04 5.33 L120.52 4.74 L123.15 9.41 L126.63 5.05 L128.43 4.21 L129.92 4.26 L131.68 6.67 L133.98 6.3 L137.51 3.61 L139.51 3.93 L143.28 5.06 L145.66 4.52 L148.94 10 L152.33 10 L154.89 2.56 L160 5 L160 12 Z'/%3E%3C/svg%3E");
+    --edge-bottom: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 12' preserveAspectRatio='none'%3E%3Cpath transform='rotate(180 80 6)' d='M0 12 L0 5 L1.2 6.63 L3.24 4.1 L5.46 5.67 L6.96 2.81 L8.43 9.05 L10.65 3.53 L12.18 3.01 L15.95 10 L18.65 5.53 L22.55 8.08 L24.87 9.33 L27.12 4.86 L29.29 5.86 L32.16 4.75 L36.04 6.55 L37.54 5.48 L41.29 3.55 L44.88 6.9 L47.25 3.02 L48.54 5.93 L50.4 6.9 L52.3 3.99 L55.51 4.71 L57.1 3.16 L58.4 4.16 L60.92 4.56 L62.35 2.56 L65.33 6.87 L67.03 4.1 L68.33 5.98 L71.67 3.33 L75.35 4.93 L79.21 6.17 L80.54 5.09 L82.66 4.59 L85.48 6.84 L88.08 5.7 L91.24 10 L92.78 5.37 L94.45 6.05 L97.44 2.92 L98.68 5.16 L100.44 3.63 L102.22 6.62 L104.43 3.37 L106.31 3.78 L107.59 3.03 L110.77 3.86 L113.42 3.03 L115.68 3.28 L118.16 5.47 L121.58 3.64 L124.67 2.65 L126.68 6.2 L128.7 6.23 L130.31 3.06 L132.85 6.15 L135.96 5.69 L137.33 4.05 L141.1 3.44 L142.68 8.64 L143.94 3.61 L147.12 3.67 L151.02 5.55 L153.37 6.66 L155.71 4.1 L160 5 L160 12 Z'/%3E%3C/svg%3E");
+    --edge-left: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 160' preserveAspectRatio='none'%3E%3Cpath transform='translate(0 160) rotate(-90)' d='M0 12 L0 5 L1.2 4.84 L3.96 7.88 L5.75 6.7 L9.56 8.43 L10.91 4.83 L14.62 4.15 L15.88 5.32 L17.86 5.81 L21.21 3.98 L24.47 6.83 L27.87 4.03 L29.71 4.45 L32.97 5.13 L34.65 3.33 L38.55 5.32 L40.91 5.14 L44.4 2.64 L46.87 6.67 L50.55 6.42 L52.28 6.33 L54.93 3.72 L58.92 3.5 L61.54 4.98 L64.05 2.77 L65.31 6.57 L68.83 4.12 L72.25 6.61 L75.95 4.13 L79.41 5.24 L80.87 5.96 L84.76 4.76 L86.31 5.95 L88.54 5.49 L91.2 6.99 L93.8 3.54 L97.43 5.02 L98.97 6.58 L100.64 10 L102.87 4.82 L106.87 3.11 L108.84 3.16 L111.36 4.15 L112.79 4.78 L116.58 5.44 L117.96 7.17 L119.79 6.73 L122.66 5.83 L126.39 6.86 L128.2 5.52 L130.94 6.85 L134.4 6.68 L136.69 9.17 L140.57 3.5 L143.85 4.29 L145.89 4.03 L148.15 9.61 L150.83 3.27 L153.79 5.33 L155.94 6.55 L160 5 L160 12 Z'/%3E%3C/svg%3E");
+    --edge-right: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 160' preserveAspectRatio='none'%3E%3Cpath transform='translate(12 0) rotate(90)' d='M0 12 L0 5 L1.2 5.74 L2.59 3.31 L6.33 4.24 L9.15 3.03 L13.06 4.49 L16.97 5.4 L20.47 5.46 L21.68 3.54 L23.53 5.37 L25.5 3.42 L28.26 6.05 L32.09 7.67 L34.71 3.68 L36.82 5.01 L40.76 2.87 L42.06 4.46 L45.03 5.31 L48.06 6.2 L51.55 4.24 L54.17 2.65 L55.61 6.36 L58.15 2.53 L59.6 5.51 L61.14 6.5 L65.14 6.89 L67.87 7.28 L69.65 5.71 L71.98 3.16 L73.37 3 L75.15 5.91 L77.35 3.13 L80.23 7.55 L82 4.12 L84.54 6.29 L88.08 5.94 L90.54 5.87 L92.74 3.85 L94.25 10 L97.86 3.7 L100.9 6.24 L103.65 3.65 L105.93 6.64 L109.5 2.59 L111.7 3.07 L114.23 2.63 L115.94 3.63 L119.2 6.93 L121.24 3.86 L124.16 5.99 L127.84 4.99 L130.48 4.6 L133.31 3.56 L135.95 9.26 L138.99 4.97 L141.07 4.12 L144.61 6.07 L147.61 10 L150.24 4.61 L153.95 2.54 L155.75 10 L156.98 3.17 L160 5 L160 12 Z'/%3E%3C/svg%3E");
+    --tape-end-left: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 40' preserveAspectRatio='none'%3E%3Cpath transform='translate(0 40) rotate(-90)' d='M0 8 L0 4 L1.6 1.39 L4.29 5.67 L6.82 0.71 L8.75 5.83 L10.9 1.41 L13.79 6.16 L15.6 0.81 L17.58 6.24 L19.68 0.65 L22.56 5.73 L24.28 1.12 L27.21 6.24 L29.13 1.36 L31.37 5.63 L33.08 1.21 L35.46 6.5 L37.49 0.88 L40 4 L40 8 Z'/%3E%3C/svg%3E");
+    --tape-end-right: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 40' preserveAspectRatio='none'%3E%3Cpath transform='translate(8 0) rotate(90)' d='M0 8 L0 4 L1.6 0.82 L4.32 5.4 L7.03 1.76 L9.23 5.38 L10.99 1.09 L13.22 6.28 L15.49 0.97 L17.76 6.43 L19.42 0.68 L21.65 6.16 L24.31 0.82 L26.33 5.8 L28.79 1.49 L31.55 6.62 L34.19 0.97 L36.06 6.58 L38.17 1.11 L40 4 L40 8 Z'/%3E%3C/svg%3E");
+}
+
+/* =========================================================
+   SCRAPBOOK SYSTEM v2 — organic torn paper, real tape, real shadows
+   ---------------------------------------------------------
+   Old version used straight-line clip-path polygons: edges looked
+   geometric and clip-path also deleted every box-shadow.
+   Now: the paper is a ::before layer cut with seamless SVG "deckle"
+   edge masks (fibrous, irregular), and the element itself casts a
+   drop-shadow that follows the torn silhouette.
+   Paper colour is driven by --paper (hover-able: hover:[--paper:#D91424]).
+   ========================================================= */
+
+/* Fine paper grain used on paper + tape */
+:root {
+    --paper-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.3 0 0 0 0 0.25 0 0 0 0.16 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E");
+    --fiber-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.02 0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.3 0 0 0 0 0.22 0 0 0 0 0.12 0 0 0 0.22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+}
+
+.torn-paper-card,
+.torn-paper-btn,
+.torn-paper-corner-left,
+.torn-ransom-tile {
+    position: relative;
+    isolation: isolate;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    filter: drop-shadow(0 16px 22px rgba(0, 0, 0, 0.5)) drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35));
+}
+
+.torn-ransom-tile {
+    filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.55)) drop-shadow(0 2px 3px rgba(0, 0, 0, 0.4));
+}
+
+.torn-paper-card::before,
+.torn-paper-btn::before,
+.torn-paper-corner-left::before,
+.torn-ransom-tile::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-color: var(--paper, #F3F1EC);
+    background-image:
+        linear-gradient(160deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 40%, rgba(0, 0, 0, 0.06)),
+        var(--paper-noise);
+    transition: background-color 0.3s ease;
+    pointer-events: none;
+}
+
+/* Full deckle on all 4 sides */
+.torn-paper-card::before,
+.torn-paper-btn::before,
+.torn-ransom-tile::before {
+    -webkit-mask-image: var(--edge-top), var(--edge-bottom), var(--edge-left), var(--edge-right), linear-gradient(#000, #000);
+    mask-image: var(--edge-top), var(--edge-bottom), var(--edge-left), var(--edge-right), linear-gradient(#000, #000);
+    -webkit-mask-position: left top, left bottom, left top, right top, center;
+    mask-position: left top, left bottom, left top, right top, center;
+    -webkit-mask-repeat: repeat-x, repeat-x, repeat-y, repeat-y, no-repeat;
+    mask-repeat: repeat-x, repeat-x, repeat-y, repeat-y, no-repeat;
+    -webkit-mask-size: 170px 9px, 170px 9px, 9px 170px, 9px 170px, calc(100% - 16px) calc(100% - 16px);
+    mask-size: 170px 9px, 170px 9px, 9px 170px, 9px 170px, calc(100% - 16px) calc(100% - 16px);
+}
+
+/* Tighter tear for ransom letter tiles and cutout tags */
+.torn-ransom-tile::before {
+    -webkit-mask-size: 70px 5px, 70px 5px, 5px 70px, 5px 70px, calc(100% - 8px) calc(100% - 8px);
+    mask-size: 70px 5px, 70px 5px, 5px 70px, 5px 70px, calc(100% - 8px) calc(100% - 8px);
+}
+
+/* Buttons: tighter tear so it reads at small sizes */
+.torn-paper-btn::before {
+    -webkit-mask-size: 120px 7px, 120px 7px, 7px 90px, 7px 90px, calc(100% - 12px) calc(100% - 12px);
+    mask-size: 120px 7px, 120px 7px, 7px 90px, 7px 90px, calc(100% - 12px) calc(100% - 12px);
+}
+
+/* Corner scrap (menu button): torn only on right + bottom, flush to the viewport corner */
+.torn-paper-corner-left::before {
+    -webkit-mask-image: var(--edge-right), var(--edge-bottom), linear-gradient(#000, #000);
+    mask-image: var(--edge-right), var(--edge-bottom), linear-gradient(#000, #000);
+    -webkit-mask-position: right top, left bottom, left top;
+    mask-position: right top, left bottom, left top;
+    -webkit-mask-repeat: repeat-y, repeat-x, no-repeat;
+    mask-repeat: repeat-y, repeat-x, no-repeat;
+    -webkit-mask-size: 10px 150px, 150px 10px, calc(100% - 9px) calc(100% - 9px);
+    mask-size: 10px 150px, 150px 10px, calc(100% - 9px) calc(100% - 9px);
+}
+
+/* Kraft cardboard strips on the hero edges */
+.kraft-strip-left,
+.kraft-strip-right {
+    background-color: #C5AA87;
+    background-image:
+        linear-gradient(90deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0) 30%, rgba(255, 255, 255, 0.08) 70%, rgba(0, 0, 0, 0.1)),
+        var(--fiber-noise),
+        var(--paper-noise) !important;
 }
 
 .kraft-strip-left {
-    clip-path: polygon(
-        0% 0%, 88% 3%, 96% 14%, 85% 27%, 98% 41%, 89% 56%, 97% 71%, 86% 86%, 95% 97%, 0% 100%
-    );
+    -webkit-mask-image: var(--edge-right), linear-gradient(#000, #000);
+    mask-image: var(--edge-right), linear-gradient(#000, #000);
+    -webkit-mask-position: right top, left top;
+    mask-position: right top, left top;
+    -webkit-mask-repeat: repeat-y, no-repeat;
+    mask-repeat: repeat-y, no-repeat;
+    -webkit-mask-size: 12px 130px, calc(100% - 11px) 100%;
+    mask-size: 12px 130px, calc(100% - 11px) 100%;
 }
 
 .kraft-strip-right {
-    clip-path: polygon(
-        12% 0%, 100% 0%, 100% 100%, 8% 97%, 16% 84%, 4% 70%, 15% 54%, 3% 39%, 14% 24%, 5% 11%
-    );
+    -webkit-mask-image: var(--edge-left), linear-gradient(#000, #000);
+    mask-image: var(--edge-left), linear-gradient(#000, #000);
+    -webkit-mask-position: left top, right top;
+    mask-position: left top, right top;
+    -webkit-mask-repeat: repeat-y, no-repeat;
+    mask-repeat: repeat-y, no-repeat;
+    -webkit-mask-size: 12px 130px, calc(100% - 11px) 100%;
+    mask-size: 12px 130px, calc(100% - 11px) 100%;
+}
+
+/* ---------------------------------------------------------
+   TAPE — serrated torn ends + plastic sheen + crinkle grain + drop shadow
+   --------------------------------------------------------- */
+.tape-clear,
+.washi-tape-red,
+.washi-tape-beige,
+.tape-kraft {
+    -webkit-mask-image: var(--tape-end-left), var(--tape-end-right), linear-gradient(#000, #000);
+    mask-image: var(--tape-end-left), var(--tape-end-right), linear-gradient(#000, #000);
+    -webkit-mask-position: left top, right top, center;
+    mask-position: left top, right top, center;
+    -webkit-mask-repeat: repeat-y, repeat-y, no-repeat;
+    mask-repeat: repeat-y, repeat-y, no-repeat;
+    -webkit-mask-size: 5px 22px, 5px 22px, calc(100% - 8px) 100%;
+    mask-size: 5px 22px, 5px 22px, calc(100% - 8px) 100%;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.45)) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+    border-top: 1px solid rgba(255, 255, 255, 0.28);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.18);
+}
+
+/* Translucent matte masking tape */
+.tape-clear {
+    background-color: rgba(246, 240, 228, 0.62);
+    background-image:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0) 35%, rgba(0, 0, 0, 0.05) 100%),
+        linear-gradient(100deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.4) 46%, rgba(255, 255, 255, 0) 58%),
+        var(--paper-noise);
+    -webkit-backdrop-filter: blur(1.5px) saturate(0.85);
+    backdrop-filter: blur(1.5px) saturate(0.85);
+}
+
+/* Warm kraft masking tape */
+.tape-kraft {
+    background-color: rgba(197, 176, 149, 0.9);
+    background-image:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 40%, rgba(0, 0, 0, 0.08) 100%),
+        linear-gradient(100deg, rgba(255, 255, 255, 0) 28%, rgba(255, 255, 255, 0.28) 46%, rgba(255, 255, 255, 0) 60%),
+        var(--fiber-noise),
+        var(--paper-noise);
+}
+
+/* Red gingham washi */
+.washi-tape-red {
+    background-color: rgba(150, 26, 34, 0.9);
+    background-image:
+        linear-gradient(100deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.22) 46%, rgba(255, 255, 255, 0) 58%),
+        repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.2) 0 3px, transparent 3px 7px),
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.2) 0 3px, transparent 3px 7px),
+        var(--paper-noise);
+}
+
+/* Beige checkered washi */
+.washi-tape-beige {
+    background-color: rgba(205, 186, 160, 0.88);
+    background-image:
+        linear-gradient(100deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.3) 46%, rgba(255, 255, 255, 0) 58%),
+        repeating-linear-gradient(0deg, rgba(90, 60, 30, 0.14) 0 4px, transparent 4px 8px),
+        repeating-linear-gradient(90deg, rgba(90, 60, 30, 0.14) 0 4px, transparent 4px 8px),
+        var(--paper-noise);
+}
+
+/* Fine-tune for small screens: slightly softer shadows (cheaper to paint) */
+@media (max-width: 640px) {
+    .torn-paper-card,
+    .torn-paper-btn,
+    .torn-paper-corner-left,
+    .torn-ransom-tile {
+        filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.5));
+    }
+}
+
+
 }
 
 /* Halftone Zine Texture */
@@ -258,31 +445,6 @@
 /* =========================================================
    MÉTRICAS Y ESTADÍSTICAS - SCRAPBOOK / ZINE UTILITIES
    ========================================================= */
-.torn-paper-card {
-    clip-path: polygon(
-        0% 2%, 5% 0%, 14% 2%, 24% 0%, 36% 2%, 48% 0%, 60% 2%, 74% 0%, 86% 2%, 95% 0%, 100% 3%,
-        99% 22%, 100% 45%, 98% 68%, 100% 90%, 97% 99%,
-        88% 98%, 75% 100%, 61% 98%, 47% 100%, 33% 98%, 19% 100%, 7% 98%, 0% 96%,
-        2% 72%, 0% 48%, 1% 24%
-    );
-}
-
-.washi-tape-red {
-    background-color: #7D191E;
-    background-image:
-        repeating-linear-gradient(0deg, rgba(255,255,255,0.22) 0px, rgba(255,255,255,0.22) 1px, transparent 1px, transparent 7px),
-        repeating-linear-gradient(90deg, rgba(255,255,255,0.22) 0px, rgba(255,255,255,0.22) 1px, transparent 1px, transparent 7px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
-}
-
-.washi-tape-beige {
-    background-color: #C7B299;
-    background-image:
-        repeating-linear-gradient(0deg, rgba(255,255,255,0.35) 0px, rgba(255,255,255,0.35) 1px, transparent 1px, transparent 8px),
-        repeating-linear-gradient(90deg, rgba(255,255,255,0.35) 0px, rgba(255,255,255,0.35) 1px, transparent 1px, transparent 8px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-}
-
 .chalkboard-grid {
     background-color: #161618;
     background-image:
@@ -311,4 +473,66 @@
         transparent 2px,
         transparent 5px
     );
+}
+
+/* =========================================================
+   MÉTRICAS - BOTANICAL FROSTED GLASSMORPHISM (ACT 2: HADA)
+   ========================================================= */
+.glass-forest-card {
+    background: linear-gradient(
+        145deg,
+        rgba(236, 244, 238, 0.80) 0%,
+        rgba(218, 231, 221, 0.70) 55%,
+        rgba(205, 222, 209, 0.74) 100%
+    );
+    -webkit-backdrop-filter: blur(18px) saturate(1.18);
+    backdrop-filter: blur(18px) saturate(1.18);
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    box-shadow:
+        0 18px 42px rgba(5, 18, 9, 0.34),
+        inset 0 1px 1px rgba(255, 255, 255, 0.82);
+}
+
+.glass-forest-grid-card {
+    background-color: rgba(242, 248, 243, 0.86);
+    background-image:
+        linear-gradient(to right, rgba(45, 72, 48, 0.065) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(45, 72, 48, 0.065) 1px, transparent 1px),
+        linear-gradient(155deg, rgba(255, 255, 255, 0.45), rgba(220, 234, 223, 0.25));
+    background-size: 18px 18px, 18px 18px, 100% 100%;
+    -webkit-backdrop-filter: blur(18px) saturate(1.15);
+    backdrop-filter: blur(18px) saturate(1.15);
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    box-shadow:
+        0 20px 46px rgba(5, 18, 9, 0.34),
+        inset 0 1px 1px rgba(255, 255, 255, 0.88);
+}
+
+.glass-forest-pill {
+    background: linear-gradient(180deg, rgba(250, 253, 250, 0.92), rgba(235, 244, 237, 0.84));
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    box-shadow: 0 6px 16px rgba(10, 28, 14, 0.14);
+}
+
+.hatched-bar-sage {
+    background-color: rgba(255, 255, 255, 0.55);
+    background-image: repeating-linear-gradient(
+        -45deg,
+        rgba(84, 106, 86, 0.44) 0px,
+        rgba(84, 106, 86, 0.44) 2px,
+        rgba(255, 255, 255, 0.38) 2px,
+        rgba(255, 255, 255, 0.38) 5px
+    );
+}
+
+.fairy-silhouette-glow {
+    filter: brightness(0) invert(1) drop-shadow(0 0 16px rgba(212, 245, 218, 0.92)) drop-shadow(0 0 36px rgba(138, 210, 152, 0.7));
+}
+
+@media (max-width: 640px) {
+    .glass-forest-card,
+    .glass-forest-grid-card {
+        -webkit-backdrop-filter: blur(14px) saturate(1.12);
+        backdrop-filter: blur(14px) saturate(1.12);
+    }
 }
