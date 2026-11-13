@@ -979,14 +979,14 @@ export default function InfluencerLanding({ data }: Props) {
             >
                 {/* Background ambient glow wrapped in overflow-hidden so sticky works */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    {/* Puente atmosférico superior desde el Hero (mismo estilo nocturno/carmesí, sin corte duro) */}
-                    <div
-                        aria-hidden="true"
-                        className="absolute inset-x-0 top-0 h-40 sm:h-56 lg:h-80 xl:h-96 bg-linear-to-b from-[#090204] via-[#240408]/75 to-transparent"
-                    />
                     <div className="absolute top-1/4 right-10 w-[550px] h-[550px] bg-[#D91424]/15 rounded-full blur-[160px]" />
                     <div className="absolute bottom-1/4 left-10 w-[450px] h-[450px] bg-[#FF1E38]/10 rounded-full blur-[150px]" />
                     <div className="absolute inset-0 grain-overlay opacity-[0.18]" />
+                    {/* Puente atmosférico superior desde el Hero (por encima de grain/glows, sin línea de corte) */}
+                    <div
+                        aria-hidden="true"
+                        className="absolute inset-x-0 top-0 h-40 sm:h-56 lg:h-80 xl:h-96 bg-linear-to-b from-[#090204] via-[#240408]/75 to-transparent z-[2]"
+                    />
                 </div>
 
                 <div className="container mx-auto px-4 sm:px-6 lg:px-10 relative z-10">
@@ -1347,7 +1347,7 @@ export default function InfluencerLanding({ data }: Props) {
                 {/* Atmospheric nocturnal bridge: softens deep crimson into dark forest obsidian */}
                 <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute inset-x-0 bottom-0 h-44 sm:h-60 lg:h-80 xl:h-96 bg-linear-to-b from-transparent via-[#160507]/85 to-[#080D0A] z-0"
+                    className="pointer-events-none absolute inset-x-0 bottom-0 h-44 sm:h-60 lg:h-80 xl:h-96 bg-linear-to-b from-transparent via-[#160507]/85 to-[#080D0A] z-[2]"
                 />
             </section>
 
@@ -1867,7 +1867,7 @@ export default function InfluencerLanding({ data }: Props) {
                 {/* Bottom atmospheric bridge into Act 2.5 (#servicios botanical continuation) */}
                 <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute inset-x-0 bottom-0 h-36 sm:h-52 lg:h-72 xl:h-80 bg-linear-to-b from-transparent via-[#07110B]/85 to-[#060E09] z-0"
+                    className="pointer-events-none absolute inset-x-0 bottom-0 h-36 sm:h-52 lg:h-72 xl:h-80 bg-linear-to-b from-transparent via-[#07110B]/88 to-[#060E09] z-[26]"
                 />
             </section>
 
@@ -2063,7 +2063,7 @@ export default function InfluencerLanding({ data }: Props) {
                 {/* Puente atmosférico largo desde el bosque del Hada (#060E09) hacia el horizonte playero (#16748B) */}
                 <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute inset-x-0 bottom-0 h-40 sm:h-56 lg:h-72 xl:h-80 bg-linear-to-b from-transparent via-[#0B3230]/88 to-[#16748B] z-[4]"
+                    className="pointer-events-none absolute inset-x-0 bottom-0 h-40 sm:h-56 lg:h-72 xl:h-80 bg-linear-to-b from-transparent via-[#0B3230]/88 to-[#16748B] z-[6]"
                 />
             </section>
 
@@ -2077,7 +2077,7 @@ export default function InfluencerLanding({ data }: Props) {
                 {/* Puente atmosférico superior desde la transición océano/bosque */}
                 <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute inset-x-0 top-0 h-32 sm:h-48 lg:h-64 xl:h-72 bg-linear-to-b from-[#16748B] via-[#218CA8]/65 to-transparent z-[1]"
+                    className="pointer-events-none absolute inset-x-0 top-0 h-32 sm:h-48 lg:h-64 xl:h-72 bg-linear-to-b from-[#16748B] via-[#218CA8]/65 to-transparent z-[3]"
                 />
 
                 {/* Sol difuso y destellos cálidos en el cielo */}
@@ -2453,17 +2453,17 @@ export default function InfluencerLanding({ data }: Props) {
                ===================================================================== */}
             <section
                 id="faq"
-                className="relative w-full pt-24 pb-36 sm:pt-32 sm:pb-48 lg:pt-40 lg:pb-60 bg-linear-to-b from-[#FFE066] via-[#FFD24A] to-[#FFE787] text-[#1A1610] overflow-hidden select-none"
+                className="relative w-full pt-24 pb-40 sm:pt-32 sm:pb-52 lg:pt-40 lg:pb-64 bg-linear-to-b from-[#FFE066] via-[#FFD24A] to-[#FFE787] text-[#1A1610] overflow-hidden select-none"
             >
-                {/* Bloques geométricos playeros laterales inspirados en el póster (rojo coral y naranja sol) */}
+                {/* Bloques geométricos playeros laterales inspirados en el póster (desplazados debajo del puente para no cortar arriba) */}
                 <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden z-0">
-                    <div className="absolute -top-12 -left-16 w-48 sm:w-72 h-72 bg-[#E12D39]/90 rotate-6 rounded-3xl" />
-                    <div className="absolute top-[28%] -left-10 w-36 sm:w-64 h-64 bg-[#FF9E3B]/80 -rotate-3 rounded-2xl" />
+                    <div className="absolute top-[12%] -left-16 w-48 sm:w-72 h-72 bg-[#E12D39]/90 rotate-6 rounded-3xl" />
+                    <div className="absolute top-[36%] -left-10 w-36 sm:w-64 h-64 bg-[#FF9E3B]/80 -rotate-3 rounded-2xl" />
                     <div className="absolute top-[24%] -right-14 w-44 sm:w-72 h-80 bg-[#E12D39]/88 -rotate-6 rounded-3xl" />
-                    <div className="absolute top-[10%] right-4 w-56 h-56 rounded-full bg-[#FFF7C2]/55 blur-[70px]" />
+                    <div className="absolute top-[16%] right-4 w-56 h-56 rounded-full bg-[#FFF7C2]/55 blur-[70px]" />
 
-                    {/* Palmeras decorativas asomando en la esquina superior derecha */}
-                    <svg viewBox="0 0 180 220" className="absolute -top-2 -right-4 w-36 sm:w-52 h-auto text-[#4C8E4B]/80">
+                    {/* Palmeras decorativas asomando en la esquina derecha */}
+                    <svg viewBox="0 0 180 220" className="absolute top-12 sm:top-16 -right-4 w-36 sm:w-52 h-auto text-[#4C8E4B]/80">
                         <path d="M165,210 C150,155 138,105 130,68" fill="none" stroke="#6E4E2E" strokeWidth="7" strokeLinecap="round" />
                         <path d="M130,68 C100,45 70,52 50,74 C82,68 106,70 130,68 Z" fill="currentColor" />
                         <path d="M130,68 C105,28 74,22 52,32 C85,38 110,50 130,68 Z" fill="currentColor" />
@@ -2471,6 +2471,12 @@ export default function InfluencerLanding({ data }: Props) {
                         <path d="M130,68 C156,48 175,62 182,82 C160,74 144,72 130,68 Z" fill="currentColor" />
                     </svg>
                 </div>
+
+                {/* Puente superior continuo desde #reels-carousel sin línea de corte horizontal */}
+                <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-x-0 top-0 h-32 sm:h-44 lg:h-56 bg-linear-to-b from-[#FFE066] via-[#FFE066]/75 to-transparent z-[1]"
+                />
 
                 {/* Escenario central + Polaroids laterales */}
                 <div className="container mx-auto px-4 sm:px-6 lg:px-10 max-w-6xl relative z-10">
@@ -2557,11 +2563,11 @@ export default function InfluencerLanding({ data }: Props) {
                             className="pointer-events-none absolute -top-5 -right-2 sm:-top-8 sm:-right-8 w-20 h-20 sm:w-28 sm:h-28 rounded-full border-3 border-[#1A1610] shadow-[0_14px_30px_rgba(26,22,16,0.28)] object-cover z-30"
                         />
 
-                        {/* TARJETA CENTRAL PÓSTER PLAYERO (Cielo Azul -> Crema Arena -> Ola Dorada) */}
-                        <div className="relative z-20 rounded-[28px] sm:rounded-[34px] border-3 border-[#1A1610]/12 shadow-[0_28px_70px_rgba(110,68,8,0.28)] overflow-hidden bg-linear-to-b from-[#1B9EE6] via-[#7AD5F5] via-[22%] to-[#FAF7EE] to-[42%]">
+                        {/* TARJETA CENTRAL PÓSTER PLAYERO (Cielo Azul -> Crema Arena hundida en la duna) */}
+                        <div className="relative z-20 rounded-t-[28px] sm:rounded-t-[34px] rounded-b-none border-3 border-b-0 border-[#1A1610]/12 shadow-[0_28px_70px_rgba(110,68,8,0.28)] overflow-hidden bg-[#FAF7EE]">
 
                             {/* Encabezado Cómico de Verano + Doodles */}
-                            <div className="relative pt-10 pb-8 sm:pt-14 sm:pb-10 px-6 sm:px-14 text-center">
+                            <div className="relative pt-10 pb-8 sm:pt-14 sm:pb-10 px-6 sm:px-14 text-center bg-linear-to-b from-[#1B9EE6] via-[#7AD5F5] via-[68%] to-[#FAF7EE]">
                                 {/* Doodle Sol a la izquierda */}
                                 <svg viewBox="0 0 64 64" className="hidden sm:block absolute left-10 top-10 w-12 h-12 text-[#FFD835]">
                                     <circle cx="32" cy="32" r="13" fill="currentColor" stroke="#1A1610" strokeWidth="2.5" />
@@ -2604,8 +2610,8 @@ export default function InfluencerLanding({ data }: Props) {
                                 </h2>
                             </div>
 
-                            {/* Lista Acordeón de Preguntas sobre Fondo Crema Cálido */}
-                            <div className="px-6 sm:px-14 md:px-16 pb-14 sm:pb-16 divide-y divide-[#1A1610]/20">
+                            {/* Lista Acordeón de Preguntas sobre Fondo Crema Cálido (despeje inferior para la duna) */}
+                            <div className="px-6 sm:px-14 md:px-16 pb-24 sm:pb-28 lg:pb-32 divide-y divide-[#1A1610]/20">
                                 {INFLUENCER_FAQS.map((item, idx) => {
                                     const isOpen = openFaqIdx === idx;
                                     return (
@@ -2667,28 +2673,140 @@ export default function InfluencerLanding({ data }: Props) {
                                 })}
                             </div>
 
-                            {/* Onda inferior de arena dorada cerrando el póster */}
-                            <svg
-                                viewBox="0 0 1200 72"
-                                preserveAspectRatio="none"
-                                aria-hidden="true"
-                                className="block w-full h-10 sm:h-14 text-[#FFE066]"
-                            >
-                                <path
-                                    d="M0,36 C160,8 310,64 490,34 C670,4 830,62 1010,30 C1105,14 1160,26 1200,34 L1200,72 L0,72 Z"
-                                    fill="currentColor"
-                                />
-                            </svg>
-
                         </div>
 
                     </div>
                 </div>
 
-                {/* Puente cálido crepuscular hacia el Footer */}
+                {/* =====================================================================
+                    DUNA DE ARENA TEXTURIZADA DE ANCHO COMPLETO (por encima del formulario)
+                    La tarjeta FAQ emerge directamente de la arena como parte del escenario
+                   ===================================================================== */}
                 <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute inset-x-0 bottom-0 h-32 sm:h-44 lg:h-60 bg-linear-to-b from-transparent via-[#281E12]/72 to-[#0B0E12] z-[5]"
+                    className="pointer-events-none absolute inset-x-0 bottom-0 w-full h-[230px] sm:h-[295px] lg:h-[360px] z-[25] overflow-hidden"
+                >
+                    {/* ClipPath normalizado para aplicar textura sin deformación en todo el ancho */}
+                    <svg className="absolute w-0 h-0" focusable="false">
+                        <defs>
+                            <clipPath id="faq-front-dune-clip" clipPathUnits="objectBoundingBox">
+                                <path d="M0,0.2278 C0.1667,0.1333 0.3333,0.2444 0.5139,0.1722 C0.6944,0.1000 0.8542,0.2278 1,0.1556 L1,1 L0,1 Z" />
+                            </clipPath>
+                        </defs>
+                    </svg>
+
+                    {/* Capas SVG vectoriales de duna (relieve posterior + cresta principal + ondas de viento) */}
+                    <svg
+                        viewBox="0 0 1440 360"
+                        preserveAspectRatio="none"
+                        className="absolute inset-0 w-full h-full block"
+                    >
+                        <defs>
+                            <linearGradient id="faqBackDuneGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stopColor="#FFEFA8" />
+                                <stop offset="55%" stopColor="#FAD258" />
+                                <stop offset="100%" stopColor="#E6AE35" />
+                            </linearGradient>
+                            <linearGradient id="faqFrontDuneGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stopColor="#FFE67A" />
+                                <stop offset="32%" stopColor="#F8C84A" />
+                                <stop offset="72%" stopColor="#E0A12C" />
+                                <stop offset="100%" stopColor="#B87B1B" />
+                            </linearGradient>
+                            <linearGradient id="faqDuneCrestRim" x1="0" y1="0" x2="1" y2="0">
+                                <stop offset="0%" stopColor="#FFF7C8" stopOpacity="0.65" />
+                                <stop offset="50%" stopColor="#FFFBEF" stopOpacity="0.95" />
+                                <stop offset="100%" stopColor="#FFF5B8" stopOpacity="0.65" />
+                            </linearGradient>
+                        </defs>
+
+                        {/* Duna lejana de fondo para dar profundidad */}
+                        <path
+                            d="M0,56 C240,18 480,74 740,34 C1000,-2 1240,60 1440,26 L1440,360 L0,360 Z"
+                            fill="url(#faqBackDuneGrad)"
+                            opacity="0.72"
+                        />
+
+                        {/* Duna frontal principal cubriendo el borde inferior del póster */}
+                        <path
+                            d="M0,82 C240,48 480,88 740,62 C1000,36 1230,82 1440,56 L1440,360 L0,360 Z"
+                            fill="url(#faqFrontDuneGrad)"
+                        />
+
+                        {/* Brillo solar en el lomo de la arena */}
+                        <path
+                            d="M0,82 C240,48 480,88 740,62 C1000,36 1230,82 1440,56"
+                            fill="none"
+                            stroke="url(#faqDuneCrestRim)"
+                            strokeWidth="3.2"
+                        />
+
+                        {/* Surcos suaves esculpidos por la brisa marina */}
+                        <path
+                            d="M-20,140 C260,104 520,152 810,118 C1080,88 1280,136 1460,110"
+                            fill="none"
+                            stroke="#C28119"
+                            strokeWidth="2"
+                            strokeOpacity="0.18"
+                        />
+                        <path
+                            d="M-20,192 C290,162 560,204 860,170 C1120,142 1290,184 1460,162"
+                            fill="none"
+                            stroke="#A96B12"
+                            strokeWidth="2.2"
+                            strokeOpacity="0.16"
+                        />
+                        <path
+                            d="M120,114 C280,96 420,116 580,102"
+                            fill="none"
+                            stroke="#FFF7CA"
+                            strokeWidth="2"
+                            strokeOpacity="0.34"
+                            strokeLinecap="round"
+                        />
+                        <path
+                            d="M900,96 C1060,78 1200,104 1360,86"
+                            fill="none"
+                            stroke="#FFF7CA"
+                            strokeWidth="2"
+                            strokeOpacity="0.32"
+                            strokeLinecap="round"
+                        />
+                    </svg>
+
+                    {/* Textura orgánica de granos de arena 1:1 sin estiramiento recortada al lomo frontal */}
+                    <div
+                        className="absolute inset-0 w-full h-full"
+                        style={{ clipPath: 'url(#faq-front-dune-clip)' }}
+                    >
+                        <svg className="w-full h-full block opacity-[0.22] mix-blend-multiply">
+                            <filter id="faqBeachSandNoise" x="0%" y="0%" width="100%" height="100%">
+                                <feTurbulence
+                                    type="fractalNoise"
+                                    baseFrequency="0.72"
+                                    numOctaves="3"
+                                    seed="19"
+                                    stitchTiles="stitch"
+                                />
+                                <feColorMatrix type="saturate" values="0.25" />
+                            </filter>
+                            <rect width="100%" height="100%" filter="url(#faqBeachSandNoise)" />
+                        </svg>
+                        <div
+                            className="absolute inset-0 opacity-45"
+                            style={{
+                                backgroundImage:
+                                    'radial-gradient(circle at 7px 9px, rgba(164, 102, 16, 0.28) 1px, transparent 1.2px), radial-gradient(circle at 21px 17px, rgba(255, 249, 212, 0.45) 1px, transparent 1.2px), radial-gradient(circle at 33px 29px, rgba(140, 84, 12, 0.22) 1.1px, transparent 1.3px)',
+                                backgroundSize: '38px 34px',
+                            }}
+                        />
+                    </div>
+                </div>
+
+                {/* Puente cálido crepuscular sobre la base de la arena hacia el Footer */}
+                <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-x-0 bottom-0 h-28 sm:h-36 lg:h-48 bg-linear-to-b from-transparent via-[#1B1710]/68 to-[#0B0E12] z-[28]"
                 />
             </section>
 
